@@ -1,3 +1,5 @@
+import { AiFillFacebook } from "react-icons/ai";
+
 const Home = () => {
   return (
     <div
@@ -9,7 +11,8 @@ const Home = () => {
       }}
     >
       <div>
-        <button>Home</button>
+        <AiFillFacebook size={30} color="blue" />
+        <button className="btn btn-primary">Home</button>
       </div>
     </div>
   );
