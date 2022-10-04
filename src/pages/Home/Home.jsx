@@ -15,7 +15,7 @@ const Home = () => {
           created within UP offices.
         </p>
         <div className="d-flex gap-3 mt-5">
-          <Link to="/track-request" className="btn btn-dark btn-lg w-100">
+          <Link to="/dashboard" className="btn btn-dark btn-lg w-100">
             Create A Document
           </Link>
           <Link

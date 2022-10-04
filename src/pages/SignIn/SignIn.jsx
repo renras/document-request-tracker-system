@@ -3,13 +3,16 @@ import { useForm } from "react-hook-form";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
-      alert("User signed in successfully");
+      navigate("/dashboard");
     } catch {
       alert("Failed to sign in user. Please try again later.");
     }
