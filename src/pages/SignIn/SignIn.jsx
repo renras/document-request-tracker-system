@@ -1,10 +1,26 @@
 import styles from "./SignIn.module.css";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase-config";
 
 const SignIn = () => {
+  const { register, handleSubmit } = useForm();
+  const onSubmit = async (data) => {
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      alert("User signed in successfully");
+    } catch {
+      alert("Failed to sign in user. Please try again later.");
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <form className="mw-sm border w-100 shadow-sm rounded py-5 px-4">
+      <form
+        className="mw-sm border w-100 shadow-sm rounded py-5 px-4"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <h1 className="h3">Sign In</h1>
 
         {/* email */}
@@ -15,6 +31,7 @@ const SignIn = () => {
           className="form-control form-control-lg"
           id="email"
           type="email"
+          {...register("email", { required: true })}
         />
 
         {/* password */}
@@ -25,6 +42,7 @@ const SignIn = () => {
           className="form-control form-control-lg"
           id="password"
           type="password"
+          {...register("password", { required: true })}
         />
         <button className="btn btn-primary btn-lg w-100 mt-5">Sign In</button>
 

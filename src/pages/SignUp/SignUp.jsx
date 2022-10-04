@@ -13,7 +13,7 @@ const SignUp = () => {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, data.email, data.passwords);
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
       alert("User created successfully");
     } catch {
       alert("Failed to create user. Please try again later.");
@@ -65,9 +65,9 @@ const SignUp = () => {
 
         {/* sign up link */}
         <div className="text-center mt-4">
-          Do not have an account yet?
-          <Link to="/sign-up" className="ms-2">
-            Sign up
+          Already have an account?
+          <Link to="/sign-in" className="ms-2">
+            Sign In
           </Link>
         </div>
       </form>
