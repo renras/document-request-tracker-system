@@ -57,7 +57,7 @@ const SignUp = () => {
         </label>
         <input
           className="form-control form-control-lg"
-          id="password"
+          id="confirm-password"
           type="password"
           {...register("confirmPassword", { required: true })}
         />

@@ -1,8 +1,26 @@
 import PropTypes from "prop-types";
 import styles from "./SignedOutLayout.module.css";
 import { Link } from "react-router-dom";
+import { auth } from "../../../firebase-config";
+import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const SignedOutLayout = ({ children }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/dashboard");
+      } else {
+        console.log("User is not signed in");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div className={styles.container}>
       <header className="navbar bg-light">
