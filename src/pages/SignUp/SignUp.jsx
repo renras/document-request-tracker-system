@@ -1,8 +1,8 @@
-import styles from "./SignUp.module.css";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
+import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
 
 const SignUp = () => {
   const { register, handleSubmit } = useForm();
@@ -21,9 +21,10 @@ const SignUp = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <SignedOutLayout>
       <form
-        className="mw-sm border w-100 shadow-sm rounded py-5 px-4"
+        className="mw-sm border w-100 shadow-sm rounded py-5 px-4 mx-auto"
+        style={{ marginTop: "5rem" }}
         onSubmit={handleSubmit(onSubmit)}
       >
         <h1 className="h3">Sign Up</h1>
@@ -67,11 +68,11 @@ const SignUp = () => {
         <div className="text-center mt-4">
           Already have an account?
           <Link to="/sign-in" className="ms-2">
-            Sign In
+            Sign Up
           </Link>
         </div>
       </form>
-    </div>
+    </SignedOutLayout>
   );
 };
 

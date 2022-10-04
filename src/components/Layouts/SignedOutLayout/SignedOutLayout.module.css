@@ -1,0 +1,14 @@
+.container {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.link {
+  text-decoration: none;
+  color: rgb(33, 37, 41);
+}
+
+.link:hover {
+  color: rgb(33, 37, 41);
+}
