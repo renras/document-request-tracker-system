@@ -11,7 +11,7 @@ const Home = () => {
         <h1>The UPANG Document Tracking System</h1>
         <p className="mt-4">
           The Document Tracking System (DTS) of the University of Pangasinan is
-          an information system capable of tracking the paper trail of documents
+          an information systems capable of tracking the paper trail of documents
           created within UP offices.
         </p>
         <div className="d-flex gap-3 mt-5">
