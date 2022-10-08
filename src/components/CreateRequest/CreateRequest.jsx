@@ -1,6 +1,22 @@
+import { useState } from "react";
 import styles from "./CreateRequest.module.css";
+import Dropdown from "../ui/Dropdown/Dropdown";
+
+const FORM_TYPES = [
+  { label: "Choose Form Type", value: "" },
+  {
+    label: "Form 1",
+    value: "form1",
+  },
+  {
+    label: "Form 2",
+    value: "form2",
+  },
+];
 
 const CreateRequest = () => {
+  const [formType, setFormType] = useState(FORM_TYPES[0]);
+
   return (
     <form className="mw-sm shadow-sm rounded border w-100 py-5 px-4">
       <h1 className="h3">Create a Document</h1>
@@ -11,6 +27,11 @@ const CreateRequest = () => {
       </label>
       <input className="form-control" type="text" id="title" name="" />
 
+      <Dropdown
+        value={formType}
+        options={FORM_TYPES}
+        onChange={(option) => setFormType(option)}
+      />
       <div className={styles.formGroup}>
         <label className="form-label mt-4" htmlFor="formtype">
           Form Type
