@@ -1,9 +1,8 @@
 import { useState } from "react";
-import styles from "./CreateRequest.module.css";
 import Dropdown from "../ui/Dropdown/Dropdown";
 
 const FORM_TYPES = [
-  { label: "Choose Form Type", value: "" },
+  { label: "Choose form type", value: "" },
   {
     label: "Form 1",
     value: "form1",
@@ -39,6 +38,7 @@ const CreateRequest = () => {
       </label>
       <input className="form-control" type="text" id="title" name="" />
 
+      {/* form type */}
       <label htmlFor="form-type" className="form-label mt-3">
         Form Type
       </label>
@@ -49,6 +49,7 @@ const CreateRequest = () => {
         onChange={(option) => setFormType(option)}
       />
 
+      {/* quantity */}
       <label htmlFor="quantity" className="form-label mt-3">
         Quantity
       </label>
@@ -60,16 +61,13 @@ const CreateRequest = () => {
           onChange={(option) => setQuantity(option)}
         />
       </div>
-      <div className={styles.formGroup}>
-        <div className={styles.formGroup}>
-          <label className="form-label mt-4" htmlFor="purpose">
-            Purpose
-          </label>
-          <textarea name="purpose" id="" cols="30" rows="10"></textarea>
-          <div className={styles.cta}>
-            <button>Submit</button>
-          </div>
-        </div>
+
+      <label htmlFor="purpose" className="form-label mt-3">
+        Purpose
+      </label>
+      <textarea id="purpose" className="form-control" rows={5} />
+      <div className="d-flex w-100 mt-5">
+        <button className="btn btn-dark ms-auto">Submit</button>
       </div>
     </form>
   );
