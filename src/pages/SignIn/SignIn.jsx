@@ -12,7 +12,7 @@ const SignIn = () => {
   const onSubmit = async (data) => {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
-      navigate("/dashboard");
+      navigate("/documents");
     } catch {
       alert("Failed to sign in user. Please try again later.");
     }
