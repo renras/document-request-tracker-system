@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { auth } from "../../firebase-config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 
 const Dashboard = () => {
   const [email, setEmail] = useState("");
@@ -28,6 +29,7 @@ const Dashboard = () => {
   };
 
   return (
+    <SignedInLayout>
     <div
       style={{
         position: "fixed",
@@ -42,7 +44,9 @@ const Dashboard = () => {
         Logout
       </button>
     </div>
+    </SignedInLayout>
   );
+  
 };
 
 export default Dashboard;
