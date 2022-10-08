@@ -1,10 +1,13 @@
 import PropTypes from "prop-types";
 
-const Dropdown = ({ value, options, onChange }) => {
+const Dropdown = ({ id, value, options, onChange, className, size = "sm" }) => {
   return (
-    <div className="dropdown">
+    <div className={`dropdown ${className}`}>
       <button
-        className="form-control d-flex justify-content-between align-items-center dropdown-toggle"
+        id={id}
+        className={`form-control ${
+          size === "lg" ? "form-control-lg" : ""
+        } d-flex justify-content-between align-items-center dropdown-toggle`}
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
@@ -33,7 +36,10 @@ const Dropdown = ({ value, options, onChange }) => {
 export default Dropdown;
 
 Dropdown.propTypes = {
+  id: PropTypes.string,
   value: PropTypes.object.isRequired,
   options: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  size: PropTypes.oneOf(["sm", "lg"]),
 };
