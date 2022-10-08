@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { auth } from "../../firebase-config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 
-const Dashboard = () => {
+const Documents = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
@@ -28,21 +29,23 @@ const Dashboard = () => {
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      }}
-    >
-      <h1 className="h2">Welcome {email}!</h1>
-      <p className="mt-4">I&apos;m sorry but this page is not yet ready!</p>
-      <button className="btn btn-dark mt-5" onClick={handleSignOut}>
-        Logout
-      </button>
-    </div>
+    <SignedInLayout>
+      <div
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        <h1 className="h2">Welcome {email}!</h1>
+        <p className="mt-4">I&apos;m sorry but this page is not yet ready!</p>
+        <button className="btn btn-dark mt-5" onClick={handleSignOut}>
+          Logout
+        </button>
+      </div>
+    </SignedInLayout>
   );
 };
 
-export default Dashboard;
+export default Documents;

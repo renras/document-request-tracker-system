@@ -12,7 +12,7 @@ const SignedOutLayout = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate("/dashboard");
+        navigate("/documents");
       } else {
         console.log("User is not signed in");
       }

@@ -15,7 +15,7 @@ const Home = () => {
           documents created within UP offices.
         </p>
         <div className="d-flex gap-3 mt-5">
-          <Link to="/dashboard" className="btn btn-dark btn-lg w-100">
+          <Link to="/documents" className="btn btn-dark btn-lg w-100">
             Create A Document
           </Link>
           <Link
