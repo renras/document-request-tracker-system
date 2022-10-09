@@ -8,7 +8,7 @@ const ContactUs = () => {
 
   const onSubmit = async (data) => {
     try {
-      await addDoc(collection(db, "contactdata"), {
+      await addDoc(collection(db, "messages"), {
         name: data.name,
         email: data.email,
         message: data.message,
