@@ -35,18 +35,17 @@ const SignedInLayout = ({ children }) => {
       <SideBar />
 
       <div className={styles.content}>
-        <header className="navbar bg-light">
-          <h1 className="col-sm-4 fs-4 fw-semibold ms-2">DRT System</h1>
+        <header className="navbar py-4 px-5">
           <div className={styles.user}>
-            <p className="fw-light">Welcome, {email}!</p>
+            <p>Welcome, {email}!</p>
           </div>
-          <button className="btn btn-dark mt-0" size="small" onClick={() => handleSignOut()}>
+          <button className="btn btn-dark" onClick={() => handleSignOut()}>
             Logout
-            </button>
+          </button>
         </header>
 
-      <main>{children}</main>
-    </div>
+        <main>{children}</main>
+      </div>
     </div>
   );
 };
