@@ -1,5 +1,5 @@
-import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
-import { Link } from "react-router-dom";
+import {Link} from 'react-router-dom';
+import SignedOutLayout from '../../components/Layouts/SignedOutLayout/SignedOutLayout';
 
 const Home = () => {
   return (
@@ -27,7 +27,7 @@ const Home = () => {
         </div>
       </div>
     </SignedOutLayout>
-  );
+  )
 };
 
 export default Home;
