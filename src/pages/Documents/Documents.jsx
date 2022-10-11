@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { auth } from "../../firebase-config";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 
@@ -20,30 +20,11 @@ const Documents = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleSignOut = async () => {
-    try {
-      signOut(auth);
-    } catch {
-      alert("Failed to sign out user. Please try again later.");
-    }
-  };
+  console.log(email)
 
   return (
     <SignedInLayout>
-      <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <h1 className="h2">Welcome {email}!</h1>
-        <p className="mt-4">I&apos;m sorry but this page is not yet ready!</p>
-        <button className="btn btn-dark mt-5" onClick={handleSignOut}>
-          Logout
-        </button>
-      </div>
+      <div>Hello World</div>
     </SignedInLayout>
   );
 };
