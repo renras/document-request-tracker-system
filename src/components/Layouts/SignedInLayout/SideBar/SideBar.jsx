@@ -45,8 +45,8 @@ const SideBar = () => {
       icon: <BsBoxArrowUp color="#212529" size={20} />,
     },
     {
-      title: "/trackdocuments",
-      name: "Track Documents",
+      title: "/track-document",
+      name: "Track_Documents",
       icon: <HiDocumentSearch color="#212529" size={20} />,
     },
     {
