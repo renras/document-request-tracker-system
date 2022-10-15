@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Dropdown from "../../../components/ui/Dropdown/Dropdown";
 import Modal from "../../../components/Modal/Modal";
 import { FORM_TYPES } from "./FormTypes";
 import { useForm } from "react-hook-form";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../../firebase-config";
-import { useNavigate } from "react-router-dom";
 
 const QUANTITIES = [
   {
@@ -22,7 +21,7 @@ const CreateDocument = () => {
   const [formType, setFormType] = useState(FORM_TYPES[0]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const { register, handleSubmit } = useForm();
-  const navigate = useNavigate();
+  const closeButton = useRef(null);
 
   const onSubmit = async (data) => {
     const { title, purpose } = data;
@@ -38,10 +37,11 @@ const CreateDocument = () => {
         formType: formType.value,
         purpose: purpose,
         quantity: quantity.value,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
       });
-      navigate(0);
+      closeButton.current.click();
     } catch (e) {
-      console.error(e);
       alert("Failed to create document. Please try again later.");
     }
   };
@@ -55,6 +55,7 @@ const CreateDocument = () => {
               Create a Document
             </h1>
             <button
+              ref={closeButton}
               type="button"
               className="btn-close"
               data-bs-dismiss="modal"
