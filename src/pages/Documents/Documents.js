@@ -8,6 +8,7 @@ const documents = [
     type: "Diploma with EDUFIED NEW RATE",
     dateCreated: "January 7, 1996",
     status: "INCOMING",
+    requestedBy: "Nerd Onnasis",
   },
 ];
 
