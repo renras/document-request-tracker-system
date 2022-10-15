@@ -1,6 +1,18 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 import CreateDocumentModal from "./CreateDocumentModal/CreateDocumentModal";
 
+const documents = [
+  {
+    id: "1143-1145-1482",
+    title: "Request for Diploma",
+    type: "Diploma with EDUFIED NEW RATE",
+    dateCreated: "January 7, 1996",
+    status: "INCOMING",
+  },
+];
+
+const columns = ["Tracking Number", "Document", "Type", "Date Created"];
+
 const Documents = () => {
   return (
     <SignedInLayout>
@@ -19,19 +31,26 @@ const Documents = () => {
         <table className="table mt-3">
           <thead>
             <tr>
-              <th scope="col">Tracking number</th>
-              <th scope="col">Document</th>
-              <th scope="col">Type</th>
-              <th scope="col">Date Created</th>
+              {columns.map((column, index) => (
+                <th scope="col" key={index}>
+                  {column}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1143-1145-1482</td>
-              <td>Request for Diploma</td>
-              <td>Diploma with EDUFIED NEW RATE</td>
-              <td>January 7, 1996</td>
-            </tr>
+            {documents.map((document) => {
+              const { id, title, type, dateCreated } = document;
+
+              return (
+                <tr key={id}>
+                  <td>{id}</td>
+                  <td>{title}</td>
+                  <td>{type}</td>
+                  <td>{dateCreated}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

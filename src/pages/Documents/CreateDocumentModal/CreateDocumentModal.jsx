@@ -2,6 +2,7 @@ import { useState } from "react";
 import Dropdown from "../../../components/ui/Dropdown/Dropdown";
 import Modal from "../../../components/Modal/Modal";
 import { FORM_TYPES } from "./FormTypes";
+import { useForm } from "react-hook-form";
 
 const QUANTITIES = [
   {
@@ -17,10 +18,15 @@ const QUANTITIES = [
 const CreateRequest = () => {
   const [formType, setFormType] = useState(FORM_TYPES[0]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   return (
     <Modal id="create-document-modal" title="Create A Document">
-      <form className="modal-dialog">
+      <form className="modal-dialog" onSubmit={handleSubmit(onSubmit)}>
         <div className="modal-content">
           <div className="modal-header">
             <h1 className="modal-title fs-5" id="modal-title">
@@ -40,7 +46,13 @@ const CreateRequest = () => {
             <label className="form-label" htmlFor="title">
               Title
             </label>
-            <input className="form-control" type="text" id="title" name="" />
+            <input
+              className="form-control"
+              type="text"
+              id="title"
+              name=""
+              {...register("title", { required: true })}
+            />
 
             {/* form type */}
             <label htmlFor="form-type" className="form-label mt-3">
@@ -69,7 +81,12 @@ const CreateRequest = () => {
             <label htmlFor="purpose" className="form-label mt-3">
               Purpose
             </label>
-            <textarea id="purpose" className="form-control" rows={5} />
+            <textarea
+              id="purpose"
+              className="form-control"
+              rows={5}
+              {...register("purpose", { required: true })}
+            />
           </div>
           <div className="modal-footer">
             <button
