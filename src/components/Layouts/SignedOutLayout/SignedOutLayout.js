@@ -3,13 +3,16 @@ import styles from "./SignedOutLayout.module.css";
 import { Link } from "react-router-dom";
 import { auth } from "../../../firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 const SignedOutLayout = ({ children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    if (location.pathname.includes("sign-up")) return;
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         navigate("/documents");

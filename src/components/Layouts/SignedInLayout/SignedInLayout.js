@@ -13,7 +13,8 @@ const SignedInLayout = ({ children }) => {
 
   const handleSignOut = async () => {
     try {
-      signOut(auth);
+      await signOut(auth);
+      navigate("/sign-in");
     } catch {
       alert("Failed to sign out user. Please try again later.");
     }
@@ -35,7 +36,7 @@ const SignedInLayout = ({ children }) => {
       <div className={styles.content}>
         <header className="navbar py-4 px-5">
           <div className={styles.user}>
-            <p>Welcome, {user.email}!</p>
+            <p>Welcome, {user.displayName || user.email}!</p>
           </div>
           <button className="btn btn-dark" onClick={() => handleSignOut()}>
             Logout
