@@ -1,26 +1,15 @@
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase-config";
 import SideBar from "./SideBar/SideBar";
 import styles from "./SignedInLayout.module.css";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const SignedInLayout = ({ children }) => {
-  const [email, setEmail] = useState("");
+  const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setEmail(user.email);
-      } else {
-        navigate("/sign-in");
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -30,6 +19,15 @@ const SignedInLayout = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    if (!user && !loading) {
+      navigate("/sign-in");
+    }
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Failed to load page...</div>;
+
   return (
     <div className={styles.container}>
       <SideBar />
@@ -37,7 +35,7 @@ const SignedInLayout = ({ children }) => {
       <div className={styles.content}>
         <header className="navbar py-4 px-5">
           <div className={styles.user}>
-            <p>Welcome, {email}!</p>
+            <p>Welcome, {user.email}!</p>
           </div>
           <button className="btn btn-dark" onClick={() => handleSignOut()}>
             Logout
