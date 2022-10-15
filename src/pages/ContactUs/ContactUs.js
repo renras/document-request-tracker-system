@@ -1,6 +1,6 @@
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
 import { db } from "../../firebase-config";
-import { addDoc, collection } from "firebase/firestore/lite";
+import { addDoc, collection } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 
 const ContactUs = () => {

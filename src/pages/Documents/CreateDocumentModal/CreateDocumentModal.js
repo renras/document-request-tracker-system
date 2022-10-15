@@ -3,6 +3,9 @@ import Dropdown from "../../../components/ui/Dropdown/Dropdown";
 import Modal from "../../../components/Modal/Modal";
 import { FORM_TYPES } from "./FormTypes";
 import { useForm } from "react-hook-form";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../../firebase-config";
+import { useNavigate } from "react-router-dom";
 
 const QUANTITIES = [
   {
@@ -15,13 +18,32 @@ const QUANTITIES = [
   },
 ];
 
-const CreateRequest = () => {
+const CreateDocument = () => {
   const [formType, setFormType] = useState(FORM_TYPES[0]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    const { title, purpose } = data;
+
+    if (!formType.value) {
+      alert("Please select a form type");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "documents"), {
+        title: title,
+        formType: formType.value,
+        purpose: purpose,
+        quantity: quantity.value,
+      });
+      navigate(0);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to create document. Please try again later.");
+    }
   };
 
   return (
@@ -96,7 +118,7 @@ const CreateRequest = () => {
             >
               Close
             </button>
-            <button type="button" className="btn btn-dark">
+            <button type="submit" className="btn btn-dark">
               Save Changes
             </button>
           </div>
@@ -106,4 +128,4 @@ const CreateRequest = () => {
   );
 };
 
-export default CreateRequest;
+export default CreateDocument;

@@ -45,7 +45,7 @@ export default Dropdown;
 Dropdown.propTypes = {
   id: PropTypes.string,
   value: PropTypes.object.isRequired,
-  options: PropTypes.object.isRequired,
+  options: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   className: PropTypes.string,
   size: PropTypes.oneOf(["sm", "lg"]),
