@@ -1,10 +1,17 @@
 import PropTypes from "prop-types";
+import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 
-const columns = ["Tracking Number", "Document", "Type", "Requested By"];
+const columns = [
+  "Tracking Number",
+  "Document",
+  "Type",
+  "Requested By",
+  "Action",
+];
 
 const Table = ({ documents }) => {
   return (
-    <table className="table mt-5">
+    <table className="table mt-5 align-middle">
       <thead>
         <tr>
           {columns.map((column, index) => (
@@ -16,7 +23,7 @@ const Table = ({ documents }) => {
       </thead>
       <tbody>
         {documents.map((document) => {
-          const { id, title, type, requestedBy } = document;
+          const { id, title, type, requestedBy, status } = document;
 
           return (
             <tr key={id}>
@@ -24,6 +31,18 @@ const Table = ({ documents }) => {
               <td>{title}</td>
               <td>{type}</td>
               <td>{requestedBy}</td>
+              {status === "INCOMING" && (
+                <td>
+                  <div className="d-flex gap-2">
+                    <button className="btn btn-sm btn-light text-success">
+                      <AiFillCheckCircle size={24} />
+                    </button>
+                    <button className="btn btn-sm btn-light text-danger">
+                      <AiFillCloseCircle size={24} />
+                    </button>
+                  </div>
+                </td>
+              )}
             </tr>
           );
         })}

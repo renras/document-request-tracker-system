@@ -10,7 +10,7 @@ import Hold from "./pages/Hold/Hold";
 import Received from "./pages/Received/Received";
 import Released from "./pages/Released/Released";
 import Returned from "./pages/Returned/Returned";
-import Track_Document from "./pages/Track_Document/Track_Document";
+import TrackDocument from "./pages/TrackDocument/TrackDocument";
 import Profile from "./pages/Profile/Profile";
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
       <Route path="received" element={<Received />} />
       <Route path="hold" element={<Hold />} />
       <Route path="released" element={<Released />} />
-      <Route path="track-document" element={<Track_Document />} />
+      <Route path="track-document" element={<TrackDocument />} />
       <Route path="profile" element={<Profile />} />
       <Route path="returned" element={<Returned />} />
     </Routes>
