@@ -2,18 +2,20 @@ import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayo
 import CreateDocumentModal from "./CreateDocumentModal/CreateDocumentModal";
 import { collection } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { db } from "../../firebase-config";
+import { db, auth } from "../../firebase-config";
 import { format } from "date-fns";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const columns = ["Tracking Number", "Document", "Type", "Date Created"];
 
 const Documents = () => {
-  const [documentsData, loading, error] = useCollection(
-    collection(db, "documents")
-  );
+  const [documentsData, documentsDataLoading, documentsDataError] =
+    useCollection(collection(db, "documents"));
+  const [userData, userDataLoading, userDataError] = useAuthState(auth);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Failed to load page...</div>;
+  if (documentsDataLoading || userDataLoading) return <div>Loading...</div>;
+  if (userDataError || documentsDataError)
+    return <div>Failed to load page...</div>;
 
   const documents = documentsData.docs.map((doc) => ({
     id: doc.id,
@@ -62,7 +64,7 @@ const Documents = () => {
       </div>
 
       {/* modal */}
-      <CreateDocumentModal />
+      <CreateDocumentModal userId={userData.uid} />
     </SignedInLayout>
   );
 };

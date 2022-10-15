@@ -23,13 +23,13 @@ const Table = ({ documents }) => {
       </thead>
       <tbody>
         {documents.map((document) => {
-          const { id, title, type, requestedBy, status } = document;
+          const { id, title, formType, requestedBy, status } = document;
 
           return (
             <tr key={id}>
               <td>{id}</td>
               <td>{title}</td>
-              <td>{type}</td>
+              <td>{formType}</td>
               <td>{requestedBy}</td>
               {status === "INCOMING" && (
                 <td>

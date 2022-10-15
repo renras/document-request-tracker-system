@@ -5,6 +5,7 @@ import { FORM_TYPES } from "./FormTypes";
 import { useForm } from "react-hook-form";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../../firebase-config";
+import PropTypes from "prop-types";
 
 const QUANTITIES = [
   {
@@ -17,7 +18,7 @@ const QUANTITIES = [
   },
 ];
 
-const CreateDocument = () => {
+const CreateDocument = ({ userId }) => {
   const [formType, setFormType] = useState(FORM_TYPES[0]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const { register, handleSubmit } = useForm();
@@ -37,6 +38,8 @@ const CreateDocument = () => {
         formType: formType.value,
         purpose: purpose,
         quantity: quantity.value,
+        status: "INCOMING",
+        authorId: userId,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
@@ -130,3 +133,7 @@ const CreateDocument = () => {
 };
 
 export default CreateDocument;
+
+CreateDocument.propTypes = {
+  userId: PropTypes.string,
+};
