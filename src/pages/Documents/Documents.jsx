@@ -1,4 +1,5 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
+import CreateDocumentModal from "./CreateDocumentModal/CreateDocumentModal";
 
 const Documents = () => {
   return (
@@ -7,7 +8,11 @@ const Documents = () => {
         <h1 className="h2">Documents</h1>
 
         <div className="d-flex">
-          <button className="btn btn-dark mt-5 ms-auto">
+          <button
+            className="btn btn-dark mt-5 ms-auto"
+            data-bs-toggle="modal"
+            data-bs-target="#modal"
+          >
             Create a Document
           </button>
         </div>
@@ -30,6 +35,9 @@ const Documents = () => {
           </tbody>
         </table>
       </div>
+
+      {/* modal */}
+      <CreateDocumentModal />
     </SignedInLayout>
   );
 };
