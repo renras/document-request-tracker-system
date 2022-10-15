@@ -19,7 +19,6 @@ const Documents = () => {
     <SignedInLayout>
       <div className="px-5">
         <h1 className="h2">Documents</h1>
-
         <div className="d-flex">
           <button
             className="btn btn-dark mt-5 ms-auto"

@@ -1,18 +1,17 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
+import documentsData from "../../documents.json";
+import AdminDocumentsTable from "../../components/AdminDocumentsTable/AdminDocumentsTable";
 
 const Returned = () => {
+  const documents = documentsData.data.filter(
+    (document) => document.status === "RETURNED"
+  );
+
   return (
     <SignedInLayout>
-      <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <h1 className="h2">Welcome to Returned</h1>
-        <p className="mt-4">I&apos;m sorry but this page is not yet ready!</p>
+      <div className="px-4">
+        <h1 className="h2">Returned</h1>
+        <AdminDocumentsTable documents={documents} />
       </div>
     </SignedInLayout>
   );

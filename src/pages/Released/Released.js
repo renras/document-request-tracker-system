@@ -1,18 +1,17 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
+import documentsData from "../../documents.json";
+import AdminDocumentsTable from "../../components/AdminDocumentsTable/AdminDocumentsTable";
 
 const Released = () => {
+  const documents = documentsData.data.filter(
+    (document) => document.status === "RELEASED"
+  );
+
   return (
     <SignedInLayout>
-      <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <h1 className="h2">Welcome to Reldsfseased</h1>
-        <p className="mt-4">I&apos;m sorry but this page is not yet ready!</p>
+      <div className="px-4">
+        <h1 className="h2">Released</h1>
+        <AdminDocumentsTable documents={documents} />
       </div>
     </SignedInLayout>
   );
