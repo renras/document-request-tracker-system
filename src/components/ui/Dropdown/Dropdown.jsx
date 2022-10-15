@@ -1,6 +1,13 @@
 import PropTypes from "prop-types";
 
-const Dropdown = ({ id, value, options, onChange, className, size = "sm" }) => {
+const Dropdown = ({
+  id,
+  value,
+  options,
+  onChange,
+  className = "",
+  size = "sm",
+}) => {
   return (
     <div className={`dropdown ${className}`}>
       <button

@@ -11,7 +11,7 @@ const Documents = () => {
           <button
             className="btn btn-dark mt-5 ms-auto"
             data-bs-toggle="modal"
-            data-bs-target="#modal"
+            data-bs-target="#create-document-modal"
           >
             Create a Document
           </button>

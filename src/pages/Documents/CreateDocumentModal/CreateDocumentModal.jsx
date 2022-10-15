@@ -1,17 +1,7 @@
 import { useState } from "react";
 import Dropdown from "../../../components/ui/Dropdown/Dropdown";
-
-const FORM_TYPES = [
-  { label: "Choose form type", value: "" },
-  {
-    label: "Form 1",
-    value: "form1",
-  },
-  {
-    label: "Form 2",
-    value: "form2",
-  },
-];
+import Modal from "../../../components/Modal/Modal";
+import { FORM_TYPES } from "./FormTypes";
 
 const QUANTITIES = [
   {
@@ -29,11 +19,13 @@ const CreateRequest = () => {
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
 
   return (
-    <div id="modal" className="modal" tabIndex="-1">
+    <Modal id="create-document-modal" title="Create A Document">
       <form className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Create a Document</h5>
+            <h1 className="modal-title fs-5" id="modal-title">
+              Create a Document
+            </h1>
             <button
               type="button"
               className="btn-close"
@@ -41,8 +33,10 @@ const CreateRequest = () => {
               aria-label="Close"
             ></button>
           </div>
+
           <div className="modal-body">
             {/* title */}
+
             <label className="form-label" htmlFor="title">
               Title
             </label>
@@ -86,12 +80,12 @@ const CreateRequest = () => {
               Close
             </button>
             <button type="button" className="btn btn-dark">
-              Save changes
+              Save Changes
             </button>
           </div>
         </div>
       </form>
-    </div>
+    </Modal>
   );
 };
 
