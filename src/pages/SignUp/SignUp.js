@@ -1,20 +1,41 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase-config";
+import { auth, db } from "../../firebase-config";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
+
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
-    if (data.password !== data.confirmPassword) {
+    const { fullName, email, password, phone, confirmPassword } = data;
+    if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, data.email, data.password);
-      alert("User created successfully");
+      const result = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      await updateProfile(result.user, {
+        displayName: fullName,
+      });
+      await setDoc(doc(db, "users", result.user.uid), {
+        fullName,
+        email,
+        phone,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      });
+      await auth.currentUser.reload();
+      navigate("/documents");
     } catch {
       alert("Failed to create user. Please try again later.");
     }
@@ -28,6 +49,26 @@ const SignUp = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <h1 className="h3">Sign Up</h1>
+
+        {/* full name */}
+        <label className="form-label mt-4" htmlFor="full-name">
+          Full Name
+        </label>
+        <input
+          className="form-control form-control-lg"
+          id="full-name"
+          {...register("fullName", { required: true })}
+        />
+
+        {/* full name */}
+        <label className="form-label mt-4" htmlFor="phone">
+          Phone
+        </label>
+        <input
+          className="form-control form-control-lg"
+          id="phone"
+          {...register("phone", { required: true })}
+        />
 
         {/* email */}
         <label className="form-label mt-4" htmlFor="email">

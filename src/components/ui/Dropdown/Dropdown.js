@@ -1,6 +1,13 @@
 import PropTypes from "prop-types";
 
-const Dropdown = ({ id, value, options, onChange, className, size = "sm" }) => {
+const Dropdown = ({
+  id,
+  value,
+  options,
+  onChange,
+  className = "",
+  size = "sm",
+}) => {
   return (
     <div className={`dropdown ${className}`}>
       <button
@@ -38,7 +45,7 @@ export default Dropdown;
 Dropdown.propTypes = {
   id: PropTypes.string,
   value: PropTypes.object.isRequired,
-  options: PropTypes.object.isRequired,
+  options: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   className: PropTypes.string,
   size: PropTypes.oneOf(["sm", "lg"]),
