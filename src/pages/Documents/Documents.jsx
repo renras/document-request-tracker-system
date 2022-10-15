@@ -1,48 +1,34 @@
-import { useState, useEffect } from "react";
-import { auth } from "../../firebase-config";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 
 const Documents = () => {
-  const [email, setEmail] = useState("");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setEmail(user.email);
-      } else {
-        navigate("/sign-in");
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleSignOut = async () => {
-    try {
-      signOut(auth);
-    } catch {
-      alert("Failed to sign out user. Please try again later.");
-    }
-  };
-
   return (
     <SignedInLayout>
-      <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <h1 className="h2">Welcome {email}!</h1>
-        <p className="mt-4">I&apos;m sorry but this page is not yet ready!</p>
-        <button className="btn btn-dark mt-5" onClick={handleSignOut}>
-          Logout
-        </button>
+      <div className="px-5">
+        <h1 className="h2">Documents</h1>
+
+        <div className="d-flex">
+          <button className="btn btn-dark mt-5 ms-auto">
+            Create a Document
+          </button>
+        </div>
+        <table className="table mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Tracking number</th>
+              <th scope="col">Document</th>
+              <th scope="col">Type</th>
+              <th scope="col">Date Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1143-1145-1482</td>
+              <td>Request for Diploma</td>
+              <td>Diploma with EDUFIED NEW RATE</td>
+              <td>January 7, 1996</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </SignedInLayout>
   );
