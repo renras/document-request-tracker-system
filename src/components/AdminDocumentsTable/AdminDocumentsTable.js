@@ -23,14 +23,14 @@ const Table = ({ documents }) => {
       </thead>
       <tbody>
         {documents.map((document) => {
-          const { id, title, formType, requestedBy, status } = document;
+          const { id, title, formType, author, status } = document;
 
           return (
             <tr key={id}>
               <td>{id}</td>
               <td>{title}</td>
               <td>{formType}</td>
-              <td>{requestedBy}</td>
+              <td>{author.fullName}</td>
               {status === "INCOMING" && (
                 <td>
                   <div className="d-flex gap-2">

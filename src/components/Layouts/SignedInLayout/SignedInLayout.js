@@ -24,7 +24,7 @@ const SignedInLayout = ({ children }) => {
     if (!user && !loading) {
       navigate("/sign-in");
     }
-  }, []);
+  }, [loading, navigate, user]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Failed to load page...</div>;
