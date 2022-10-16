@@ -8,19 +8,29 @@ const Home = () => {
         style={{ maxWidth: "50ch", marginTop: "5rem" }}
         className="w-100 text-center mx-auto"
       >
-        <h1>The UPANG Document Tracking System</h1>
-        <p className="mt-4">
-          The Document Tracking System (DTS) of the University of Pangasinan is
-          an information systems capable of tracking the paper trail of
-          documents created within UP offices.
-        </p>
+        <h1 
+          className="fw-bold"
+          style={{
+            fontSize:'60px', 
+            fontFamily:'Raleway', 
+            color: 'white', 
+            marginTop:'13rem'}}
+            >
+            The UPANG Document Tracking System
+        </h1>
+    
         <div className="d-flex gap-3 mt-5">
-          <Link to="/documents" className="btn btn-dark btn-lg w-100">
+          <Link 
+            to="/documents" 
+            className="btn btn-light btn-lg w-100"
+            style={{ color: 'black'}}
+            >
             Create A Document
           </Link>
           <Link
             to="/track-request"
-            className="btn btn-outline-dark btn-lg w-100"
+            className="btn btn-outline-dark btn-lg w-100 border border-3"
+            style={{ color: 'white'}}
           >
             Track A Document
           </Link>
