@@ -2,8 +2,28 @@ import PropTypes from "prop-types";
 import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
+import Kebab from "../ui/Kebab/Kebab";
 
 const columns = ["Tracking ID", "Document", "Type", "Requested By", "Action"];
+
+const KEBAB_OPTIONS = [
+  {
+    label: "RECEIVED",
+    value: "RECEIVED",
+  },
+  {
+    label: "HOLD",
+    value: "HOLD",
+  },
+  {
+    label: "RETURNED",
+    value: "RETURNED",
+  },
+  {
+    label: "RELEASED",
+    value: "RELEASED",
+  },
+];
 
 const Table = ({ documents }) => {
   const handleAcceptDocument = async (id) => {
@@ -25,6 +45,18 @@ const Table = ({ documents }) => {
       });
     } catch {
       alert("Failed to return document. Please try again later.");
+    }
+  };
+
+  const handleChangeDocumentStatus = async (id, status) => {
+    try {
+      const docRef = doc(db, "documents", id);
+      await updateDoc(docRef, {
+        status: status,
+      });
+    } catch (e) {
+      console.error(e);
+      alert("Failed to update document status. Please try again later.");
     }
   };
 
@@ -65,6 +97,18 @@ const Table = ({ documents }) => {
                       <AiFillCloseCircle size={24} />
                     </button>
                   </div>
+                </td>
+              )}
+
+              {status !== "INCOMING" && (
+                <td>
+                  <Kebab
+                    id="document menu"
+                    onChange={(option) =>
+                      handleChangeDocumentStatus(id, option.value)
+                    }
+                    options={KEBAB_OPTIONS}
+                  />
                 </td>
               )}
             </tr>
