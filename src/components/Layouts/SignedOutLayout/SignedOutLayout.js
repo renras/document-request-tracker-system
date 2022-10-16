@@ -22,7 +22,7 @@ const SignedOutLayout = ({ children }) => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [location.pathname, navigate]);
 
   return (
     <div className={styles.container}>
