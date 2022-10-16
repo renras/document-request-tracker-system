@@ -45,12 +45,12 @@ const SideBar = () => {
       icon: <BsBoxArrowUp color="#212529" size={20} />,
     },
     {
-      title: "/trackdocuments",
-      name: "Track Documents",
+      href: "/track-document",
+      name: "Track_Documents",
       icon: <HiDocumentSearch color="#212529" size={20} />,
     },
     {
-      title: "/profile",
+      href: "/profile",
       name: "Profile",
       icon: <FaUserAlt color="#212529" size={20} />,
     },
