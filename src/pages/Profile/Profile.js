@@ -1,12 +1,33 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 import { useForm } from "react-hook-form";
+import { auth, db } from "../../firebase-config";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { updateProfile } from "firebase/auth";
 
 const Profile = () => {
   const { register, handleSubmit } = useForm();
 
   // todo: logic
   // this should update the current user profile
-  const onSubmit = async (data) => console.log(data);
+
+  const onSubmit = async (data) => {
+    try {
+      await updateProfile(auth.currentUser, {
+        displayName: data.fullName,
+      });
+      await setDoc(doc(db, "users", auth.currentUser.uid), {
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        aboutMe: data.aboutMe,
+        updatedAt: Timestamp.now(),
+      });
+      await auth.currentUser.reload();
+      alert("Profile updated successfully");
+    } catch {
+      alert("Failed to update profile. Please try again later.");
+    }
+  };
 
   return (
     <SignedInLayout>
