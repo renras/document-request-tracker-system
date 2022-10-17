@@ -39,13 +39,13 @@ const TrackDocument = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
           <button
-            className="btn btn-primary"
+            className="btn btn-success"
             onClick={() => handleTrackDocument()}
           >
             Track
           </button>
         </div>
-        <table className="table mt-3">
+        <table className="table mt-3 table-success">
           <thead>
             <tr>
               <th scope="col">Tracking ID</th>

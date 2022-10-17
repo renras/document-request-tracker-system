@@ -62,7 +62,7 @@ const ContactUs = () => {
           />
 
           <div className="d-flex mt-5">
-            <button className="btn btn-primary ms-auto">Submit</button>
+            <button className="btn btn-success ms-auto">Submit</button>
           </div>
         </form>
       </div>

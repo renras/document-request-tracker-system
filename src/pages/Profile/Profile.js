@@ -122,7 +122,7 @@ const Profile = () => {
           />
 
           <div className="d-flex mt-4">
-            <button className="btn btn-primary ms-auto">Save changes</button>
+            <button className="btn btn-success ms-auto">Save changes</button>
           </div>
         </form>
       </div>

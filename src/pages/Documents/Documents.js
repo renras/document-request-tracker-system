@@ -29,7 +29,7 @@ const Documents = () => {
         <h1 className="h2">Documents</h1>
         <div className="d-flex">
           <button
-            className="btn btn-primary mt-5 ms-auto"
+            className="btn btn-success mt-5 ms-auto"
             data-bs-toggle="modal"
             data-bs-target="#create-document-modal"
           >
@@ -38,7 +38,7 @@ const Documents = () => {
         </div>
         <table className="table mt-3">
           <thead>
-            <tr>
+            <tr className="table-success">
               {columns.map((column, index) => (
                 <th scope="col" key={index}>
                   {column}
