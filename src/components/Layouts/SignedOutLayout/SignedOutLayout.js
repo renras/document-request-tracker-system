@@ -49,7 +49,7 @@ const SignedOutLayout = ({ children }) => {
               </Link>
             </li>
           </ul>
-          <Link to="/sign-in" className="btn btn-dark">
+          <Link to="/sign-in" className="btn btn-secondary">
             Sign In
           </Link>
         </div>

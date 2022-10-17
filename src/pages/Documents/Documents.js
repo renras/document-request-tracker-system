@@ -29,7 +29,7 @@ const Documents = () => {
         <h1 className="h2">Documents</h1>
         <div className="d-flex">
           <button
-            className="btn btn-dark mt-5 ms-auto"
+            className="btn btn-primary mt-5 ms-auto"
             data-bs-toggle="modal"
             data-bs-target="#create-document-modal"
           >

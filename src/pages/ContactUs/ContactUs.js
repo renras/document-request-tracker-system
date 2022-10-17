@@ -23,10 +23,10 @@ const ContactUs = () => {
     <SignedOutLayout>
       <div className="container-sm">
         <form
-          className="mw-sm  px-4 py-5 mt-5 mx-auto border rounded shadow-sm"
+          className="mw-sm  px-4 py-5 mt-5 mx-auto border rounded shadow-sm bg-light"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <h2 className="h3">Contact us</h2>
+          <h2 className="h3 ">Contact us</h2>
 
           {/* name */}
           <label className="form-label mt-4" htmlFor="name">
@@ -62,7 +62,7 @@ const ContactUs = () => {
           />
 
           <div className="d-flex mt-5">
-            <button className="btn btn-dark ms-auto">Submit</button>
+            <button className="btn btn-primary ms-auto">Submit</button>
           </div>
         </form>
       </div>

@@ -103,9 +103,7 @@ const SignUp = () => {
           {...register("confirmPassword", { required: true })}
         />
 
-        <button className="btn btn-primary btn-lg btn-dark w-100 mt-5">
-          Sign Up
-        </button>
+        <button className="btn btn-primary btn-lg w-100 mt-5">Sign Up</button>
 
         {/* sign up link */}
         <div className="text-center mt-4">
