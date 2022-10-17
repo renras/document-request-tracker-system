@@ -1,25 +1,60 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 import { useForm } from "react-hook-form";
 import { auth, db } from "../../firebase-config";
-import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { doc, updateDoc, Timestamp, getDoc } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
+import { useState, useEffect } from "react";
 
 const Profile = () => {
   const { register, handleSubmit } = useForm();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // todo: logic
-  // this should update the current user profile
+  useEffect(() => {
+    let mounted = true;
+
+    if (!auth.currentUser.uid) return;
+    if (mounted) {
+      (async () => {
+        try {
+          const docRef = doc(db, "users", auth.currentUser.uid);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists) {
+            setUser(docSnap.data());
+          } else {
+            throw new Error("Failed to fetch user data");
+          }
+        } catch (error) {
+          setError(error);
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Failed to load page...</div>;
+
+  const { fullName, phone, email, aboutMe } = user;
 
   const onSubmit = async (data) => {
+    const { fullName, phone, aboutMe } = data;
+
     try {
       await updateProfile(auth.currentUser, {
-        displayName: data.fullName,
+        displayName: fullName,
       });
-      await setDoc(doc(db, "users", auth.currentUser.uid), {
-        fullName: data.fullName,
-        email: data.email,
-        phone: data.phone,
-        aboutMe: data.aboutMe,
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        fullName: fullName,
+        phone: phone,
+        aboutMe: aboutMe,
         updatedAt: Timestamp.now(),
       });
       await auth.currentUser.reload();
@@ -43,6 +78,7 @@ const Profile = () => {
             className="form-control"
             type="text"
             id="full-name"
+            defaultValue={fullName}
             {...register("fullName", { required: true })}
           />
 
@@ -53,18 +89,24 @@ const Profile = () => {
           <input
             className="form-control"
             id="phone"
+            defaultValue={phone}
             {...register("phone", { required: true })}
           />
 
           {/* email */}
-          <label className="form-label mt-3" htmlFor="email">
+          <label
+            className="form-label mt-3"
+            htmlFor="email"
+            style={{ pointerEvents: "none" }}
+          >
             Email
           </label>
           <input
             className="form-control"
             type="text"
             id="email"
-            {...register("email", { required: true })}
+            readOnly
+            defaultValue={email}
           />
 
           {/* about me */}
@@ -75,6 +117,7 @@ const Profile = () => {
             className="form-control"
             id="aboutme"
             rows="5"
+            defaultValue={aboutMe}
             {...register("aboutMe", { required: true })}
           />
 
