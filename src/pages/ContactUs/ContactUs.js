@@ -23,7 +23,7 @@ const ContactUs = () => {
     <SignedOutLayout>
       <div className="container-sm">
         <form
-          className="mw-sm  px-4 py-5 mt-5 mx-auto border rounded shadow-sm"
+          className="mw-sm  px-4 py-5 mt-5 mx-auto border rounded shadow-sm bg-light"
           onSubmit={handleSubmit(onSubmit)}
         >
           <h2 className="h3 ">Contact us</h2>

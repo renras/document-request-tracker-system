@@ -5,22 +5,20 @@ const Home = () => {
   return (
     <SignedOutLayout>
       <div
-        style={{ maxWidth: "50ch", marginTop: "5rem" }}
+        style={{ maxWidth: "80ch", marginTop: "10rem" }}
         className="w-100 text-center mx-auto"
       >
-        <h1>The UPANG Document Tracking System</h1>
-        <p className="mt-4">
-          The Document Tracking System (DTS) of the University of Pangasinan is
-          an information systems capable of tracking the paper trail of
-          documents created within UP offices.
-        </p>
-        <div className="d-flex gap-3 mt-5">
-          <Link to="/documents" className="btn btn-dark btn-lg w-100">
+        <h1 className="text-light" style={{ fontSize: "60px" }}>
+          The UPANG Document Tracking System
+        </h1>
+
+        <div className="d-flex justify-content-center gap-4 mt-5">
+          <Link to="/documents" className="btn btn-light btn-lg fw-semibold">
             Create A Document
           </Link>
           <Link
             to="/track-request"
-            className="btn btn-outline-dark btn-lg w-100"
+            className="btn btn-outline-light btn-lg fw-semibold"
           >
             Track A Document
           </Link>
