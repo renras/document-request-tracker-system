@@ -30,7 +30,7 @@ const TrackDocument = () => {
     <SignedInLayout>
       <div className="px-4">
         <h1 className="h2 mt-5">Track a document</h1>
-        <div className="d-flex gap-2 mt-5">
+        <div className="d-flex gap-3 mt-5">
           <input
             type="text"
             className="form-control"
@@ -39,7 +39,7 @@ const TrackDocument = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
           <button
-            className="btn btn-dark"
+            className="btn btn-primary"
             onClick={() => handleTrackDocument()}
           >
             Track

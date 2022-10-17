@@ -37,7 +37,10 @@ const SignedOutTrackRequest = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button className="btn btn-dark" onClick={() => handleTrackDocument()}>
+        <button
+          className="btn btn-primary"
+          onClick={() => handleTrackDocument()}
+        >
           Track
         </button>
       </div>

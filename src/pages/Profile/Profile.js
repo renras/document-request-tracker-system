@@ -1,49 +1,32 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
-import { db } from "../../firebase-config";
-import { addDoc, collection } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 
 const Profile = () => {
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = async (data) => {
-    try {
-      await addDoc(collection(db, "profile"), {
-        name: data.fullname,
-        lname: data.phone,
-        email: data.email,
-        aboutme: data.aboutme,
-      });
-      alert("Profile updated successfully");
-    } catch {
-      alert("Failed to update profile. Please try again later.");
-    }
-  };
+  // todo: logic
+  // this should update the current user profile
+  const onSubmit = async (data) => console.log(data);
 
   return (
     <SignedInLayout>
-      <div className="container-sm">
-        <form
-          className="mw-sm  px-5 py-5 mt-5 mx-auto"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className="d-flex mt-5">
-            <h2 className="h3">BASIC INFO</h2>
-            <button className="btn btn-success ms-auto">Save changes</button>
-          </div>
+      <div className="p-5">
+        <form className="mw-md mx-auto" onSubmit={handleSubmit(onSubmit)}>
+          <h2 className="h3">Profile</h2>
 
-          {/* firstname and last name */}
-          <label className="form-label mt-4" htmlFor="fname">
+          {/* fullname */}
+          <label className="form-label mt-4" htmlFor="full-name">
             Full Name
           </label>
           <input
             className="form-control"
             type="text"
             id="full-name"
-            {...register("fname", { required: true })}
+            {...register("fullName", { required: true })}
           />
+
           {/* phone*/}
-          <label className="form-label mt-4" htmlFor="phone">
+          <label className="form-label mt-3" htmlFor="phone">
             Phone
           </label>
           <input
@@ -64,15 +47,19 @@ const Profile = () => {
           />
 
           {/* about me */}
-          <label className="form-label mt-3 h5" htmlFor="aboutme">
-            About me
+          <label className="form-label mt-4" htmlFor="about-me">
+            About Me
           </label>
           <textarea
             className="form-control"
             id="aboutme"
             rows="5"
-            {...register("aboutme", { required: true })}
+            {...register("aboutMe", { required: true })}
           />
+
+          <div className="d-flex mt-4">
+            <button className="btn btn-primary ms-auto">Save changes</button>
+          </div>
         </form>
       </div>
     </SignedInLayout>
