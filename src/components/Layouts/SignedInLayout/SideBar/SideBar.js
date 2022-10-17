@@ -9,7 +9,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import img1 from '../../../../assets/images/unilogo.png';
+import img1 from "../../../../assets/images/unilogo.png";
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -18,54 +18,57 @@ const SideBar = () => {
     {
       href: "/documents",
       name: "Documents",
-      icon: <FaFileAlt color="#212529" size={20} />,
+      icon: <FaFileAlt color="#fff" size={20} />,
     },
     {
       href: "/incoming",
       name: "Incoming",
-      icon: <HiDownload color="#212529" size={20} />,
+      icon: <HiDownload color="#fff" size={20} />,
     },
     {
       href: "/received",
       name: "Received",
-      icon: <FaEnvelope color="#212529" size={20} />,
+      icon: <FaEnvelope color="#fff" size={20} />,
     },
     {
       href: "/hold",
       name: "Hold",
-      icon: <FaLightbulb color="#212529" size={20} />,
+      icon: <FaLightbulb color="#fff" size={20} />,
     },
     {
       href: "/returned",
       name: "Returned",
-      icon: <FaExchangeAlt color="#212529" size={20} />,
+      icon: <FaExchangeAlt color="#fff" size={20} />,
     },
     {
       href: "/released",
       name: "Released",
-      icon: <BsBoxArrowUp color="#212529" size={20} />,
+      icon: <BsBoxArrowUp color="#fff" size={20} />,
     },
     {
       href: "/track-document",
       name: "Track Documents",
-      icon: <HiDocumentSearch color="#212529" size={20} />,
+      icon: <HiDocumentSearch color="#fff" size={20} />,
     },
     {
       href: "/profile",
       name: "Profile",
-      icon: <FaUserAlt color="#212529" size={20} />,
+      icon: <FaUserAlt color="#fff" size={20} />,
     },
   ];
   return (
     <div
-      style={{ width: isOpen ? "256px" : "64px", height: "100vh" }}
+      style={{
+        width: isOpen ? "256px" : "64px",
+        height: "100vh",
+      }}
       className={`bg-success text-white border shadow-sm px-4 py-5 d-flex flex-column  ${
         !isOpen ? "align-items-center" : ""
       }`}
     >
       <div className="d-flex gap-3 align-items-center">
-        <button onClick={toggle} style={{ cursor: "pointer" }} className={'bg-success text-white'}>
-          <FaBars color="#212529" size={24} />
+        <button onClick={toggle} style={{ cursor: "pointer" }}>
+          <FaBars color="#fff" size={24} />
         </button>
         <h1
           style={{

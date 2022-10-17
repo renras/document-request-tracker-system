@@ -34,20 +34,22 @@ const SignedInLayout = ({ children }) => {
       <SideBar />
       <div className={styles.content}>
         <header className="navbar py-4 px-5">
-          <div className={styles.user}>
-            <p>Welcome, {user.displayName || user.email}!</p>
+          <div className="d-flex align-items-center gap-4 ms-auto">
+            <p style={{ margin: 0 }}>
+              Welcome, {user.displayName || user.email}!
+            </p>
+            <button
+              className="btn btn-outline-danger"
+              onClick={() => handleSignOut()}
+            >
+              Logout
+            </button>
           </div>
-          <button
-            className="btn btn-dark"
-            onClick={() => handleSignOut()}
-          >
-            Logout
-          </button>
         </header>
 
         <main>{children}</main>
       </div>
-      </div>
+    </div>
   );
 };
 

@@ -117,12 +117,12 @@ const CreateDocument = ({ userId }) => {
           <div className="modal-footer">
             <button
               type="button"
-              className="btn btn-outline-secondary"
+              className="btn btn-outline-success"
               data-bs-dismiss="modal"
             >
               Close
             </button>
-            <button type="submit" className="btn btn-secondary">
+            <button type="submit" className="btn btn-success">
               Save Changes
             </button>
           </div>
