@@ -32,14 +32,13 @@ const SignedInLayout = ({ children }) => {
   return (
     <div className={styles.container}>
       <SideBar />
-
       <div className={styles.content}>
         <header className="navbar py-4 px-5">
           <div className={styles.user}>
             <p>Welcome, {user.displayName || user.email}!</p>
           </div>
           <button
-            className="btn btn-outline-danger"
+            className="btn btn-dark"
             onClick={() => handleSignOut()}
           >
             Logout
@@ -48,7 +47,7 @@ const SignedInLayout = ({ children }) => {
 
         <main>{children}</main>
       </div>
-    </div>
+      </div>
   );
 };
 

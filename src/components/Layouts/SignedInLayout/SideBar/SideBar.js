@@ -9,6 +9,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import img1 from '../../../../assets/images/unilogo.png';
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -46,7 +47,7 @@ const SideBar = () => {
     },
     {
       href: "/track-document",
-      name: "Track_Documents",
+      name: "Track Documents",
       icon: <HiDocumentSearch color="#212529" size={20} />,
     },
     {
@@ -58,12 +59,12 @@ const SideBar = () => {
   return (
     <div
       style={{ width: isOpen ? "256px" : "64px", height: "100vh" }}
-      className={`bg-light border shadow-sm px-4 py-5 d-flex flex-column  ${
+      className={`bg-success text-white border shadow-sm px-4 py-5 d-flex flex-column  ${
         !isOpen ? "align-items-center" : ""
       }`}
     >
       <div className="d-flex gap-3 align-items-center">
-        <button onClick={toggle} style={{ cursor: "pointer" }}>
+        <button onClick={toggle} style={{ cursor: "pointer" }} className={'bg-success text-white'}>
           <FaBars color="#212529" size={24} />
         </button>
         <h1
@@ -73,7 +74,7 @@ const SideBar = () => {
           }}
           className="navbar-brand fs-3"
         >
-          UPANG
+          <img src={img1} alt="" height="55" />
         </h1>
       </div>
 
