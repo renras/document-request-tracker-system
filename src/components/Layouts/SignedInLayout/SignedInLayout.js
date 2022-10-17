@@ -38,7 +38,10 @@ const SignedInLayout = ({ children }) => {
           <div className={styles.user}>
             <p>Welcome, {user.displayName || user.email}!</p>
           </div>
-          <button className="btn btn-dark" onClick={() => handleSignOut()}>
+          <button
+            className="btn btn-outline-danger"
+            onClick={() => handleSignOut()}
+          >
             Logout
           </button>
         </header>
