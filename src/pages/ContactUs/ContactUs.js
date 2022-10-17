@@ -9,8 +9,10 @@ const ContactUs = () => {
   const onSubmit = async (data) => {
     try {
       await addDoc(collection(db, "messages"), {
-        name: data.name,
+        firstname: data.firstname,
+        lastname: data.lastname,
         email: data.email,
+        topic: data.topic,
         message: data.message,
       });
       alert("Message sent successfully");
@@ -28,16 +30,58 @@ const ContactUs = () => {
         >
           <h2 className="h3 ">Contact us</h2>
 
-          {/* name */}
-          <label className="form-label mt-4" htmlFor="name">
-            Name
-          </label>
-          <input
-            className="form-control"
-            type="text"
-            id="name"
-            {...register("name", { required: true })}
-          />
+          {/* add first name and last name allign together */}
+          <div className="row">
+            <div className="col">
+              <label className="form-label mt-3" htmlFor="firstname">
+                First Name
+              </label>
+              <input
+                className="form-control"
+                type="text"
+                id="firstname"
+                {...register("fistname", { required: true })}
+              />
+            </div>
+            <div className="col">
+              <label className="form-label mt-3" htmlFor="lastname">
+                Last Name
+              </label>
+              <input
+                className="form-control"
+                type="text"
+                id="lastname"
+                {...register("lastname", { required: true })}
+              />
+            </div>
+          </div>
+
+          {/* add a drop down the title is topic */}
+          <div className="row">
+            <div className="col">
+              <label className="form-label mt-3" htmlFor="topic">
+                Topic
+              </label>
+              <select
+                className="form-select"
+                id="topic"
+                {...register("topic", { required: true })}
+              >
+                <option value="#">Choose one from the selection</option>
+                <option value="Schools and Courses">Schools & Courses</option>
+                <option value="Tuition Fees & Payment Options">
+                  Tuition Fees & Payment Options
+                </option>
+                <option value="Scholarship Programs">
+                  Scholarship Programs
+                </option>
+                <option value="Board Exam Performance">
+                  Board Exam Performance
+                </option>
+                <option value="Employability Rates">Employability Rates</option>
+              </select>
+            </div>
+          </div>
 
           {/* email */}
           <label className="form-label mt-3" htmlFor="email">
