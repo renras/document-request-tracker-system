@@ -44,7 +44,7 @@ const SignUp = () => {
   return (
     <SignedOutLayout>
       <form
-        className="mw-sm border w-100 shadow-sm rounded py-5 px-4 mx-auto"
+        className="mw-sm border w-100 shadow-sm rounded py-5 px-4 mx-auto bg-light"
         style={{ marginTop: "5rem" }}
         onSubmit={handleSubmit(onSubmit)}
       >
