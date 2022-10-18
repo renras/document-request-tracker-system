@@ -30,7 +30,7 @@ const ContactUs = () => {
         >
           <h2 className="h3 ">Contact us</h2>
 
-          {/* add first name and last name allign together */}
+          {/* add first name and last name */}
           <div className="row">
             <div className="col">
               <label className="form-label mt-3" htmlFor="firstname">
@@ -56,7 +56,7 @@ const ContactUs = () => {
             </div>
           </div>
 
-          {/* add a drop down the title is topic */}
+          {/* Title */}
           <div className="row">
             <div className="col">
               <label className="form-label mt-3" htmlFor="topic">
