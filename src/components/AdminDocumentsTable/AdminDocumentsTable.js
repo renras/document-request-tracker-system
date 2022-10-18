@@ -63,7 +63,7 @@ const Table = ({ documents }) => {
   return (
     <table className="table mt-5 align-middle">
       <thead>
-        <tr>
+        <tr className="table-success">
           {columns.map((column, index) => (
             <th scope="col" key={index}>
               {column}

@@ -2,20 +2,17 @@ import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutL
 import { db } from "../../firebase-config";
 import { addDoc, collection } from "firebase/firestore";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const ContactUs = () => {
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
-      await addDoc(collection(db, "messages"), {
-        firstname: data.firstname,
-        lastname: data.lastname,
-        email: data.email,
-        topic: data.topic,
-        message: data.message,
-      });
+      await addDoc(collection(db, "messages"), data);
       alert("Message sent successfully");
+      navigate(0);
     } catch {
       alert("Failed to send message. Please try again later.");
     }
@@ -56,33 +53,6 @@ const ContactUs = () => {
             </div>
           </div>
 
-          {/* Title */}
-          <div className="row">
-            <div className="col">
-              <label className="form-label mt-3" htmlFor="topic">
-                Topic
-              </label>
-              <select
-                className="form-select"
-                id="topic"
-                {...register("topic", { required: true })}
-              >
-                <option value="#">Choose one from the selection</option>
-                <option value="Schools and Courses">Schools & Courses</option>
-                <option value="Tuition Fees & Payment Options">
-                  Tuition Fees & Payment Options
-                </option>
-                <option value="Scholarship Programs">
-                  Scholarship Programs
-                </option>
-                <option value="Board Exam Performance">
-                  Board Exam Performance
-                </option>
-                <option value="Employability Rates">Employability Rates</option>
-              </select>
-            </div>
-          </div>
-
           {/* email */}
           <label className="form-label mt-3" htmlFor="email">
             Email
@@ -92,6 +62,16 @@ const ContactUs = () => {
             type="email"
             id="email"
             {...register("email", { required: true })}
+          />
+
+          {/* Title */}
+          <label className="form-label mt-3" htmlFor="topic">
+            Topic
+          </label>
+          <input
+            className="form-control"
+            id="topic"
+            {...register("topic", { required: true })}
           />
 
           {/* message */}
@@ -106,7 +86,7 @@ const ContactUs = () => {
           />
 
           <div className="d-flex mt-5">
-            <button className="btn btn-primary ms-auto">Submit</button>
+            <button className="btn btn-success ms-auto">Submit</button>
           </div>
         </form>
       </div>

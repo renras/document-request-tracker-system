@@ -21,7 +21,7 @@ const SignIn = () => {
   return (
     <SignedOutLayout>
       <form
-        className="mw-sm border w-100 shadow-sm rounded py-5 px-4 mx-auto"
+        className="mw-sm border w-100 shadow-sm rounded py-5 px-4 mx-auto bg-light"
         style={{ marginTop: "5rem" }}
         onSubmit={handleSubmit(onSubmit)}
       >
@@ -48,7 +48,7 @@ const SignIn = () => {
           type="password"
           {...register("password", { required: true })}
         />
-        <button className="btn btn-primary btn-lg w-100 mt-5">Sign In</button>
+        <button className="btn btn-success btn-lg w-100 mt-5">Sign In</button>
 
         {/* sign up link */}
         <div className="text-center mt-4">
