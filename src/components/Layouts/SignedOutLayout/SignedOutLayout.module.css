@@ -2,11 +2,18 @@
   min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr;
+  background-image: url(https://up.phinma.edu.ph/wp-content/uploads/2020/10/upang_banner_767.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .link {
   text-decoration: none;
   color: rgb(33, 37, 41);
+}
+
+img {
+  width: auto;
 }
 
 .link:hover {

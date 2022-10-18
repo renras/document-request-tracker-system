@@ -1,18 +1,17 @@
 import PropTypes from "prop-types";
+import { BiMenu } from "react-icons/bi";
 
-const Dropdown = ({ id, value, options, onChange, className, size = "sm" }) => {
+const Kebab = ({ id, options, onChange, className = "" }) => {
   return (
     <div className={`dropdown ${className}`}>
       <button
         id={id}
-        className={`form-control ${
-          size === "lg" ? "form-control-lg" : ""
-        } d-flex justify-content-between align-items-center dropdown-toggle`}
+        className={`btn btn-sm  btn-light d-flex justify-content-between align-items-center`}
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        {value.label}
+        <BiMenu size={24} />
       </button>
       <ul className="dropdown-menu w-100">
         {options.map((option) => {
@@ -22,6 +21,7 @@ const Dropdown = ({ id, value, options, onChange, className, size = "sm" }) => {
                 className="dropdown-item"
                 key={option.value}
                 onClick={() => onChange(option)}
+                style={{ cursor: "pointer" }}
               >
                 {option.label}
               </li>
@@ -33,13 +33,11 @@ const Dropdown = ({ id, value, options, onChange, className, size = "sm" }) => {
   );
 };
 
-export default Dropdown;
+export default Kebab;
 
-Dropdown.propTypes = {
+Kebab.propTypes = {
   id: PropTypes.string,
-  value: PropTypes.object.isRequired,
-  options: PropTypes.object.isRequired,
+  options: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   className: PropTypes.string,
-  size: PropTypes.oneOf(["sm", "lg"]),
 };
