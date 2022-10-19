@@ -64,7 +64,7 @@ const Documents = () => {
       </div>
 
       {/* modal */}
-      <CreateDocumentModal userId={userData.uid} />
+      {userData?.uid && <CreateDocumentModal userId={userData.uid} />}
     </SignedInLayout>
   );
 };
