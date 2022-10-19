@@ -12,6 +12,7 @@ import Released from "./pages/Released/Released";
 import Returned from "./pages/Returned/Returned";
 import TrackDocument from "./pages/TrackDocument/TrackDocument";
 import Profile from "./pages/Profile/Profile";
+import Reset from "./pages/Reset/Reset";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
       <Route path="track-document" element={<TrackDocument />} />
       <Route path="profile" element={<Profile />} />
       <Route path="returned" element={<Returned />} />
+      <Route path="reset" element={<Reset />} />
     </Routes>
   );
 }
