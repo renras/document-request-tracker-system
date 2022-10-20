@@ -4,7 +4,6 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
 import { useNavigate } from "react-router-dom";
-
 const SignIn = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
@@ -48,7 +47,18 @@ const SignIn = () => {
           type="password"
           {...register("password", { required: true })}
         />
-        <button className="btn btn-success btn-lg w-100 mt-5">Sign In</button>
+
+        {/*add sign in button */}
+        <div className="text-center mt-4">
+          <button className="btn btn-success btn-lg w-100 mt-5">Sign In</button>
+        </div>
+
+        {/*link to reset.js */}
+        <div className="d-flex">
+          <Link to="/reset" className="text-decoration-none ms-auto">
+            <p className=" mt-3">Forgot your password?</p>
+          </Link>
+        </div>
 
         {/* sign up link */}
         <div className="text-center mt-4">
