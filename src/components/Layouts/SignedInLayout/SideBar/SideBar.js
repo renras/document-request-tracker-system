@@ -10,9 +10,16 @@ import { FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import img1 from "../../../../assets/images/unilogo.png";
+import { doc } from "firebase/firestore";
+import { db, auth } from "../../../../firebase-config";
+import { useDocument } from "react-firebase-hooks/firestore";
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const [userDoc, userLoading, userError] = useDocument(
+    doc(db, "users", auth.currentUser.uid)
+  );
+
   const toggle = () => setIsOpen(!isOpen);
   const menuItem = [
     {
@@ -24,26 +31,31 @@ const SideBar = () => {
       href: "/incoming",
       name: "Incoming",
       icon: <HiDownload color="#fff" size={20} />,
+      role: "ADMIN",
     },
     {
       href: "/received",
       name: "Received",
       icon: <FaEnvelope color="#fff" size={20} />,
+      role: "ADMIN",
     },
     {
       href: "/hold",
       name: "Hold",
       icon: <FaLightbulb color="#fff" size={20} />,
+      role: "ADMIN",
     },
     {
       href: "/returned",
       name: "Returned",
       icon: <FaExchangeAlt color="#fff" size={20} />,
+      role: "ADMIN",
     },
     {
       href: "/released",
       name: "Released",
       icon: <BsBoxArrowUp color="#fff" size={20} />,
+      role: "ADMIN",
     },
     {
       href: "/track-document",
@@ -81,16 +93,23 @@ const SideBar = () => {
         </h1>
       </div>
 
-      <ul className="navbar-nav mt-5">
-        {menuItem.map((item, index) => (
-          <li key={index} className={`nav-item ${!isOpen ? "py-2" : ""}`}>
-            <Link to={item.href} className="nav-link d-flex gap-3">
-              <div>{item.icon}</div>
-              {isOpen && <p>{item.name}</p>}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {userDoc && !userLoading && !userError && (
+        <ul className="navbar-nav mt-5">
+          {menuItem.map((item, index) => {
+            if (item.role === "ADMIN" && userDoc.data().role !== "ADMIN")
+              return null;
+
+            return (
+              <li key={index} className={`nav-item ${!isOpen ? "py-2" : ""}`}>
+                <Link to={item.href} className="nav-link d-flex gap-3">
+                  <div>{item.icon}</div>
+                  {isOpen && <p>{item.name}</p>}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 };

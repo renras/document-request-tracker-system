@@ -4,11 +4,12 @@ import { auth, db } from "../../firebase-config";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
-
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const SignUp = () => {
   const { register, handleSubmit } = useForm();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
@@ -19,6 +20,7 @@ const SignUp = () => {
     }
 
     try {
+      setLoading(true);
       const result = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -33,11 +35,14 @@ const SignUp = () => {
         phone,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
+        role: "MEMBER",
       });
       await auth.currentUser.reload();
       navigate("/documents");
     } catch {
       alert("Failed to create user. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,7 +108,12 @@ const SignUp = () => {
           {...register("confirmPassword", { required: true })}
         />
 
-        <button className="btn btn-success btn-lg w-100 mt-5">Sign Up</button>
+        <button
+          className="btn btn-success btn-lg w-100 mt-5"
+          disabled={loading}
+        >
+          Sign Up
+        </button>
 
         {/* sign up link */}
         <div className="text-center mt-4">
