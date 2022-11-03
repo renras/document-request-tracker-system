@@ -1,13 +1,14 @@
 import { useState, useRef } from "react";
 import Dropdown from "../../../components/ui/Dropdown/Dropdown";
 import Modal from "../../../components/Modal/Modal";
-import { FORM_TYPES } from "./FormTypes";
-import { DOCUMENT_TYPES } from "./DocumentType";
-//import { PURPOSE } from "./Purpose";
+import { FORM_TYPES } from "./formTypes";
+import { DOCUMENT_TYPES } from "./documentTypes";
+import { PURPOSES } from "./purpose";
 import { useForm } from "react-hook-form";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 //import firebase from "firebase/compat/app";
 //import "firebase/compat/storage";
 //export const storage = firebase.storage();
@@ -24,9 +25,10 @@ const CreateDocument = ({ userId }) => {
   const [formType, setFormType] = useState(FORM_TYPES[0]);
   const [documentType, setDocumentType] = useState(DOCUMENT_TYPES[0]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
-  //const [purpose, setPurpose] = useState(PURPOSE[0]);
-  const { register, handleSubmit } = useForm();
+  const [purpose, setPurpose] = useState(PURPOSES[0]);
+  const { handleSubmit } = useForm();
   const closeButton = useRef(null);
+  const navigate = useNavigate();
   // const [file, setFile] = useState(null);
   //const [url, setURL] = useState("");
 
@@ -63,9 +65,7 @@ const CreateDocument = ({ userId }) => {
   };
   */
 
-  const onSubmit = async (data) => {
-    const { purpose } = data;
-
+  const onSubmit = async () => {
     if (!formType.value) {
       alert("Please select a form type");
       return;
@@ -81,26 +81,24 @@ const CreateDocument = ({ userId }) => {
       return;
     }
 
-    if (!purpose) {
+    if (!purpose.value) {
       alert("Please select a purpose");
       return;
     }
-
-   
 
     try {
       await addDoc(collection(db, "documents"), {
         formType: formType.value,
         documentType: documentType.value,
         quantity: quantity.value,
-        purpose: purpose,
-        //image: url,
+        purpose: purpose.value,
         status: "INCOMING",
         authorId: userId,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
-      closeButton.current.click();
+
+      navigate(0);
     } catch (e) {
       alert("Failed to create document. Please try again later.");
     }
@@ -163,13 +161,15 @@ const CreateDocument = ({ userId }) => {
             <label htmlFor="purpose" className="form-label mt-3">
               Purpose
             </label>
-            <textarea
+            <Dropdown
               id="purpose"
-              className="form-control"
-              {...register("purpose", { required: true })}
+              value={purpose}
+              options={PURPOSES}
+              onChange={(option) => setPurpose(option)}
             />
+          </div>
 
-            {/* file upload 
+          {/* file upload 
             <label htmlFor="file" className="form-label mt-3">
               Upload File
             </label>
@@ -181,7 +181,7 @@ const CreateDocument = ({ userId }) => {
             />
             <button onClick={handleUpload}>Upload</button>
   */}
-          </div>
+
           <div className="modal-footer">
             <button
               type="button"

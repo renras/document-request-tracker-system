@@ -68,6 +68,7 @@ const SideBar = () => {
       icon: <FaUserAlt color="#fff" size={20} />,
     },
   ];
+
   return (
     <div
       style={{
@@ -96,7 +97,11 @@ const SideBar = () => {
       {userDoc && !userLoading && !userError && (
         <ul className="navbar-nav mt-5">
           {menuItem.map((item, index) => {
-            if (item.role === "ADMIN" && userDoc.data().role !== "ADMIN")
+            if (
+              item.role === "ADMIN" &&
+              userDoc.data() &&
+              userDoc.data().role !== "ADMIN"
+            )
               return null;
 
             return (

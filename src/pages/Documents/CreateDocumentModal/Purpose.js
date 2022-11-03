@@ -1,4 +1,4 @@
-export const PURPOSE = [
+export const PURPOSES = [
   { label: "Choose purpose", value: "" },
   {
     label: "For 4ps",
