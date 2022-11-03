@@ -6,7 +6,14 @@ import { db, auth } from "../../firebase-config";
 import { format } from "date-fns";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-const columns = ["Tracking Number", "Document", "Type", "Date Created"];
+const columns = [
+  "Tracking ID",
+  "Form Type",
+  "Document Type",
+  "Purpose",
+  "Image",
+  "Date Created",
+];
 
 const Documents = () => {
   const [documentsData, documentsDataLoading, documentsDataError] =
@@ -33,7 +40,7 @@ const Documents = () => {
             data-bs-toggle="modal"
             data-bs-target="#create-document-modal"
           >
-            Create a Document
+            Create a Request
           </button>
         </div>
         <table className="table mt-3">
@@ -48,13 +55,16 @@ const Documents = () => {
           </thead>
           <tbody>
             {documents.map((document) => {
-              const { id, title, formType, createdAt } = document;
+              const { id, formType, documentType, purpose, image, createdAt } =
+                document;
 
               return (
                 <tr key={id}>
                   <td>{id}</td>
-                  <td>{title}</td>
                   <td>{formType}</td>
+                  <td>{documentType}</td>
+                  <td>{purpose}</td>
+                  <td>{image}</td>
                   <td>{createdAt}</td>
                 </tr>
               );

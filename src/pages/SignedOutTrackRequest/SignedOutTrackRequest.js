@@ -45,8 +45,8 @@ const SignedOutTrackRequest = () => {
         <thead>
           <tr>
             <th scope="col">Tracking ID</th>
-            <th scope="col">Document</th>
-            <th scope="col">Type</th>
+            <th scope="col">Form Type</th>
+            <th scope="col">Document Type</th>
             <th scope="col">Status</th>
             <th scope="col">Requested By</th>
           </tr>
@@ -55,8 +55,8 @@ const SignedOutTrackRequest = () => {
           {document && documentId && author && (
             <tr>
               <td>{documentId}</td>
-              <td>{document.title}</td>
               <td>{document.formType}</td>
+              <td>{document.documentType}</td>
               <td>{document.status}</td>
               <td>{author.fullName}</td>
             </tr>
