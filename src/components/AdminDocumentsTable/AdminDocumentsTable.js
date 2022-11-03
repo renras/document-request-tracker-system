@@ -4,7 +4,13 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import Kebab from "../ui/Kebab/Kebab";
 
-const columns = ["Tracking ID", "Document", "Type", "Requested By", "Action"];
+const columns = [
+  "Tracking ID",
+  "Document Type",
+  "Purpose",
+  "Requested By",
+  "Action",
+];
 
 const KEBAB_OPTIONS = [
   {
@@ -73,13 +79,13 @@ const Table = ({ documents }) => {
       </thead>
       <tbody>
         {documents.map((document) => {
-          const { id, title, formType, author, status } = document;
+          const { id, documentType, purpose, author, status } = document;
 
           return (
             <tr key={id}>
               <td>{id}</td>
-              <td>{title}</td>
-              <td>{formType}</td>
+              <td>{documentType}</td>
+              <td>{purpose}</td>
               <td>{author.fullName}</td>
               {status === "INCOMING" && (
                 <td>

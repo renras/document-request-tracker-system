@@ -45,24 +45,20 @@ const TrackDocument = () => {
             Track
           </button>
         </div>
-        <table className="table mt-3 table-success">
+        <table className="table mt-3 ">
           <thead>
-            <tr>
+            <tr className="table-success">
               <th scope="col">Tracking ID</th>
-              <th scope="col">Document</th>
-              <th scope="col">Type</th>
+              <th scope="col">Document Type</th>
               <th scope="col">Status</th>
-              <th scope="col">Requested By</th>
             </tr>
           </thead>
           <tbody>
             {document && documentId && author && (
               <tr>
                 <td>{documentId}</td>
-                <td>{document.title}</td>
-                <td>{document.formType}</td>
+                <td>{document.documentType}</td>
                 <td>{document.status}</td>
-                <td>{author.fullName}</td>
               </tr>
             )}
           </tbody>
