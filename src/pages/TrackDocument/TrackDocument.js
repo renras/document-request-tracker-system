@@ -49,22 +49,16 @@ const TrackDocument = () => {
           <thead>
             <tr className="table-success">
               <th scope="col">Tracking ID</th>
-              <th scope="col">Form Type</th>
               <th scope="col">Document Type</th>
               <th scope="col">Status</th>
-              <th scope="col">Purpose</th>
-              <th scope="col">Requested By</th>
             </tr>
           </thead>
           <tbody>
             {document && documentId && author && (
               <tr>
                 <td>{documentId}</td>
-                <td>{document.formType}</td>
                 <td>{document.documentType}</td>
                 <td>{document.status}</td>
-                <td>{document.purpose}</td>
-                <td>{author.fullName}</td>
               </tr>
             )}
           </tbody>

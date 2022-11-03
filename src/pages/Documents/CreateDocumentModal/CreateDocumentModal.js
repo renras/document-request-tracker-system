@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import Dropdown from "../../../components/ui/Dropdown/Dropdown";
 import Modal from "../../../components/Modal/Modal";
-import { FORM_TYPES } from "./formTypes";
 import { DOCUMENT_TYPES } from "./documentTypes";
 import { PURPOSES } from "./purpose";
 import { useForm } from "react-hook-form";
@@ -22,7 +21,6 @@ const QUANTITIES = [
 ];
 
 const CreateDocument = ({ userId }) => {
-  const [formType, setFormType] = useState(FORM_TYPES[0]);
   const [documentType, setDocumentType] = useState(DOCUMENT_TYPES[0]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const [purpose, setPurpose] = useState(PURPOSES[0]);
@@ -66,11 +64,6 @@ const CreateDocument = ({ userId }) => {
   */
 
   const onSubmit = async () => {
-    if (!formType.value) {
-      alert("Please select a form type");
-      return;
-    }
-
     if (!documentType.value) {
       alert("Please select a document type");
       return;
@@ -88,7 +81,6 @@ const CreateDocument = ({ userId }) => {
 
     try {
       await addDoc(collection(db, "documents"), {
-        formType: formType.value,
         documentType: documentType.value,
         quantity: quantity.value,
         purpose: purpose.value,
@@ -122,17 +114,6 @@ const CreateDocument = ({ userId }) => {
           </div>
 
           <div className="modal-body">
-            {/* form type */}
-            <label htmlFor="form-type" className="form-label mt-3">
-              Form Type
-            </label>
-            <Dropdown
-              id="form-type"
-              value={formType}
-              options={FORM_TYPES}
-              onChange={(option) => setFormType(option)}
-            />
-
             {/* document type */}
             <label htmlFor="document-type" className="form-label mt-3">
               Document Type

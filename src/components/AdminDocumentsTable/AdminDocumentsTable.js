@@ -6,7 +6,6 @@ import Kebab from "../ui/Kebab/Kebab";
 
 const columns = [
   "Tracking ID",
-  "Form Type",
   "Document Type",
   "Purpose",
   "Requested By",
@@ -80,13 +79,11 @@ const Table = ({ documents }) => {
       </thead>
       <tbody>
         {documents.map((document) => {
-          const { id, formType, documentType, purpose, author, status } =
-            document;
+          const { id, documentType, purpose, author, status } = document;
 
           return (
             <tr key={id}>
               <td>{id}</td>
-              <td>{formType}</td>
               <td>{documentType}</td>
               <td>{purpose}</td>
               <td>{author.fullName}</td>

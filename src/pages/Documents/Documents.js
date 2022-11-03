@@ -6,14 +6,7 @@ import { db, auth } from "../../firebase-config";
 import { format } from "date-fns";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-const columns = [
-  "Tracking ID",
-  "Form Type",
-  "Document Type",
-  "Purpose",
-  "Image",
-  "Date Created",
-];
+const columns = ["Tracking ID", "Document Type", "Purpose"];
 
 const Documents = () => {
   const [documentsData, documentsDataLoading, documentsDataError] =
@@ -55,17 +48,13 @@ const Documents = () => {
           </thead>
           <tbody>
             {documents.map((document) => {
-              const { id, formType, documentType, purpose, image, createdAt } =
-                document;
+              const { id, documentType, purpose } = document;
 
               return (
                 <tr key={id}>
                   <td>{id}</td>
-                  <td>{formType}</td>
                   <td>{documentType}</td>
                   <td>{purpose}</td>
-                  <td>{image}</td>
-                  <td>{createdAt}</td>
                 </tr>
               );
             })}
