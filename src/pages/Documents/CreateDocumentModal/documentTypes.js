@@ -1,20 +1,20 @@
 export const DOCUMENT_TYPES= [
     { label: "Choose document type", value: "" },
     {
-        label: "Certificate of Indigency",
-        value: "Certificate of Indigency",
+        label: "Certification of Enrollment",
+        value: "Certification of Enrollment",
     },
     {
-        label: "Certificate of Residency",
-        value: "Certificate of Residency",
+        label: "Certification of Graduation",
+        value: "Certification of Graduation",
     },
     {
-        label: "Certificate of Employment",
-        value: "Certificate of Employment",
+        label: "Certification-Weighted Average",
+        value: "Certification-Weighted Average",
     },
     {
-        label: "Certificate of Business",
-        value: "Certificate of Business",
+        label: "Certification-Good Moral",
+        value: "Certification-Good Moral",
     },
 
 ];
