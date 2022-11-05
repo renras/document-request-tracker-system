@@ -8,12 +8,15 @@ import { useEffect } from "react";
 import img1 from "../../../assets/images/unilogo.png";
 import { Chatbot } from "react-chatbot-kit";
 import MessageParser from "../../../chatbot/MessageParser";
-import config from "../../../chatbot/config";
+import useConfig from "../../../chatbot/useConfig";
 import ActionProvider from "../../../chatbot/ActionProvider";
+import { BsChevronUp } from "react-icons/bs";
+import ChatBotHeader from "../../../chatbot/components/Header/Header";
 
 const SignedOutLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [config, showBot, setShowBot] = useConfig();
 
   useEffect(() => {
     if (location.pathname.includes("sign-up")) return;
@@ -65,11 +68,21 @@ const SignedOutLayout = ({ children }) => {
       </header>
       <main className="container-sm">{children}</main>
       <div className={styles.chatbot}>
-        <Chatbot
-          config={config}
-          messageParser={MessageParser}
-          actionProvider={ActionProvider}
-        />
+        {showBot && (
+          <Chatbot
+            config={config}
+            messageParser={MessageParser}
+            actionProvider={ActionProvider}
+            close="true"
+          />
+        )}
+
+        {!showBot && (
+          <ChatBotHeader
+            icon={<BsChevronUp size={20} />}
+            toggleBot={() => setShowBot(true)}
+          />
+        )}
       </div>
     </div>
   );
