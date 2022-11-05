@@ -8,4 +8,8 @@ export const PURPOSES = [
     label: "For Scholarship",
     value: "For Scholarship",
   },
+  {
+    label: "For Enrollment",
+    value: "For Enrollment",
+  },
 ];
