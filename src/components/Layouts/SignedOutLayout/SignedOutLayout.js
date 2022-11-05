@@ -5,7 +5,11 @@ import { auth } from "../../../firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import img1 from '../../../assets/images/unilogo.png';
+import img1 from "../../../assets/images/unilogo.png";
+import { Chatbot } from "react-chatbot-kit";
+import MessageParser from "../../../chatbot/MessageParser";
+import config from "../../../chatbot/config";
+import ActionProvider from "../../../chatbot/ActionProvider";
 
 const SignedOutLayout = ({ children }) => {
   const navigate = useNavigate();
@@ -30,7 +34,12 @@ const SignedOutLayout = ({ children }) => {
       <header className="navbar bg-light">
         <div className="container-sm">
           <Link to="/" className={`${styles.link} navbar-brand fs-3 `}>
-            <img src={img1} alt="" height="60" className="d-inline-block align-text-top d-content-end"/>
+            <img
+              src={img1}
+              alt=""
+              height="60"
+              className="d-inline-block align-text-top d-content-end"
+            />
           </Link>
           <ul className="navbar-nav d-flex flex-row gap-4">
             <li className="nav-item">
@@ -55,6 +64,13 @@ const SignedOutLayout = ({ children }) => {
         </div>
       </header>
       <main className="container-sm">{children}</main>
+      <div className={styles.chatbot}>
+        <Chatbot
+          config={config}
+          messageParser={MessageParser}
+          actionProvider={ActionProvider}
+        />
+      </div>
     </div>
   );
 };

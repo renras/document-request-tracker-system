@@ -1,0 +1,9 @@
+/* https://fredrikoseberg.github.io/react-chatbot-kit-docs/docs/advanced/configuring-css */
+
+.react-chatbot-kit-chat-container {
+  width: 400px;
+}
+
+.react-chatbot-kit-chat-bot-message {
+  margin-left: 0.5rem;
+}

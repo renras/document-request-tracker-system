@@ -5,6 +5,7 @@
   background-image: url(https://up.phinma.edu.ph/wp-content/uploads/2020/10/upang_banner_767.jpg);
   background-size: cover;
   background-repeat: no-repeat;
+  position: relative;
 }
 
 .link {
@@ -18,4 +19,10 @@ img {
 
 .link:hover {
   color: rgb(33, 37, 41);
+}
+
+.chatbot {
+  position: absolute;
+  bottom: 0;
+  right: 10rem;
 }
