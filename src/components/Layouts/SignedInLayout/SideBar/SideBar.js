@@ -9,7 +9,6 @@ import { FaUserAlt } from "react-icons/fa";
 import { FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import img1 from "../../../../assets/images/unilogo.png";
 import { doc } from "firebase/firestore";
 import { db, auth } from "../../../../firebase-config";
 import { useDocument } from "react-firebase-hooks/firestore";
@@ -86,11 +85,11 @@ const SideBar = () => {
         <h1
           style={{
             display: isOpen ? "block" : "none",
-            margin: "0",
+            margin: 0,
           }}
-          className="navbar-brand fs-3"
+          className="navbar-brand fs-2"
         >
-          <img src={img1} alt="" height="55" />
+          PHINMA
         </h1>
       </div>
 
