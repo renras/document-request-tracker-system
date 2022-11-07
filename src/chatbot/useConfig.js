@@ -4,10 +4,20 @@ import Options from "./Options";
 import { useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
 import Header from "./components/Header/Header";
+import { useEffect } from "react";
 
 const useConfig = () => {
-  const [showBot, setShowBot] = useState(true);
+  const [showBot, setShowBot] = useState(
+    sessionStorage.getItem("showBot") === null
+      ? true
+      : JSON.parse(sessionStorage.getItem("showBot"))
+  );
 
+  useEffect(() => {
+    sessionStorage.setItem("showBot", showBot);
+  }, [showBot]);
+
+  console.log(JSON.parse(sessionStorage.getItem("showBot")));
   const config = {
     initialMessages: [
       createChatBotMessage(`Hello`),
@@ -27,7 +37,7 @@ const useConfig = () => {
       header: () => (
         <Header
           icon={<BsChevronDown size={20} />}
-          toggleBot={() => setShowBot(false)}
+          toggleBot={() => setShowBot((prev) => !prev)}
         />
       ),
     },
