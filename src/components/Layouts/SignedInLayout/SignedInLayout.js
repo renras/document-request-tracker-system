@@ -6,6 +6,7 @@ import { auth } from "../../../firebase-config";
 import SideBar from "./SideBar/SideBar";
 import styles from "./SignedInLayout.module.css";
 import { useAuthState } from "react-firebase-hooks/auth";
+import Loader from "../../Loader/Loader";
 
 const SignedInLayout = ({ children }) => {
   const [user, loading, error] = useAuthState(auth);
@@ -26,7 +27,7 @@ const SignedInLayout = ({ children }) => {
     }
   }, [loading, navigate, user]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loader />;
   if (error || !user) return <div>Failed to load page...</div>;
 
   return (

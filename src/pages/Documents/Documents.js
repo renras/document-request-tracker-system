@@ -5,6 +5,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db, auth } from "../../firebase-config";
 import { format } from "date-fns";
 import { useAuthState } from "react-firebase-hooks/auth";
+import Loader from "../../components/Loader/Loader";
 
 const columns = ["Tracking ID", "Document Type", "Purpose"];
 
@@ -13,7 +14,9 @@ const Documents = () => {
     useCollection(collection(db, "documents"));
   const [userData, userDataLoading, userDataError] = useAuthState(auth);
 
-  if (documentsDataLoading || userDataLoading) return <div>Loading...</div>;
+  const loading = true;
+
+  if (documentsDataLoading || userDataLoading || loading) return <Loader />;
   if (userDataError || documentsDataError)
     return <div>Failed to load page...</div>;
 

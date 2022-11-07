@@ -3,6 +3,7 @@ import AdminDocumentsTable from "../../components/AdminDocumentsTable/AdminDocum
 import { collection } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase-config";
+import Loader from "../../components/Loader/Loader";
 
 const Released = () => {
   const [documentsData, documentsDataLoading, documentsDataError] =
@@ -11,7 +12,7 @@ const Released = () => {
     collection(db, "users")
   );
 
-  if ((usersDataLoading, documentsDataLoading)) return <div>Loading...</div>;
+  if ((usersDataLoading, documentsDataLoading)) return <Loader />;
   if ((usersDataError, documentsDataError))
     return <div>Failed to load page...</div>;
 
