@@ -13,6 +13,8 @@ import Returned from "./pages/Returned/Returned";
 import TrackDocument from "./pages/TrackDocument/TrackDocument";
 import Profile from "./pages/Profile/Profile";
 import Reset from "./pages/Reset/Reset";
+import "react-chatbot-kit/build/main.css";
+import "./chatbot/chatbot.css";
 
 function App() {
   return (
