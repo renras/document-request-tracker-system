@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
 //import firebase from "firebase/compat/app";
 //import "firebase/compat/storage";
 //export const storage = firebase.storage();
@@ -26,7 +25,6 @@ const CreateDocument = ({ userId }) => {
   const [purpose, setPurpose] = useState(PURPOSES[0]);
   const { handleSubmit } = useForm();
   const closeButton = useRef(null);
-  const navigate = useNavigate();
   // const [file, setFile] = useState(null);
   //const [url, setURL] = useState("");
 
@@ -63,6 +61,12 @@ const CreateDocument = ({ userId }) => {
   };
   */
 
+  const resetFields = () => {
+    setDocumentType(DOCUMENT_TYPES[0]);
+    setQuantity(QUANTITIES[0]);
+    setPurpose(PURPOSES[0]);
+  };
+
   const onSubmit = async () => {
     if (!documentType.value) {
       alert("Please select a document type");
@@ -90,7 +94,8 @@ const CreateDocument = ({ userId }) => {
         updatedAt: Timestamp.now(),
       });
 
-      navigate(0);
+      closeButton.current.click();
+      resetFields();
     } catch (e) {
       alert("Failed to create document. Please try again later.");
     }
