@@ -6,6 +6,7 @@ import { db, auth } from "../../firebase-config";
 import { format } from "date-fns";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Loader from "../../components/Loader/Loader";
+import Error from "../../components/Error/Error";
 
 const columns = ["Tracking ID", "Document Type", "Purpose"];
 
@@ -15,8 +16,7 @@ const Documents = () => {
   const [userData, userDataLoading, userDataError] = useAuthState(auth);
 
   if (documentsDataLoading || userDataLoading) return <Loader />;
-  if (userDataError || documentsDataError)
-    return <div>Failed to load page...</div>;
+  if (userDataError || documentsDataError) return <Error />;
 
   const documents = documentsData.docs.map((doc) => ({
     id: doc.id,

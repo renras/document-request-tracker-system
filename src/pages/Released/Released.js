@@ -4,6 +4,7 @@ import { collection } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase-config";
 import Loader from "../../components/Loader/Loader";
+import Error from "../../components/Error/Error";
 
 const Released = () => {
   const [documentsData, documentsDataLoading, documentsDataError] =
@@ -13,8 +14,7 @@ const Released = () => {
   );
 
   if ((usersDataLoading, documentsDataLoading)) return <Loader />;
-  if ((usersDataError, documentsDataError))
-    return <div>Failed to load page...</div>;
+  if ((usersDataError, documentsDataError)) return <Error />;
 
   const users = usersData.docs.map((doc) => {
     return { id: doc.id, ...doc.data() };

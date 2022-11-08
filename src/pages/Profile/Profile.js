@@ -5,6 +5,7 @@ import { doc, updateDoc, Timestamp, getDoc } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
 import { useState, useEffect } from "react";
 import Loader from "../../components/Loader/Loader";
+import Error from "../../components/Error/Error";
 
 const Profile = () => {
   const { register, handleSubmit } = useForm();
@@ -41,7 +42,7 @@ const Profile = () => {
   }, []);
 
   if (loading) return <Loader />;
-  if (error) return <div>Failed to load page...</div>;
+  if (error) return <Error />;
 
   const { fullName, phone, email, aboutMe } = user;
 
