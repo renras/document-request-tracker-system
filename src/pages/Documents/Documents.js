@@ -14,9 +14,7 @@ const Documents = () => {
     useCollection(collection(db, "documents"));
   const [userData, userDataLoading, userDataError] = useAuthState(auth);
 
-  const loading = true;
-
-  if (documentsDataLoading || userDataLoading || loading) return <Loader />;
+  if (documentsDataLoading || userDataLoading) return <Loader />;
   if (userDataError || documentsDataError)
     return <div>Failed to load page...</div>;
 
