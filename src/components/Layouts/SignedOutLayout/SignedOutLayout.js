@@ -12,25 +12,33 @@ import useConfig from "../../../chatbot/useConfig";
 import ActionProvider from "../../../chatbot/ActionProvider";
 import { BsChevronUp } from "react-icons/bs";
 import ChatBotHeader from "../../../chatbot/components/Header/Header";
+import { useState } from "react";
+import Loader from "../../Loader/Loader";
 
 const SignedOutLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [config, showBot, setShowBot] = useConfig();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (location.pathname.includes("sign-up")) return;
+    if (location.pathname.includes("sign-up")) {
+      setLoading(false);
+      return;
+    }
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         navigate("/documents");
-      } else {
-        console.log("User is not signed in");
       }
+
+      setLoading(false);
     });
 
     return () => unsubscribe();
   }, [location.pathname, navigate]);
+
+  if (loading) return <Loader />;
 
   return (
     <div className={styles.container}>
