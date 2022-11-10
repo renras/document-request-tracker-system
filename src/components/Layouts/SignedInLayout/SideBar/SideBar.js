@@ -12,6 +12,7 @@ import { useState } from "react";
 import { doc } from "firebase/firestore";
 import { db, auth } from "../../../../firebase-config";
 import { useDocument } from "react-firebase-hooks/firestore";
+import './SideBar.css';
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -24,47 +25,47 @@ const SideBar = () => {
     {
       href: "/documents",
       name: "Documents",
-      icon: <FaFileAlt color="#fff" size={20} />,
+      icon: <FaFileAlt size={20} />,
     },
     {
       href: "/incoming",
       name: "Incoming",
-      icon: <HiDownload color="#fff" size={20} />,
+      icon: <HiDownload size={20} />,
       role: "ADMIN",
     },
     {
       href: "/received",
       name: "Received",
-      icon: <FaEnvelope color="#fff" size={20} />,
+      icon: <FaEnvelope size={20} />,
       role: "ADMIN",
     },
     {
       href: "/hold",
       name: "Hold",
-      icon: <FaLightbulb color="#fff" size={20} />,
+      icon: <FaLightbulb size={20} />,
       role: "ADMIN",
     },
     {
       href: "/returned",
       name: "Returned",
-      icon: <FaExchangeAlt color="#fff" size={20} />,
+      icon: <FaExchangeAlt size={20} />,
       role: "ADMIN",
     },
     {
       href: "/released",
       name: "Released",
-      icon: <BsBoxArrowUp color="#fff" size={20} />,
+      icon: <BsBoxArrowUp size={20} />,
       role: "ADMIN",
     },
     {
       href: "/track-document",
       name: "Track Documents",
-      icon: <HiDocumentSearch color="#fff" size={20} />,
+      icon: <HiDocumentSearch size={20} />,
     },
     {
       href: "/profile",
       name: "Profile",
-      icon: <FaUserAlt color="#fff" size={20} />,
+      icon: <FaUserAlt size={20} />,
     },
   ];
 

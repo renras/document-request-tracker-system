@@ -1,0 +1,8 @@
+.nav-item {
+    transition: all 0.1s;
+}
+
+.nav-item:hover {
+    background: white;
+    color: black;
+}
