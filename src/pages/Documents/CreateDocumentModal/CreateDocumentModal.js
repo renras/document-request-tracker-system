@@ -7,9 +7,8 @@ import { useForm } from "react-hook-form";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import PropTypes from "prop-types";
-//import firebase from "firebase/compat/app";
-//import "firebase/compat/storage";
-//export const storage = firebase.storage();
+import { storage } from "../../../firebase-config";
+import { ref, uploadBytes } from "firebase/storage";
 
 const QUANTITIES = [
   { label: "1", value: "1" },
@@ -25,46 +24,29 @@ const CreateDocument = ({ userId }) => {
   const [purpose, setPurpose] = useState(PURPOSES[0]);
   const { handleSubmit } = useForm();
   const closeButton = useRef(null);
-  // const [file, setFile] = useState(null);
-  //const [url, setURL] = useState("");
+  const [attachment, setAttachment] = useState(null);
 
-  /*make a function to upload the file
-  const handleUpload = (e) => {
-    e.preventDefault();
-    const uploadTask = storage.ref(`images/${file.name}`).put(file);
-    uploadTask.on(
-      "state_changed",
-      
-      (error) => {
-        //error function
-        console.log(error);
-      },
-      () => {
-        //complete function
-        storage
-          .ref("images")
-          .child(file.name)
-          .getDownloadURL()
-          .then((url) => {
-            setURL(url);
-          });
-      }
-    );
+  const uploadAttachment = async (id) => {
+    if (attachment == null) return;
+
+    return new Promise((resolve, reject) => {
+      (async () => {
+        try {
+          const imageRef = ref(storage, `attachments/${id}`);
+          const data = await uploadBytes(imageRef, attachment);
+          resolve(data);
+        } catch (e) {
+          reject(e);
+        }
+      })();
+    });
   };
-
-
-  //make a function to handle the file
-  const handleChange = (e) => {
-    if (e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
-  */
 
   const resetFields = () => {
     setDocumentType(DOCUMENT_TYPES[0]);
     setQuantity(QUANTITIES[0]);
     setPurpose(PURPOSES[0]);
+    setAttachment(null);
   };
 
   const onSubmit = async () => {
@@ -84,7 +66,7 @@ const CreateDocument = ({ userId }) => {
     }
 
     try {
-      await addDoc(collection(db, "documents"), {
+      const doc = await addDoc(collection(db, "documents"), {
         documentType: documentType.value,
         quantity: quantity.value,
         purpose: purpose.value,
@@ -94,9 +76,12 @@ const CreateDocument = ({ userId }) => {
         updatedAt: Timestamp.now(),
       });
 
+      await uploadAttachment(doc.id);
+
       closeButton.current.click();
       resetFields();
     } catch (e) {
+      console.error(e);
       alert("Failed to create document. Please try again later.");
     }
   };
@@ -153,20 +138,18 @@ const CreateDocument = ({ userId }) => {
               options={PURPOSES}
               onChange={(option) => setPurpose(option)}
             />
-          </div>
 
-          {/* file upload 
+            {/* file upload*/}
             <label htmlFor="file" className="form-label mt-3">
               Upload File
             </label>
             <input
               type="file"
               id="file"
+              onChange={(event) => setAttachment(event.target.files[0])}
               className="form-control"
-              onChange={handleChange}
             />
-            <button onClick={handleUpload}>Upload</button>
-  */}
+          </div>
 
           <div className="modal-footer">
             <button
