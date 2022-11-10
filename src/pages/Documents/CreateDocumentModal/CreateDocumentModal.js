@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef} from "react";
 import Dropdown from "../../../components/ui/Dropdown/Dropdown";
 import Modal from "../../../components/Modal/Modal";
 import { DOCUMENT_TYPES } from "./documentTypes";
@@ -7,9 +7,10 @@ import { useForm } from "react-hook-form";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import PropTypes from "prop-types";
-//import firebase from "firebase/compat/app";
-//import "firebase/compat/storage";
-//export const storage = firebase.storage();
+import {storage} from '../../../firebase-config';
+import {ref, uploadBytes} from "firebase/storage";
+import {v4} from "uuid";
+
 
 const QUANTITIES = [
   { label: "1", value: "1" },
@@ -25,41 +26,17 @@ const CreateDocument = ({ userId }) => {
   const [purpose, setPurpose] = useState(PURPOSES[0]);
   const { handleSubmit } = useForm();
   const closeButton = useRef(null);
-  // const [file, setFile] = useState(null);
-  //const [url, setURL] = useState("");
-
-  /*make a function to upload the file
-  const handleUpload = (e) => {
-    e.preventDefault();
-    const uploadTask = storage.ref(`images/${file.name}`).put(file);
-    uploadTask.on(
-      "state_changed",
-      
-      (error) => {
-        //error function
-        console.log(error);
-      },
-      () => {
-        //complete function
-        storage
-          .ref("images")
-          .child(file.name)
-          .getDownloadURL()
-          .then((url) => {
-            setURL(url);
-          });
-      }
-    );
+  const [imageUpload, setImageUpload] = useState(null);
+  const uploadImage = () => {
+    if (imageUpload == null) return;
+  const imageRef = ref(storage, `images/${v4()}`);
+    uploadBytes(imageRef, imageUpload).then(() => {
+      console.log('uploaded');
+      alert('uploaded');
+    })
   };
 
 
-  //make a function to handle the file
-  const handleChange = (e) => {
-    if (e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
-  */
 
   const resetFields = () => {
     setDocumentType(DOCUMENT_TYPES[0]);
@@ -153,20 +130,20 @@ const CreateDocument = ({ userId }) => {
               options={PURPOSES}
               onChange={(option) => setPurpose(option)}
             />
-          </div>
 
-          {/* file upload 
+            {/* file upload*/}
             <label htmlFor="file" className="form-label mt-3">
               Upload File
             </label>
             <input
               type="file"
               id="file"
+              onChange={(event) => {
+                setImageUpload(event.target.files[0]);
+              }}
               className="form-control"
-              onChange={handleChange}
             />
-            <button onClick={handleUpload}>Upload</button>
-  */}
+          </div>
 
           <div className="modal-footer">
             <button
@@ -176,7 +153,7 @@ const CreateDocument = ({ userId }) => {
             >
               Close
             </button>
-            <button type="submit" className="btn btn-success">
+            <button type="submit" className="btn btn-success" onClick={uploadImage}>
               Save Changes
             </button>
           </div>
