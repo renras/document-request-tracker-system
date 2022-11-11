@@ -8,17 +8,8 @@
   position: relative;
 }
 
-.link {
-  text-decoration: none;
-  color: rgb(33, 37, 41);
-}
-
 img {
   width: auto;
-}
-
-.link:hover {
-  color: rgb(33, 37, 41);
 }
 
 .chatbot {
