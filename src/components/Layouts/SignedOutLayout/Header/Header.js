@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <header className="navbar bg-light">
       <div className="container-sm">
-        <NavLink to="/" className="navbar-brand fs-3 ">
+        <NavLink to="/" className="navbar-brand fs-3">
           <img
             src={logo}
             alt="logo"
@@ -17,6 +17,7 @@ const Header = () => {
           <li className="nav-item">
             <NavLink
               to="/"
+              end
               className={({ isActive }) =>
                 `nav-link ${isActive ? "active" : ""}`
               }
