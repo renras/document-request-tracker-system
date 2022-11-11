@@ -1,17 +1,10 @@
-import { FaFileAlt } from "react-icons/fa";
-import { HiDownload } from "react-icons/hi";
-import { FaEnvelope } from "react-icons/fa";
-import { FaLightbulb } from "react-icons/fa";
-import { FaExchangeAlt } from "react-icons/fa";
-import { BsBoxArrowUp } from "react-icons/bs";
-import { HiDocumentSearch } from "react-icons/hi";
-import { FaUserAlt } from "react-icons/fa";
 import { FaBars } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import { doc } from "firebase/firestore";
 import { db, auth } from "../../../../firebase-config";
 import { useDocument } from "react-firebase-hooks/firestore";
+import navLinks from "./navLinks";
+import { NavLink } from "react-router-dom";
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -20,53 +13,6 @@ const SideBar = () => {
   );
 
   const toggle = () => setIsOpen(!isOpen);
-  const menuItem = [
-    {
-      href: "/documents",
-      name: "Documents",
-      icon: <FaFileAlt color="#fff" size={20} />,
-    },
-    {
-      href: "/incoming",
-      name: "Incoming",
-      icon: <HiDownload color="#fff" size={20} />,
-      role: "ADMIN",
-    },
-    {
-      href: "/received",
-      name: "Received",
-      icon: <FaEnvelope color="#fff" size={20} />,
-      role: "ADMIN",
-    },
-    {
-      href: "/hold",
-      name: "Hold",
-      icon: <FaLightbulb color="#fff" size={20} />,
-      role: "ADMIN",
-    },
-    {
-      href: "/returned",
-      name: "Returned",
-      icon: <FaExchangeAlt color="#fff" size={20} />,
-      role: "ADMIN",
-    },
-    {
-      href: "/released",
-      name: "Released",
-      icon: <BsBoxArrowUp color="#fff" size={20} />,
-      role: "ADMIN",
-    },
-    {
-      href: "/track-document",
-      name: "Track Documents",
-      icon: <HiDocumentSearch color="#fff" size={20} />,
-    },
-    {
-      href: "/profile",
-      name: "Profile",
-      icon: <FaUserAlt color="#fff" size={20} />,
-    },
-  ];
 
   return (
     <div
@@ -74,7 +20,7 @@ const SideBar = () => {
         width: isOpen ? "256px" : "64px",
         height: "100vh",
       }}
-      className={`bg-success text-white border shadow-sm px-4 py-5 d-flex flex-column  ${
+      className={`navbar-dark bg-success border shadow-sm px-4 py-5 ${
         !isOpen ? "align-items-center" : ""
       }`}
     >
@@ -93,9 +39,10 @@ const SideBar = () => {
         </h1>
       </div>
 
+      {/* todo:  create context*/}
       {userDoc && !userLoading && !userError && (
-        <ul className="navbar-nav mt-5">
-          {menuItem.map((item, index) => {
+        <ul className="navbar-nav mt-5 d-flex flex-column gap-2 ">
+          {navLinks.map((item, index) => {
             if (
               item.role === "ADMIN" &&
               userDoc.data() &&
@@ -105,10 +52,15 @@ const SideBar = () => {
 
             return (
               <li key={index} className={`nav-item ${!isOpen ? "py-2" : ""}`}>
-                <Link to={item.href} className="nav-link d-flex gap-3">
+                <NavLink
+                  to={item.href}
+                  className={({ isActive }) =>
+                    `nav-link d-flex gap-3 ${isActive ? "active" : ""}`
+                  }
+                >
                   <div>{item.icon}</div>
-                  {isOpen && <p>{item.name}</p>}
-                </Link>
+                  {isOpen && <>{item.name}</>}
+                </NavLink>
               </li>
             );
           })}
