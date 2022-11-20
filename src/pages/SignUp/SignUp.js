@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { auth, db } from "../../firebase-config";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -21,14 +21,13 @@ const SignUp = () => {
 
     try {
       setLoading(true);
+
       const result = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      await updateProfile(result.user, {
-        displayName: fullName,
-      });
+
       await setDoc(doc(db, "users", result.user.uid), {
         fullName,
         email,
@@ -37,7 +36,7 @@ const SignUp = () => {
         updatedAt: Timestamp.now(),
         role: "MEMBER",
       });
-      await auth.currentUser.reload();
+
       navigate("/documents");
     } catch {
       alert("Failed to create user. Please try again later.");
