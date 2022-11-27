@@ -7,8 +7,10 @@ import { format } from "date-fns";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
+import { AiFillEye } from "react-icons/ai";
+import DocumentModal from "../../components/DocumentModal/DocumentModal";
 
-const columns = ["Tracking ID", "Document Type", "Purpose"];
+const columns = ["Tracking ID", "Document Type", "Purpose", "Action"];
 
 const Documents = () => {
   const [documentsData, documentsDataLoading, documentsDataError] =
@@ -53,9 +55,19 @@ const Documents = () => {
 
               return (
                 <tr key={id}>
-                  <td>{id}</td>
-                  <td>{documentType}</td>
-                  <td>{purpose}</td>
+                  <td className="align-middle">{id}</td>
+                  <td className="align-middle">{documentType}</td>
+                  <td className="align-middle">{purpose}</td>
+                  <td className="align-middle">
+                    <button
+                      className="btn btn-light"
+                      data-bs-toggle="modal"
+                      data-bs-target="#view-document-modal"
+                    >
+                      <AiFillEye />
+                    </button>
+                    <DocumentModal request={document} />
+                  </td>
                 </tr>
               );
             })}
@@ -63,7 +75,7 @@ const Documents = () => {
         </table>
       </div>
 
-      {/* modal */}
+      {/* create document modal */}
       {userData?.uid && <CreateDocumentModal userId={userData.uid} />}
     </SignedInLayout>
   );
