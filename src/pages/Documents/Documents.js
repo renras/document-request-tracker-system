@@ -8,6 +8,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import { AiFillEye } from "react-icons/ai";
+import DocumentModal from "../../components/DocumentModal/DocumentModal";
 
 const columns = ["Tracking ID", "Document Type", "Purpose", "Action"];
 
@@ -58,9 +59,14 @@ const Documents = () => {
                   <td className="align-middle">{documentType}</td>
                   <td className="align-middle">{purpose}</td>
                   <td className="align-middle">
-                    <button className="btn btn-light">
+                    <button
+                      className="btn btn-light"
+                      data-bs-toggle="modal"
+                      data-bs-target="#view-document-modal"
+                    >
                       <AiFillEye />
                     </button>
+                    <DocumentModal request={document} />
                   </td>
                 </tr>
               );
@@ -69,7 +75,7 @@ const Documents = () => {
         </table>
       </div>
 
-      {/* modal */}
+      {/* create document modal */}
       {userData?.uid && <CreateDocumentModal userId={userData.uid} />}
     </SignedInLayout>
   );
