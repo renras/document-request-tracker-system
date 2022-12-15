@@ -6,11 +6,15 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import PhoneInput from "react-phone-number-input";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 const SignUp = () => {
   const { register, handleSubmit } = useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [value, setValue] = useState();
 
   const onSubmit = async (data) => {
     const { fullName, email, password, phone, confirmPassword } = data;
@@ -62,18 +66,24 @@ const SignUp = () => {
         <input
           className="form-control form-control-lg"
           id="full-name"
+          placeholder="Dela Cruz, Juan M."
           {...register("fullName", { required: true })}
         />
 
-        {/* full name */}
-        <label className="form-label mt-4" htmlFor="phone">
-          Phone
-        </label>
-        <input
+        {/* phone  */}
+        <label className="form-label mt-4">Phone</label>
+        <PhoneInput
           className="form-control form-control-lg"
           id="phone"
           {...register("phone", { required: true })}
+          international
+          defaultCountry="PH"
+          value={value}
+          onChange={setValue}
         />
+        {value && !isValidPhoneNumber(value) && (
+          <span className="text-danger">Invalid phone number</span>
+        )}
 
         {/* email */}
         <label className="form-label mt-4" htmlFor="email">
@@ -110,6 +120,7 @@ const SignUp = () => {
 
         <button
           className="btn btn-success btn-lg w-100 mt-5"
+          type="submit"
           disabled={loading}
         >
           Sign Up
