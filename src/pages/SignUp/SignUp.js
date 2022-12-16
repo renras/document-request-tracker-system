@@ -73,7 +73,7 @@ const SignUp = () => {
         {/* phone  */}
         <label className="form-label mt-4">Phone</label>
         <PhoneInput
-          className="form-control form-control-lg"
+          className="d-flex gap-2 form-control form-control-lg"
           id="phone"
           {...register("phone", { required: true })}
           international

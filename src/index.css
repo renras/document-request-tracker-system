@@ -30,3 +30,8 @@ button {
 .mw-xxl {
   max-width: 1400px;
 }
+
+.PhoneInputInput {
+  border: none;
+  outline: none;
+}
