@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 // todo: add attachments
 
 const CreateDocument = ({ request }) => {
-  console.log(request);
   return (
     <Modal id="view-document-modal" title="Request">
       <div className="modal-dialog">
