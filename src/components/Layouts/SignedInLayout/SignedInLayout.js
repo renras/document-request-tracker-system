@@ -1,4 +1,4 @@
-import { signOut } from "firebase/auth";
+import { signOut, sendEmailVerification } from "firebase/auth";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,8 @@ const SignedInLayout = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [emailVerifiedLoading, setEmailVerifiedLoading] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -29,6 +31,21 @@ const SignedInLayout = ({ children }) => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (!user) {
         navigate("/sign-in");
+      }
+
+      if (!user.emailVerified) {
+        console.log("User is not verified");
+        try {
+          sendEmailVerification(user);
+          console.log("email sent");
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setEmailVerifiedLoading(false);
+        }
+      } else {
+        setIsVerified(true);
+        setEmailVerifiedLoading(false);
       }
 
       try {
@@ -51,8 +68,9 @@ const SignedInLayout = ({ children }) => {
     return () => unsubscribe();
   }, [navigate]);
 
-  if (loading) return <Loader />;
+  if (loading || emailVerifiedLoading) return <Loader />;
   if (error) return <Error />;
+  if (user && !isVerified) return <div>Please verify your email...</div>;
 
   return (
     <div className={styles.container}>
