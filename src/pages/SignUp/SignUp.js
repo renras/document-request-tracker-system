@@ -66,7 +66,7 @@ const SignUp = () => {
         <input
           className="form-control form-control-lg"
           id="full-name"
-          placeholder="Dela Cruz, Juan M."
+          placeholder="Juan Dela Cruz"
           {...register("fullName", { required: true })}
         />
 
@@ -82,7 +82,7 @@ const SignUp = () => {
           onChange={setValue}
         />
         {value && !isValidPhoneNumber(value) && (
-          <span className="text-danger">Invalid phone number</span>
+          <p className="text-danger mb-0">Invalid phone number</p>
         )}
 
         {/* email */}
@@ -90,7 +90,8 @@ const SignUp = () => {
           Email
         </label>
         <input
-          className="form-control form-control-lg"
+          className="form-control form-control-lg "
+          placeholder="juandelacruz@gmail.com"
           id="email"
           type="email"
           {...register("email", { required: true })}
