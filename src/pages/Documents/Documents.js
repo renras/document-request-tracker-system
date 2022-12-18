@@ -1,7 +1,6 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 import CreateDocumentModal from "./CreateDocumentModal/CreateDocumentModal";
-import { collection } from "firebase/firestore";
-import { useCollection } from "react-firebase-hooks/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db, auth } from "../../firebase-config";
 import { format } from "date-fns";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -9,22 +8,41 @@ import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import { AiFillEye } from "react-icons/ai";
 import DocumentModal from "../../components/DocumentModal/DocumentModal";
+import { useEffect, useState } from "react";
 
 const columns = ["Tracking ID", "Document Type", "Purpose", "Action"];
 
 const Documents = () => {
-  const [documentsData, documentsDataLoading, documentsDataError] =
-    useCollection(collection(db, "documents"));
-  const [userData, userDataLoading, userDataError] = useAuthState(auth);
+  const [user, userLoading, userError] = useAuthState(auth);
+  const [documentsDataLoading, setDocumentsDataLoading] = useState(true);
+  const [documentsDataError, setDocumentsDataError] = useState(null);
+  const [documentsData, setDocumentsData] = useState([]);
 
-  if (documentsDataLoading || userDataLoading) return <Loader />;
-  if (userDataError || documentsDataError) return <Error />;
+  useEffect(() => {
+    if (!user?.uid) return;
 
-  const documents = documentsData.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-    createdAt: format(doc.data().createdAt.toDate(), "MMMM dd, yyyy"),
-  }));
+    (async () => {
+      try {
+        const documentsRef = collection(db, "documents");
+        const q = query(documentsRef, where("authorId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+        const documents = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: format(doc.data().createdAt.toDate(), "MMMM dd, yyyy"),
+        }));
+        setDocumentsData(documents);
+      } catch (e) {
+        console.error(e);
+        setDocumentsDataError("Failed to fetch documents");
+      } finally {
+        setDocumentsDataLoading(false);
+      }
+    })();
+  }, [user?.uid]);
+
+  if (documentsDataLoading || userLoading) return <Loader />;
+  if (userError || documentsDataError) return <Error />;
 
   return (
     <SignedInLayout>
@@ -50,7 +68,7 @@ const Documents = () => {
             </tr>
           </thead>
           <tbody>
-            {documents.map((document) => {
+            {documentsData.map((document) => {
               const { id, documentType, purpose } = document;
 
               return (
@@ -76,7 +94,7 @@ const Documents = () => {
       </div>
 
       {/* create document modal */}
-      {userData?.uid && <CreateDocumentModal userId={userData.uid} />}
+      {user?.uid && <CreateDocumentModal userId={user.uid} />}
     </SignedInLayout>
   );
 };
