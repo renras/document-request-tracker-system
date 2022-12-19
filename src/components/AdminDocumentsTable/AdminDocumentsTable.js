@@ -8,22 +8,22 @@ const columns = [
   "Tracking ID",
   "Document Type",
   "Purpose",
-  "Requested By",
-  "Action",
+  "Requested By:",
+  "Status",
 ];
 
 const KEBAB_OPTIONS = [
   {
-    label: "RECEIVED",
-    value: "RECEIVED",
+    label: "ON PROCESS",
+    value: "ON PROCESS",
   },
   {
     label: "HOLD",
     value: "HOLD",
   },
   {
-    label: "RETURNED",
-    value: "RETURNED",
+    label: "FOR RELEASE",
+    value: "FOR RELEASE",
   },
   {
     label: "RELEASED",
@@ -36,7 +36,7 @@ const Table = ({ documents }) => {
     try {
       const docRef = doc(db, "documents", id);
       await updateDoc(docRef, {
-        status: "RECEIVED",
+        status: "ON PROCESS",
       });
     } catch {
       alert("Failed to receive document. Please try again later.");
@@ -47,7 +47,7 @@ const Table = ({ documents }) => {
     try {
       const docRef = doc(db, "documents", id);
       await updateDoc(docRef, {
-        status: "RETURNED",
+        status: "FOR RELEASE",
       });
     } catch {
       alert("Failed to return document. Please try again later.");

@@ -27,13 +27,13 @@ const Returned = () => {
   }));
 
   const returnedDocuments = documents.filter(
-    (document) => document.status === "RETURNED"
+    (document) => document.status === "FOR RELEASE"
   );
 
   return (
     <SignedInLayout>
       <div className="px-4">
-        <h1 className="h2">Returned</h1>
+        <h1 className="h2">For Release</h1>
         <AdminDocumentsTable documents={returnedDocuments} />
       </div>
     </SignedInLayout>

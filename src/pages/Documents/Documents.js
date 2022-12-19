@@ -10,7 +10,7 @@ import { AiFillEye } from "react-icons/ai";
 import DocumentModal from "../../components/DocumentModal/DocumentModal";
 import { useEffect, useState } from "react";
 
-const columns = ["Tracking ID", "Document Type", "Purpose", "Action"];
+const columns = ["Tracking ID", "Document Type", "Purpose", "Status"];
 
 const Documents = () => {
   const [user, userLoading, userError] = useAuthState(auth);

@@ -20,8 +20,8 @@ const navLinks = [
     role: "ADMIN",
   },
   {
-    href: "/received",
-    name: "Received",
+    href: "/on-process",
+    name: "On Process",
     icon: <FaEnvelope color="#fff" size={20} />,
     role: "ADMIN",
   },
@@ -32,8 +32,8 @@ const navLinks = [
     role: "ADMIN",
   },
   {
-    href: "/returned",
-    name: "Returned",
+    href: "/for-release",
+    name: "For Release",
     icon: <FaExchangeAlt color="#fff" size={20} />,
     role: "ADMIN",
   },
@@ -46,6 +46,11 @@ const navLinks = [
   {
     href: "/track-document",
     name: "Track Documents",
+    icon: <HiDocumentSearch color="#fff" size={20} />,
+  },
+  {
+    href: "/transaction-management",
+    name: "Transaction Management",
     icon: <HiDocumentSearch color="#fff" size={20} />,
   },
   {

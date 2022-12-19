@@ -27,13 +27,13 @@ const Incoming = () => {
   }));
 
   const receivedDocuments = documents.filter(
-    (document) => document.status === "RECEIVED"
+    (document) => document.status === "ON PROCESS"
   );
 
   return (
     <SignedInLayout>
       <div className="px-4">
-        <h1 className="h2">Received</h1>
+        <h1 className="h2">On Process</h1>
         <AdminDocumentsTable documents={receivedDocuments} />
       </div>
     </SignedInLayout>
