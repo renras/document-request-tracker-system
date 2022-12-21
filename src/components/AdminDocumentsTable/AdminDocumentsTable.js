@@ -86,7 +86,7 @@ const Table = ({ documents }) => {
               <td>{id}</td>
               <td>{documentType}</td>
               <td>{purpose}</td>
-              <td>{author.fullName}</td>
+              <td>{author?.fullName}</td>
               {status === "INCOMING" && (
                 <td>
                   <div className="d-flex gap-2">
