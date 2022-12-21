@@ -9,6 +9,7 @@ import { db } from "../../../firebase-config";
 import PropTypes from "prop-types";
 import { storage } from "../../../firebase-config";
 import { ref, uploadBytes } from "firebase/storage";
+import { useNavigate } from "react-router-dom";
 
 const QUANTITIES = [
   { label: "1", value: "1" },
@@ -25,6 +26,7 @@ const CreateDocument = ({ userId }) => {
   const { handleSubmit } = useForm();
   const closeButton = useRef(null);
   const [attachment, setAttachment] = useState(null);
+  const navigate = useNavigate();
 
   const uploadAttachment = async (id) => {
     if (attachment == null) return;
@@ -40,13 +42,6 @@ const CreateDocument = ({ userId }) => {
         }
       })();
     });
-  };
-
-  const resetFields = () => {
-    setDocumentType(DOCUMENT_TYPES[0]);
-    setQuantity(QUANTITIES[0]);
-    setPurpose(PURPOSES[0]);
-    setAttachment(null);
   };
 
   const onSubmit = async () => {
@@ -78,8 +73,7 @@ const CreateDocument = ({ userId }) => {
 
       await uploadAttachment(doc.id);
 
-      closeButton.current.click();
-      resetFields();
+      navigate(0);
     } catch (e) {
       console.error(e);
       alert("Failed to create document. Please try again later.");
