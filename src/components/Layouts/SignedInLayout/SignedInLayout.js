@@ -12,6 +12,7 @@ import { db } from "../../../firebase-config";
 import Error from "../../Error/Error";
 import { CgProfile } from "react-icons/cg";
 import { BsChevronDown } from "react-icons/bs";
+import Modal from "../../v2/Modal/Modal";
 
 const SignedInLayout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -19,6 +20,7 @@ const SignedInLayout = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [emailVerifiedLoading, setEmailVerifiedLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(true);
   const navigate = useNavigate();
 
   // const handleSignOut = async () => {
@@ -84,6 +86,12 @@ const SignedInLayout = ({ children }) => {
             <div>
               <BsChevronDown size={15} />
             </div>
+            <Modal
+              isOpen={isUserMenuOpen}
+              onClose={() => setIsUserMenuOpen(false)}
+            >
+              asdsadas
+            </Modal>
             {/* <button
               className="btn btn-outline-danger"
               onClick={() => handleSignOut()}
