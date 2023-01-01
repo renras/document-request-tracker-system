@@ -1,5 +1,4 @@
-// import { signOut, sendEmailVerification } from "firebase/auth";
-import { sendEmailVerification } from "firebase/auth";
+import { signOut, sendEmailVerification } from "firebase/auth";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +10,8 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import Error from "../../Error/Error";
 import { CgProfile } from "react-icons/cg";
-import { BsChevronDown } from "react-icons/bs";
-import Modal from "../../v2/Modal/Modal";
+import { BsChevronDown, BsPerson } from "react-icons/bs";
+import { BiLogOut } from "react-icons/bi";
 
 const SignedInLayout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -20,17 +19,17 @@ const SignedInLayout = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [emailVerifiedLoading, setEmailVerifiedLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(true);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // const handleSignOut = async () => {
-  //   try {
-  //     await signOut(auth);
-  //     navigate("/sign-in");
-  //   } catch {
-  //     alert("Failed to sign out user. Please try again later.");
-  //   }
-  // };
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      navigate("/sign-in");
+    } catch {
+      alert("Failed to sign out user. Please try again later.");
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -76,34 +75,52 @@ const SignedInLayout = ({ children }) => {
   if (user && !isVerified) return <div>Please verify your email...</div>;
 
   return (
-    <div className={styles.container}>
-      <SideBar />
-      <div className={styles.content}>
-        <header className="navbar py-4 px-5">
-          <div className="d-flex align-items-center gap-2 ms-auto">
-            <CgProfile size={25} />
-            <p style={{ margin: 0 }}>{user.fullName}</p>
-            <div>
-              <BsChevronDown size={15} />
-            </div>
-            <Modal
-              isOpen={isUserMenuOpen}
-              onClose={() => setIsUserMenuOpen(false)}
+    <>
+      <div className={styles.container}>
+        <SideBar />
+        <div className={styles.content}>
+          <header className="navbar py-4 px-5">
+            <button
+              className="d-flex align-items-center gap-2 ms-auto"
+              style={{ position: "relative" }}
+              onClick={() => setIsUserMenuOpen((prev) => !prev)}
             >
-              asdsadas
-            </Modal>
-            {/* <button
-              className="btn btn-outline-danger"
-              onClick={() => handleSignOut()}
-            >
-              Logout
-            </button> */}
-          </div>
-        </header>
+              <CgProfile size={25} />
+              <p style={{ margin: 0 }}>{user.fullName}</p>
+              <div>
+                <BsChevronDown size={15} />
+              </div>
+              {/* user menu */}
+              <ul
+                className="border rounded w-100 flex-column dropdown-menu"
+                style={{
+                  display: isUserMenuOpen ? "flex" : "none",
+                  position: "absolute",
+                  top: "2.5rem",
+                }}
+              >
+                <li className="dropdown-item d-flex gap-2 align-items-center">
+                  <BsPerson size={20} />
+                  Profile
+                </li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li
+                  className="dropdown-item d-flex gap-2 align-items-center"
+                  style={{ cursor: "pointer" }}
+                >
+                  <BiLogOut size={20} />
+                  <button onClick={() => handleSignOut()}>Logout</button>
+                </li>
+              </ul>
+            </button>
+          </header>
 
-        <main>{children}</main>
+          <main>{children}</main>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
