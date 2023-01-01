@@ -39,6 +39,7 @@ const SignUp = () => {
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
         role: "MEMBER",
+        avatar: result.user.photoURL,
       });
 
       navigate("/documents");

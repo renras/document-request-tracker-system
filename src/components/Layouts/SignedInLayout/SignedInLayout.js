@@ -1,4 +1,5 @@
-import { signOut, sendEmailVerification } from "firebase/auth";
+// import { signOut, sendEmailVerification } from "firebase/auth";
+import { sendEmailVerification } from "firebase/auth";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +10,8 @@ import Loader from "../../Loader/Loader";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import Error from "../../Error/Error";
+import { CgProfile } from "react-icons/cg";
+import { BsChevronDown } from "react-icons/bs";
 
 const SignedInLayout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -18,14 +21,14 @@ const SignedInLayout = ({ children }) => {
   const [isVerified, setIsVerified] = useState(false);
   const navigate = useNavigate();
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      navigate("/sign-in");
-    } catch {
-      alert("Failed to sign out user. Please try again later.");
-    }
-  };
+  // const handleSignOut = async () => {
+  //   try {
+  //     await signOut(auth);
+  //     navigate("/sign-in");
+  //   } catch {
+  //     alert("Failed to sign out user. Please try again later.");
+  //   }
+  // };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -34,10 +37,8 @@ const SignedInLayout = ({ children }) => {
       }
 
       if (!user.emailVerified) {
-        console.log("User is not verified");
         try {
           sendEmailVerification(user);
-          console.log("email sent");
         } catch (e) {
           console.error(e);
         } finally {
@@ -77,14 +78,18 @@ const SignedInLayout = ({ children }) => {
       <SideBar />
       <div className={styles.content}>
         <header className="navbar py-4 px-5">
-          <div className="d-flex align-items-center gap-4 ms-auto">
-            <p style={{ margin: 0 }}>Welcome, {user.fullName}!</p>
-            <button
+          <div className="d-flex align-items-center gap-2 ms-auto">
+            <CgProfile size={25} />
+            <p style={{ margin: 0 }}>{user.fullName}</p>
+            <div>
+              <BsChevronDown size={15} />
+            </div>
+            {/* <button
               className="btn btn-outline-danger"
               onClick={() => handleSignOut()}
             >
               Logout
-            </button>
+            </button> */}
           </div>
         </header>
 
