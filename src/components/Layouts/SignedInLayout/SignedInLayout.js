@@ -12,6 +12,7 @@ import Error from "../../Error/Error";
 import { CgProfile } from "react-icons/cg";
 import { BsChevronDown, BsPerson } from "react-icons/bs";
 import { BiLogOut } from "react-icons/bi";
+import { Link } from "react-router-dom";
 
 const SignedInLayout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -101,7 +102,12 @@ const SignedInLayout = ({ children }) => {
               >
                 <li className="dropdown-item d-flex gap-2 align-items-center">
                   <BsPerson size={20} />
-                  Profile
+                  <Link
+                    to="/profile"
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    Profile
+                  </Link>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />
