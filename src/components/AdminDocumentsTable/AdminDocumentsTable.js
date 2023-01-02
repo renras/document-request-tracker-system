@@ -1,58 +1,61 @@
 import PropTypes from "prop-types";
-import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
+// import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import Kebab from "../ui/Kebab/Kebab";
+import { useLocation } from "react-router-dom";
+import { kebabCase } from "lodash";
 
 const columns = [
   "Tracking ID",
   "Document Type",
   "Purpose",
   "Requested By",
-  "Action",
+  "Status",
 ];
 
 const KEBAB_OPTIONS = [
   {
-    label: "RECEIVED",
-    value: "RECEIVED",
+    label: "On Process",
+    value: "ON PROCESS",
   },
   {
-    label: "HOLD",
-    value: "HOLD",
+    label: "For Release",
+    value: "FOR RELEASE",
   },
   {
-    label: "RETURNED",
-    value: "RETURNED",
-  },
-  {
-    label: "RELEASED",
+    label: "Released",
     value: "RELEASED",
   },
 ];
 
 const Table = ({ documents }) => {
-  const handleAcceptDocument = async (id) => {
-    try {
-      const docRef = doc(db, "documents", id);
-      await updateDoc(docRef, {
-        status: "RECEIVED",
-      });
-    } catch {
-      alert("Failed to receive document. Please try again later.");
-    }
-  };
+  const location = useLocation();
+  const kebabOptions = KEBAB_OPTIONS.filter(
+    (option) => !location.pathname.includes(kebabCase(option.value))
+  );
 
-  const handleReturnDocument = async (id) => {
-    try {
-      const docRef = doc(db, "documents", id);
-      await updateDoc(docRef, {
-        status: "RETURNED",
-      });
-    } catch {
-      alert("Failed to return document. Please try again later.");
-    }
-  };
+  // const handleAcceptDocument = async (id) => {
+  //   try {
+  //     const docRef = doc(db, "documents", id);
+  //     await updateDoc(docRef, {
+  //       status: "RECEIVED",
+  //     });
+  //   } catch {
+  //     alert("Failed to receive document. Please try again later.");
+  //   }
+  // };
+
+  // const handleReturnDocument = async (id) => {
+  //   try {
+  //     const docRef = doc(db, "documents", id);
+  //     await updateDoc(docRef, {
+  //       status: "RETURNED",
+  //     });
+  //   } catch {
+  //     alert("Failed to return document. Please try again later.");
+  //   }
+  // };
 
   const handleChangeDocumentStatus = async (id, status) => {
     try {
@@ -79,7 +82,7 @@ const Table = ({ documents }) => {
       </thead>
       <tbody>
         {documents.map((document) => {
-          const { id, documentType, purpose, author, status } = document;
+          const { id, documentType, purpose, author } = document;
 
           return (
             <tr key={id}>
@@ -87,7 +90,7 @@ const Table = ({ documents }) => {
               <td>{documentType}</td>
               <td>{purpose}</td>
               <td>{author?.fullName}</td>
-              {status === "INCOMING" && (
+              {/* {status === "INCOMING" && (
                 <td>
                   <div className="d-flex gap-2">
                     <button
@@ -104,19 +107,17 @@ const Table = ({ documents }) => {
                     </button>
                   </div>
                 </td>
-              )}
+              )} */}
 
-              {status !== "INCOMING" && (
-                <td>
-                  <Kebab
-                    id="document menu"
-                    onChange={(option) =>
-                      handleChangeDocumentStatus(id, option.value)
-                    }
-                    options={KEBAB_OPTIONS}
-                  />
-                </td>
-              )}
+              <td>
+                <Kebab
+                  id="document menu"
+                  onChange={(option) =>
+                    handleChangeDocumentStatus(id, option.value)
+                  }
+                  options={kebabOptions}
+                />
+              </td>
             </tr>
           );
         })}

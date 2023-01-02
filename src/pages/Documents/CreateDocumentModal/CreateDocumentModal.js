@@ -65,7 +65,7 @@ const CreateDocument = ({ userId }) => {
         documentType: documentType.value,
         quantity: quantity.value,
         purpose: purpose.value,
-        status: "INCOMING",
+        status: "ON PROCESS",
         authorId: userId,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
