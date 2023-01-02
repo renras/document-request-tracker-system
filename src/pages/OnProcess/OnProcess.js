@@ -4,8 +4,12 @@ import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import useFetchDocuments from "../../hooks/useFetchDocuments";
 
-const Hold = () => {
-  const { data: receivedDocuments, loading, error } = useFetchDocuments("HOLD");
+const OnProcess = () => {
+  const {
+    data: incomingDocuments,
+    loading,
+    error,
+  } = useFetchDocuments("ON PROCESS");
 
   if (loading) return <Loader />;
   if (error) return <Error />;
@@ -13,11 +17,11 @@ const Hold = () => {
   return (
     <SignedInLayout>
       <div className="px-4">
-        <h1 className="h2">Hold</h1>
-        <AdminDocumentsTable documents={receivedDocuments} />
+        <h1 className="h2">On Process</h1>
+        <AdminDocumentsTable documents={incomingDocuments} />
       </div>
     </SignedInLayout>
   );
 };
 
-export default Hold;
+export default OnProcess;

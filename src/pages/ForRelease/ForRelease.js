@@ -4,12 +4,12 @@ import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import useFetchDocuments from "../../hooks/useFetchDocuments";
 
-const Incoming = () => {
+const ForRelease = () => {
   const {
-    data: incomingDocuments,
+    data: forReleaseDocuments,
     loading,
     error,
-  } = useFetchDocuments("INCOMING");
+  } = useFetchDocuments("FOR RELEASE");
 
   if (loading) return <Loader />;
   if (error) return <Error />;
@@ -17,11 +17,11 @@ const Incoming = () => {
   return (
     <SignedInLayout>
       <div className="px-4">
-        <h1 className="h2">Incoming</h1>
-        <AdminDocumentsTable documents={incomingDocuments} />
+        <h1 className="h2">For Release</h1>
+        <AdminDocumentsTable documents={forReleaseDocuments} />
       </div>
     </SignedInLayout>
   );
 };
 
-export default Incoming;
+export default ForRelease;
