@@ -14,6 +14,18 @@ import { BsChevronDown, BsPerson } from "react-icons/bs";
 import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import useClickAway from "../../../hooks/useClickAway";
+import { GrNotification } from "react-icons/gr";
+
+const DATA = [
+  {
+    name: "Gladys Dare",
+    description: "commented on Ecosystems and conservation",
+  },
+  {
+    name: "Rosina Wisoky",
+    description: "followed you",
+  },
+];
 
 const SignedInLayout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -22,9 +34,12 @@ const SignedInLayout = ({ children }) => {
   const [emailVerifiedLoading, setEmailVerifiedLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isNotificationBoxOpen, setIsNotificationBoxOpen] = useState(false);
   const userMenuRef = useRef(null);
   const avatarWrapperRef = useRef(null);
   const navigate = useNavigate();
+
+  console.log(DATA);
 
   const handleSignOut = async () => {
     try {
@@ -89,7 +104,50 @@ const SignedInLayout = ({ children }) => {
         <SideBar />
         <div className={styles.content}>
           <header className="navbar py-4 px-5">
-            <div className="ms-auto" style={{ position: "relative" }}>
+            <div
+              className="ms-auto d-flex gap-4 align-items-center"
+              style={{ position: "relative" }}
+            >
+              <div style={{ position: "relative" }}>
+                <button
+                  className="d-flex align-items-center"
+                  onClick={() => setIsNotificationBoxOpen((prev) => !prev)}
+                >
+                  <GrNotification size={20} />
+                </button>
+              </div>
+              {isNotificationBoxOpen && (
+                <div
+                  className="border"
+                  style={{
+                    position: "absolute",
+                    top: "3rem",
+                    right: "0",
+                    width: "25rem",
+                    background: "#fff",
+                  }}
+                >
+                  <div className="border border-bottom-2 border-top-0 border-start-0 border-end-0 p-2 px-3 fs-6 fw-bold">
+                    Notifications
+                  </div>
+
+                  {/* notifications */}
+                  {DATA.map((data, index) => (
+                    <div className="w-100" key={index}>
+                      <div className="w-100 border p-3">
+                        <div className="d-flex align-items-start gap-3">
+                          <div>
+                            <CgProfile size={25} />
+                          </div>
+                          <div>
+                            <b>{data.name}</b> {data.description}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
               <button
                 ref={avatarWrapperRef}
                 className="d-flex align-items-center gap-2"
