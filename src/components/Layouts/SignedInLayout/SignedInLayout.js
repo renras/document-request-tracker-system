@@ -148,6 +148,10 @@ const SignedInLayout = ({ children }) => {
     return <Error />;
   if (user && !isVerified) return <div>Please verify your email...</div>;
 
+  const unreadNotificationsCount = notificationsWithSenderData.filter(
+    (notification) => !notification.isRead
+  ).length;
+
   return (
     <>
       <div className={styles.container}>
@@ -158,13 +162,18 @@ const SignedInLayout = ({ children }) => {
               className="ms-auto d-flex gap-4 align-items-center"
               style={{ position: "relative" }}
             >
-              <div style={{ position: "relative" }}>
+              <div className="position-relative">
                 <button
                   className="d-flex align-items-center"
                   onClick={() => setIsNotificationBoxOpen((prev) => !prev)}
                 >
                   <GrNotification size={20} />
                 </button>
+                {unreadNotificationsCount > 0 && (
+                  <span className="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">
+                    {unreadNotificationsCount}
+                  </span>
+                )}
               </div>
               {isNotificationBoxOpen && (
                 <div
