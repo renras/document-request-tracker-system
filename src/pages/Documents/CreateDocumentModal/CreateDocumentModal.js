@@ -53,7 +53,6 @@ const CreateDocument = ({ profile }) => {
         clickAction: `${window.location.origin}/on-process`,
         isRead: false,
         createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
       });
     } catch (error) {
       console.error(error);

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { CgProfile } from "react-icons/cg";
 
-const NotificationBox = ({ data }) => {
+const NotificationBox = ({ data, onClick }) => {
   return (
     <div
       className="border"
@@ -16,7 +16,8 @@ const NotificationBox = ({ data }) => {
 
       {/* notifications */}
       {data.map((data, index) => (
-        <div
+        <button
+          onClick={() => onClick(data)}
           className="w-100"
           key={index}
           style={{ background: data.isRead ? "#fff" : "#f5f5f5" }}
@@ -31,7 +32,7 @@ const NotificationBox = ({ data }) => {
               </div>
             </div>
           </div>
-        </div>
+        </button>
       ))}
     </div>
   );
@@ -41,4 +42,5 @@ export default NotificationBox;
 
 NotificationBox.propTypes = {
   data: PropTypes.array.isRequired,
+  onClick: PropTypes.func.isRequired,
 };

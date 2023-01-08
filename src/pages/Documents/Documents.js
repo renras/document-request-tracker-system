@@ -27,7 +27,6 @@ const Documents = () => {
   if (documentsDataLoading || userLoading || profileLoading) return <Loader />;
   if (userError || documentsDataError || profileError) return <Error />;
 
-  console.log(profile);
   return (
     <SignedInLayout>
       <div className="px-5">

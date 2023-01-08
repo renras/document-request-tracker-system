@@ -6,7 +6,7 @@ import { auth } from "../../../firebase-config";
 import SideBar from "./SideBar/SideBar";
 import styles from "./SignedInLayout.module.css";
 import Loader from "../../Loader/Loader";
-import { doc, getDoc, collection } from "firebase/firestore";
+import { doc, getDoc, collection, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import Error from "../../Error/Error";
 import { CgProfile } from "react-icons/cg";
@@ -15,7 +15,7 @@ import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import useClickAway from "../../../hooks/useClickAway";
 import { GrNotification } from "react-icons/gr";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
 import NotificationBox from "./NotificationBox";
 
 const SignedInLayout = ({ children }) => {
@@ -27,7 +27,7 @@ const SignedInLayout = ({ children }) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationBoxOpen, setIsNotificationBoxOpen] = useState(false);
   const [notificationsData, notificationsLoading, notificationsError] =
-    useCollectionData(collection(db, "notifications"));
+    useCollection(collection(db, "notifications"));
   const userMenuRef = useRef(null);
   const avatarWrapperRef = useRef(null);
   const navigate = useNavigate();
@@ -102,19 +102,21 @@ const SignedInLayout = ({ children }) => {
     try {
       (async () => {
         const newNotifications = await Promise.all(
-          notificationsData.map(async (document) => {
-            const docRef = doc(db, "users", document.senderId);
+          notificationsData.docs.map(async (document) => {
+            const docRef = doc(db, "users", document.data().senderId);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
               return {
-                ...document,
+                ...document.data(),
                 sender: docSnap.data(),
+                id: document.id,
               };
             } else {
               return {
-                ...document,
+                ...document.data(),
                 sender: null,
+                id: document.id,
               };
             }
           })
@@ -129,7 +131,7 @@ const SignedInLayout = ({ children }) => {
           "Failed to get notifications with sender data"
         );
     } finally {
-      setNotificationsWithSenderDataLoading(false);
+      ignore && setNotificationsWithSenderDataLoading(false);
     }
 
     return () => {
@@ -148,10 +150,22 @@ const SignedInLayout = ({ children }) => {
     return <Error />;
   if (user && !isVerified) return <div>Please verify your email...</div>;
 
-  const unreadNotificationsCount = notificationsWithSenderData.filter(
+  const unreadNotificationsCount = notificationsWithSenderData?.filter(
     (notification) => !notification.isRead
   ).length;
 
+  const handleNotificationClick = async (notification) => {
+    const notificationRef = doc(db, "notifications", notification.id);
+
+    try {
+      await updateDoc(notificationRef, {
+        isRead: true,
+      });
+      navigate("/on-process");
+    } catch (error) {
+      alert("Server error");
+    }
+  };
   return (
     <>
       <div className={styles.container}>
@@ -183,7 +197,10 @@ const SignedInLayout = ({ children }) => {
                     right: "0",
                   }}
                 >
-                  <NotificationBox data={notificationsWithSenderData} />
+                  <NotificationBox
+                    data={notificationsWithSenderData}
+                    onClick={(data) => handleNotificationClick(data)}
+                  />
                 </div>
               )}
               <button
