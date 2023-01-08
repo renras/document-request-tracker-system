@@ -6,7 +6,7 @@ import { auth } from "../../../firebase-config";
 import SideBar from "./SideBar/SideBar";
 import styles from "./SignedInLayout.module.css";
 import Loader from "../../Loader/Loader";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import Error from "../../Error/Error";
 import { CgProfile } from "react-icons/cg";
@@ -15,6 +15,7 @@ import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import useClickAway from "../../../hooks/useClickAway";
 import { GrNotification } from "react-icons/gr";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 
 const DATA = [
   {
@@ -35,6 +36,8 @@ const SignedInLayout = ({ children }) => {
   const [isVerified, setIsVerified] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationBoxOpen, setIsNotificationBoxOpen] = useState(false);
+  const [notificationsData, notificationsLoading, notificationsError] =
+    useCollectionData(collection(db, "notifications"));
   const userMenuRef = useRef(null);
   const avatarWrapperRef = useRef(null);
   const navigate = useNavigate();
@@ -92,9 +95,12 @@ const SignedInLayout = ({ children }) => {
     return () => unsubscribe();
   }, [navigate]);
 
-  if (loading || emailVerifiedLoading) return <Loader />;
-  if (error) return <Error />;
+  if (loading || emailVerifiedLoading || notificationsLoading)
+    return <Loader />;
+  if (error || notificationsError) return <Error />;
   if (user && !isVerified) return <div>Please verify your email...</div>;
+
+  console.log(notificationsData);
 
   return (
     <>
