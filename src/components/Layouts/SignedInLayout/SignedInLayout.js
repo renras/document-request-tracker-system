@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import useClickAway from "../../../hooks/useClickAway";
 import { GrNotification } from "react-icons/gr";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import NotificationBox from "./NotificationBox";
 
 const DATA = [
   {
@@ -41,6 +42,16 @@ const SignedInLayout = ({ children }) => {
   const userMenuRef = useRef(null);
   const avatarWrapperRef = useRef(null);
   const navigate = useNavigate();
+  const [notificationsWithSenderData, setNotificationsWithSenderData] =
+    useState(null);
+  const [
+    notificationsWithSenderDataLoading,
+    setNotificationsWithSenderDataLoading,
+  ] = useState(true);
+  const [
+    notificationsWithSenderDataError,
+    setNotificationsWithSenderDataError,
+  ] = useState(null);
 
   const handleSignOut = async () => {
     try {
@@ -95,13 +106,60 @@ const SignedInLayout = ({ children }) => {
     return () => unsubscribe();
   }, [navigate]);
 
-  if (loading || emailVerifiedLoading || notificationsLoading)
+  useEffect(() => {
+    if (!notificationsData) return;
+
+    let ignore = true;
+    try {
+      (async () => {
+        const newNotifications = await Promise.all(
+          notificationsData.map(async (document) => {
+            const docRef = doc(db, "users", document.senderId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              return {
+                ...document,
+                sender: docSnap.data(),
+              };
+            } else {
+              return {
+                ...document,
+                sender: null,
+              };
+            }
+          })
+        );
+
+        ignore && setNotificationsWithSenderData(newNotifications);
+      })();
+    } catch (error) {
+      console.error(error);
+      ignore &&
+        setNotificationsWithSenderDataError(
+          "Failed to get notifications with sender data"
+        );
+    } finally {
+      setNotificationsWithSenderDataLoading(false);
+    }
+
+    return () => {
+      ignore = false;
+    };
+  }, [notificationsData]);
+
+  if (
+    loading ||
+    emailVerifiedLoading ||
+    notificationsLoading ||
+    notificationsWithSenderDataLoading
+  )
     return <Loader />;
-  if (error || notificationsError) return <Error />;
+  if (error || notificationsError || notificationsWithSenderDataError)
+    return <Error />;
   if (user && !isVerified) return <div>Please verify your email...</div>;
 
-  console.log(notificationsData);
-
+  console.log(notificationsWithSenderData);
   return (
     <>
       <div className={styles.container}>
@@ -122,34 +180,13 @@ const SignedInLayout = ({ children }) => {
               </div>
               {isNotificationBoxOpen && (
                 <div
-                  className="border"
                   style={{
                     position: "absolute",
                     top: "3rem",
                     right: "0",
-                    width: "25rem",
-                    background: "#fff",
                   }}
                 >
-                  <div className="border border-bottom-2 border-top-0 border-start-0 border-end-0 p-2 px-3 fs-6 fw-bold">
-                    Notifications
-                  </div>
-
-                  {/* notifications */}
-                  {DATA.map((data, index) => (
-                    <div className="w-100" key={index}>
-                      <div className="w-100 border p-3">
-                        <div className="d-flex align-items-start gap-3">
-                          <div>
-                            <CgProfile size={25} />
-                          </div>
-                          <div>
-                            <b>{data.name}</b> {data.description}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  <NotificationBox data={DATA} />
                 </div>
               )}
               <button
