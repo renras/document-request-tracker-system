@@ -16,14 +16,18 @@ const NotificationBox = ({ data }) => {
 
       {/* notifications */}
       {data.map((data, index) => (
-        <div className="w-100" key={index}>
+        <div
+          className="w-100"
+          key={index}
+          style={{ background: data.isRead ? "#fff" : "#f5f5f5" }}
+        >
           <div className="w-100 border p-3">
             <div className="d-flex align-items-start gap-3">
               <div>
                 <CgProfile size={25} />
               </div>
               <div>
-                <b>{data.name}</b> {data.description}
+                <b>{data.sender.fullName}</b> {data.body}
               </div>
             </div>
           </div>

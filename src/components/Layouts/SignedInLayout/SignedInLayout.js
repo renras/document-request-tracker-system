@@ -18,17 +18,6 @@ import { GrNotification } from "react-icons/gr";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import NotificationBox from "./NotificationBox";
 
-const DATA = [
-  {
-    name: "Gladys Dare",
-    description: "commented on Ecosystems and conservation",
-  },
-  {
-    name: "Rosina Wisoky",
-    description: "followed you",
-  },
-];
-
 const SignedInLayout = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(false);
@@ -159,7 +148,6 @@ const SignedInLayout = ({ children }) => {
     return <Error />;
   if (user && !isVerified) return <div>Please verify your email...</div>;
 
-  console.log(notificationsWithSenderData);
   return (
     <>
       <div className={styles.container}>
@@ -186,7 +174,7 @@ const SignedInLayout = ({ children }) => {
                     right: "0",
                   }}
                 >
-                  <NotificationBox data={DATA} />
+                  <NotificationBox data={notificationsWithSenderData} />
                 </div>
               )}
               <button

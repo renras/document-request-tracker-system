@@ -50,8 +50,8 @@ const CreateDocument = ({ profile }) => {
         type: "REQUEST",
         body: "has created a request",
         senderId: id,
-        click_action: `${window.location.origin}/on-process`,
-        is_read: false,
+        clickAction: `${window.location.origin}/on-process`,
+        isRead: false,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
