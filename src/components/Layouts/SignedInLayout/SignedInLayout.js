@@ -6,7 +6,7 @@ import { auth } from "../../../firebase-config";
 import SideBar from "./SideBar/SideBar";
 import styles from "./SignedInLayout.module.css";
 import Loader from "../../Loader/Loader";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import Error from "../../Error/Error";
 import { CgProfile } from "react-icons/cg";
@@ -14,6 +14,9 @@ import { BsChevronDown, BsPerson } from "react-icons/bs";
 import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import useClickAway from "../../../hooks/useClickAway";
+import { GrNotification } from "react-icons/gr";
+import { useCollection } from "react-firebase-hooks/firestore";
+import NotificationBox from "./NotificationBox";
 
 const SignedInLayout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -22,9 +25,22 @@ const SignedInLayout = ({ children }) => {
   const [emailVerifiedLoading, setEmailVerifiedLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isNotificationBoxOpen, setIsNotificationBoxOpen] = useState(false);
+  const [notificationsData, notificationsLoading, notificationsError] =
+    useCollection(collection(db, "notifications"));
   const userMenuRef = useRef(null);
   const avatarWrapperRef = useRef(null);
   const navigate = useNavigate();
+  const [notificationsWithSenderData, setNotificationsWithSenderData] =
+    useState(null);
+  const [
+    notificationsWithSenderDataLoading,
+    setNotificationsWithSenderDataLoading,
+  ] = useState(true);
+  const [
+    notificationsWithSenderDataError,
+    setNotificationsWithSenderDataError,
+  ] = useState(null);
 
   const handleSignOut = async () => {
     try {
@@ -79,17 +95,114 @@ const SignedInLayout = ({ children }) => {
     return () => unsubscribe();
   }, [navigate]);
 
-  if (loading || emailVerifiedLoading) return <Loader />;
-  if (error) return <Error />;
+  useEffect(() => {
+    if (!notificationsData) return;
+
+    let ignore = true;
+    try {
+      (async () => {
+        const newNotifications = await Promise.all(
+          notificationsData.docs.map(async (document) => {
+            const docRef = doc(db, "users", document.data().senderId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              return {
+                ...document.data(),
+                sender: docSnap.data(),
+                id: document.id,
+              };
+            } else {
+              return {
+                ...document.data(),
+                sender: null,
+                id: document.id,
+              };
+            }
+          })
+        );
+
+        ignore && setNotificationsWithSenderData(newNotifications);
+      })();
+    } catch (error) {
+      console.error(error);
+      ignore &&
+        setNotificationsWithSenderDataError(
+          "Failed to get notifications with sender data"
+        );
+    } finally {
+      ignore && setNotificationsWithSenderDataLoading(false);
+    }
+
+    return () => {
+      ignore = false;
+    };
+  }, [notificationsData]);
+
+  if (
+    loading ||
+    emailVerifiedLoading ||
+    notificationsLoading ||
+    notificationsWithSenderDataLoading
+  )
+    return <Loader />;
+  if (error || notificationsError || notificationsWithSenderDataError)
+    return <Error />;
   if (user && !isVerified) return <div>Please verify your email...</div>;
 
+  const unreadNotificationsCount = notificationsWithSenderData?.filter(
+    (notification) => !notification.isRead
+  ).length;
+
+  const handleNotificationClick = async (notification) => {
+    const notificationRef = doc(db, "notifications", notification.id);
+
+    try {
+      await updateDoc(notificationRef, {
+        isRead: true,
+      });
+      navigate("/on-process");
+    } catch (error) {
+      alert("Server error");
+    }
+  };
   return (
     <>
       <div className={styles.container}>
         <SideBar />
         <div className={styles.content}>
           <header className="navbar py-4 px-5">
-            <div className="ms-auto" style={{ position: "relative" }}>
+            <div
+              className="ms-auto d-flex gap-4 align-items-center"
+              style={{ position: "relative" }}
+            >
+              <div className="position-relative">
+                <button
+                  className="d-flex align-items-center"
+                  onClick={() => setIsNotificationBoxOpen((prev) => !prev)}
+                >
+                  <GrNotification size={20} />
+                </button>
+                {unreadNotificationsCount > 0 && (
+                  <span className="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">
+                    {unreadNotificationsCount}
+                  </span>
+                )}
+              </div>
+              {isNotificationBoxOpen && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "3rem",
+                    right: "0",
+                  }}
+                >
+                  <NotificationBox
+                    data={notificationsWithSenderData}
+                    onClick={(data) => handleNotificationClick(data)}
+                  />
+                </div>
+              )}
               <button
                 ref={avatarWrapperRef}
                 className="d-flex align-items-center gap-2"

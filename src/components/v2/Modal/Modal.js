@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 const Modal = ({ isOpen, children, onClose, className, style }) => {
   if (!isOpen) return null;
 
-  console.log(onClose);
   return ReactDom.createPortal(
     <div
       className="modal fade show"

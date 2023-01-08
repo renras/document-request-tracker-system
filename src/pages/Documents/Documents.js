@@ -1,47 +1,31 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 import CreateDocumentModal from "./CreateDocumentModal/CreateDocumentModal";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db, auth } from "../../firebase-config";
-import { format } from "date-fns";
+import useFetchUserDocuments from "../../hooks/useFetchUserDocuments";
+import { auth } from "../../firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import { AiFillEye } from "react-icons/ai";
 import DocumentModal from "../../components/DocumentModal/DocumentModal";
-import { useEffect, useState } from "react";
 const columns = ["Tracking ID", "Document Type", "Purpose", "Action"];
+import useFetchProfile from "../../hooks/useFetchProfile";
 
 const Documents = () => {
   const [user, userLoading, userError] = useAuthState(auth);
-  const [documentsDataLoading, setDocumentsDataLoading] = useState(true);
-  const [documentsDataError, setDocumentsDataError] = useState(null);
-  const [documentsData, setDocumentsData] = useState([]);
 
-  useEffect(() => {
-    if (!user?.uid) return;
+  const {
+    data: documentsData,
+    loading: documentsDataLoading,
+    error: documentsDataError,
+  } = useFetchUserDocuments(user ? user : null);
+  const {
+    data: profile,
+    loading: profileLoading,
+    error: profileError,
+  } = useFetchProfile(user ? user : null);
 
-    (async () => {
-      try {
-        const documentsRef = collection(db, "documents");
-        const q = query(documentsRef, where("authorId", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-        const documents = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: format(doc.data().createdAt.toDate(), "MMMM dd, yyyy"),
-        }));
-        setDocumentsData(documents);
-      } catch (e) {
-        console.error(e);
-        setDocumentsDataError("Failed to fetch documents");
-      } finally {
-        setDocumentsDataLoading(false);
-      }
-    })();
-  }, [user?.uid]);
-
-  if (documentsDataLoading || userLoading) return <Loader />;
-  if (userError || documentsDataError) return <Error />;
+  if (documentsDataLoading || userLoading || profileLoading) return <Loader />;
+  if (userError || documentsDataError || profileError) return <Error />;
 
   return (
     <SignedInLayout>
@@ -67,7 +51,7 @@ const Documents = () => {
             </tr>
           </thead>
           <tbody>
-            {documentsData.map((document) => {
+            {documentsData?.map((document) => {
               const { id, documentType, purpose } = document;
 
               return (
@@ -93,7 +77,9 @@ const Documents = () => {
       </div>
 
       {/* create document modal */}
-      {user?.uid && <CreateDocumentModal userId={user.uid} />}
+      {profile && (
+        <CreateDocumentModal profile={{ ...profile, id: user.uid }} />
+      )}
     </SignedInLayout>
   );
 };
