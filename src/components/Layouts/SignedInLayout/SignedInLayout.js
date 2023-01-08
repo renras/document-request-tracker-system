@@ -39,8 +39,6 @@ const SignedInLayout = ({ children }) => {
   const avatarWrapperRef = useRef(null);
   const navigate = useNavigate();
 
-  console.log(DATA);
-
   const handleSignOut = async () => {
     try {
       await signOut(auth);

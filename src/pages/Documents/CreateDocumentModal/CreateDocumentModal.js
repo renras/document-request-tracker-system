@@ -19,7 +19,7 @@ const QUANTITIES = [
   { label: "5", value: "5" },
 ];
 
-const CreateDocument = ({ user }) => {
+const CreateDocument = ({ profile }) => {
   const [documentType, setDocumentType] = useState(DOCUMENT_TYPES[0]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const [purpose, setPurpose] = useState(PURPOSES[0]);
@@ -44,6 +44,22 @@ const CreateDocument = ({ user }) => {
     });
   };
 
+  const createRequestNotification = async (id) => {
+    try {
+      await addDoc(collection(db, "notifications"), {
+        type: "REQUEST",
+        body: "has created a request",
+        senderId: id,
+        click_action: `${window.location.origin}/on-process`,
+        is_read: false,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const onSubmit = async () => {
     if (!documentType.value) {
       alert("Please select a document type");
@@ -66,13 +82,13 @@ const CreateDocument = ({ user }) => {
         quantity: quantity.value,
         purpose: purpose.value,
         status: "ON PROCESS",
-        authorId: user.uid,
+        authorId: profile.id,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
 
       await uploadAttachment(doc.id);
-
+      await createRequestNotification(profile.id);
       navigate(0);
     } catch (e) {
       console.error(e);
@@ -166,5 +182,5 @@ const CreateDocument = ({ user }) => {
 export default CreateDocument;
 
 CreateDocument.propTypes = {
-  user: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
 };

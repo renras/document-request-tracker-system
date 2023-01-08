@@ -8,6 +8,7 @@ import Error from "../../components/Error/Error";
 import { AiFillEye } from "react-icons/ai";
 import DocumentModal from "../../components/DocumentModal/DocumentModal";
 const columns = ["Tracking ID", "Document Type", "Purpose", "Action"];
+import useFetchProfile from "../../hooks/useFetchProfile";
 
 const Documents = () => {
   const [user, userLoading, userError] = useAuthState(auth);
@@ -17,12 +18,16 @@ const Documents = () => {
     loading: documentsDataLoading,
     error: documentsDataError,
   } = useFetchUserDocuments(user ? user : null);
+  const {
+    data: profile,
+    loading: profileLoading,
+    error: profileError,
+  } = useFetchProfile(user ? user : null);
 
-  if (documentsDataLoading || userLoading) return <Loader />;
-  if (userError || documentsDataError) return <Error />;
+  if (documentsDataLoading || userLoading || profileLoading) return <Loader />;
+  if (userError || documentsDataError || profileError) return <Error />;
 
-  console.log(user);
-
+  console.log(profile);
   return (
     <SignedInLayout>
       <div className="px-5">
@@ -73,7 +78,9 @@ const Documents = () => {
       </div>
 
       {/* create document modal */}
-      {user && <CreateDocumentModal user={user} />}
+      {profile && (
+        <CreateDocumentModal profile={{ ...profile, id: user.uid }} />
+      )}
     </SignedInLayout>
   );
 };

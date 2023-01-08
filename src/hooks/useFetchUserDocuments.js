@@ -10,10 +10,7 @@ const useFetchUserDocuments = (user) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
+    if (!user) return;
 
     (async () => {
       try {
