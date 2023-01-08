@@ -19,7 +19,7 @@ const QUANTITIES = [
   { label: "5", value: "5" },
 ];
 
-const CreateDocument = ({ userId }) => {
+const CreateDocument = ({ user }) => {
   const [documentType, setDocumentType] = useState(DOCUMENT_TYPES[0]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const [purpose, setPurpose] = useState(PURPOSES[0]);
@@ -66,7 +66,7 @@ const CreateDocument = ({ userId }) => {
         quantity: quantity.value,
         purpose: purpose.value,
         status: "ON PROCESS",
-        authorId: userId,
+        authorId: user.uid,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
@@ -166,5 +166,5 @@ const CreateDocument = ({ userId }) => {
 export default CreateDocument;
 
 CreateDocument.propTypes = {
-  userId: PropTypes.string,
+  user: PropTypes.object.isRequired,
 };

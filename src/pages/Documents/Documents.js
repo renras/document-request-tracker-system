@@ -1,47 +1,27 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 import CreateDocumentModal from "./CreateDocumentModal/CreateDocumentModal";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db, auth } from "../../firebase-config";
-import { format } from "date-fns";
+import useFetchUserDocuments from "../../hooks/useFetchUserDocuments";
+import { auth } from "../../firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import { AiFillEye } from "react-icons/ai";
 import DocumentModal from "../../components/DocumentModal/DocumentModal";
-import { useEffect, useState } from "react";
 const columns = ["Tracking ID", "Document Type", "Purpose", "Action"];
 
 const Documents = () => {
   const [user, userLoading, userError] = useAuthState(auth);
-  const [documentsDataLoading, setDocumentsDataLoading] = useState(true);
-  const [documentsDataError, setDocumentsDataError] = useState(null);
-  const [documentsData, setDocumentsData] = useState([]);
 
-  useEffect(() => {
-    if (!user?.uid) return;
-
-    (async () => {
-      try {
-        const documentsRef = collection(db, "documents");
-        const q = query(documentsRef, where("authorId", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-        const documents = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: format(doc.data().createdAt.toDate(), "MMMM dd, yyyy"),
-        }));
-        setDocumentsData(documents);
-      } catch (e) {
-        console.error(e);
-        setDocumentsDataError("Failed to fetch documents");
-      } finally {
-        setDocumentsDataLoading(false);
-      }
-    })();
-  }, [user?.uid]);
+  const {
+    data: documentsData,
+    loading: documentsDataLoading,
+    error: documentsDataError,
+  } = useFetchUserDocuments(user ? user : null);
 
   if (documentsDataLoading || userLoading) return <Loader />;
   if (userError || documentsDataError) return <Error />;
+
+  console.log(user);
 
   return (
     <SignedInLayout>
@@ -67,7 +47,7 @@ const Documents = () => {
             </tr>
           </thead>
           <tbody>
-            {documentsData.map((document) => {
+            {documentsData?.map((document) => {
               const { id, documentType, purpose } = document;
 
               return (
@@ -93,7 +73,7 @@ const Documents = () => {
       </div>
 
       {/* create document modal */}
-      {user?.uid && <CreateDocumentModal userId={user.uid} />}
+      {user && <CreateDocumentModal user={user} />}
     </SignedInLayout>
   );
 };
