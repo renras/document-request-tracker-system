@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 const Header = ({ toggleBot, icon }) => {
   return (
     <div className="react-chatbot-kit-chat-header d-flex justify-content-between">
-      Conversation with Bot
+      Chat Support
       <button onClick={() => toggleBot()}>{icon}</button>
     </div>
   );

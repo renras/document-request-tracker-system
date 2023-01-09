@@ -2,17 +2,13 @@
 function Options() {
   const data = [
     {
-      text: "Question 1",
+      text: "I'd like to request for a document.",
       // handler: props.actionProvider.handleLinuxQuiz,
       id: 1,
     },
     {
-      text: "Question 2",
+      text: "I'd like to track my request",
       id: 2,
-    },
-    {
-      text: "Question 3",
-      id: 3,
     },
   ];
   const optionsList = data.map((option) => (
@@ -24,6 +20,8 @@ function Options() {
       {option.text}
     </button>
   ));
-  return <div className="d-flex justify-content-between">{optionsList}</div>;
+  return (
+    <div className="d-flex justify-content-between gap-2">{optionsList}</div>
+  );
 }
 export default Options;

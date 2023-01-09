@@ -19,12 +19,14 @@ const useConfig = () => {
 
   const config = {
     initialMessages: [
-      createChatBotMessage(`Hello`),
-      createChatBotMessage("Do you have any questions?", {
-        delay: 500,
-        widget: "options",
-        withAvatar: true,
-      }),
+      createChatBotMessage(
+        "Hello and welcome to the school registrar's office! How can I assist you today?",
+        {
+          delay: 500,
+          widget: "options",
+          withAvatar: true,
+        }
+      ),
     ],
     widgets: [
       {
