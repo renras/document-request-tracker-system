@@ -1,10 +1,8 @@
-// Config starter code
 import { createChatBotMessage } from "react-chatbot-kit";
-import Options from "./Options";
-import { useState } from "react";
+import Options from "../Options";
+import Header from "./Header/Header";
 import { BsChevronDown } from "react-icons/bs";
-import Header from "./components/Header/Header";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const useConfig = () => {
   const [showBot, setShowBot] = useState(
@@ -20,17 +18,15 @@ const useConfig = () => {
   const config = {
     initialMessages: [
       createChatBotMessage(
-        "Hello and welcome to the school registrar's office! How can I assist you today?",
+        `Hello and welcome to the school registrar's office! How can I assist you today?`,
         {
-          delay: 500,
-          widget: "options",
-          withAvatar: true,
+          widget: "Questions",
         }
       ),
     ],
     widgets: [
       {
-        widgetName: "options",
+        widgetName: "Questions",
         widgetFunc: (props) => <Options {...props} />,
       },
     ],

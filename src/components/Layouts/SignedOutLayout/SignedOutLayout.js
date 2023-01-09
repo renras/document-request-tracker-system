@@ -2,11 +2,11 @@ import PropTypes from "prop-types";
 import styles from "./SignedOutLayout.module.css";
 import { Chatbot } from "react-chatbot-kit";
 import MessageParser from "../../../chatbot/MessageParser";
-import useConfig from "../../../chatbot/useConfig";
 import ActionProvider from "../../../chatbot/ActionProvider";
 import { BsChevronUp } from "react-icons/bs";
 import ChatBotHeader from "../../../chatbot/components/Header/Header";
 import Header from "./Header/Header";
+import useConfig from "../../../chatbot/useConfig";
 
 const SignedOutLayout = ({ children }) => {
   const [config, showBot, setShowBot] = useConfig();
@@ -21,7 +21,6 @@ const SignedOutLayout = ({ children }) => {
             config={config}
             messageParser={MessageParser}
             actionProvider={ActionProvider}
-            close="true"
           />
         )}
 

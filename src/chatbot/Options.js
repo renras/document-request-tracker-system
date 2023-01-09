@@ -1,18 +1,16 @@
-// function Options(props)
-function Options() {
+import PropTypes from "prop-types";
+
+function Options(props) {
   const data = [
     {
-      text: "Question 1",
-      // handler: props.actionProvider.handleLinuxQuiz,
+      text: "I'd like to request for a document.",
+      handler: props.actionProvider.handleCreateRequest,
       id: 1,
     },
     {
-      text: "Question 2",
+      text: "I'd like to track my request",
+      handler: props.actionProvider.handleTrackRequest,
       id: 2,
-    },
-    {
-      text: "Question 3",
-      id: 3,
     },
   ];
   const optionsList = data.map((option) => (
@@ -24,6 +22,14 @@ function Options() {
       {option.text}
     </button>
   ));
-  return <div className="d-flex justify-content-between">{optionsList}</div>;
+  return (
+    <div className="d-flex flex-column justify-content-between gap-2">
+      {optionsList}
+    </div>
+  );
 }
 export default Options;
+
+Options.propTypes = {
+  actionProvider: PropTypes.object,
+};
