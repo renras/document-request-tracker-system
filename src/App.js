@@ -7,14 +7,12 @@ import SignedOutTrackRequest from "./pages/SignedOutTrackRequest/SignedOutTrackR
 import ContactUs from "./pages/ContactUs/ContactUs";
 import OnProcess from "./pages/OnProcess/OnProcess";
 import ForRelease from "./pages/ForRelease/ForRelease";
-// import Received from "./pages/Received/Received";
 import Released from "./pages/Released/Released";
-// import Returned from "./pages/Returned/Returned";
 import TrackDocument from "./pages/TrackDocument/TrackDocument";
-// import Profile from "./pages/Profile/Profile";
 import Reset from "./pages/Reset/Reset";
 import "react-chatbot-kit/build/main.css";
 import "./chatbot/chatbot.css";
+import Reports from "./pages/Reports/Reports";
 
 function App() {
   return (
@@ -26,12 +24,10 @@ function App() {
       <Route path="track-request" element={<SignedOutTrackRequest />} />
       <Route path="contact-us" element={<ContactUs />} />
       <Route path="on-process" element={<OnProcess />} />
-      {/* <Route path="received" element={<Received />} /> */}
       <Route path="for-release" element={<ForRelease />} />
       <Route path="released" element={<Released />} />
+      <Route path="reports" element={<Reports />} />
       <Route path="track-document" element={<TrackDocument />} />
-      {/* <Route path="profile" element={<Profile />} /> */}
-      {/* <Route path="returned" element={<Returned />} /> */}
       <Route path="reset" element={<Reset />} />
     </Routes>
   );

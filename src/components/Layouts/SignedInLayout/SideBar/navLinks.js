@@ -1,11 +1,8 @@
 import { FaFileAlt } from "react-icons/fa";
 import { HiDownload } from "react-icons/hi";
-// import { FaEnvelope } from "react-icons/fa";
 import { FaLightbulb } from "react-icons/fa";
-// import { FaExchangeAlt } from "react-icons/fa";
 import { BsBoxArrowUp } from "react-icons/bs";
-import { HiDocumentSearch } from "react-icons/hi";
-// import { FaUserAlt } from "react-icons/fa";
+import { HiDocumentSearch, HiOutlineDocumentReport } from "react-icons/hi";
 
 const navLinks = [
   {
@@ -19,24 +16,13 @@ const navLinks = [
     icon: <HiDownload color="#fff" size={20} />,
     role: "ADMIN",
   },
-  // {
-  //   href: "/received",
-  //   name: "Received",
-  //   icon: <FaEnvelope color="#fff" size={20} />,
-  //   role: "ADMIN",
-  // },
+
   {
     href: "/for-release",
     name: "For Release",
     icon: <FaLightbulb color="#fff" size={20} />,
     role: "ADMIN",
   },
-  // {
-  //   href: "/returned",
-  //   name: "Returned",
-  //   icon: <FaExchangeAlt color="#fff" size={20} />,
-  //   role: "ADMIN",
-  // },
   {
     href: "/released",
     name: "Released",
@@ -44,15 +30,16 @@ const navLinks = [
     role: "ADMIN",
   },
   {
+    href: "/reports",
+    name: "Reports",
+    icon: <HiOutlineDocumentReport color="#fff" size={20} />,
+    role: "ADMIN",
+  },
+  {
     href: "/track-document",
     name: "Track Documents",
     icon: <HiDocumentSearch color="#fff" size={20} />,
   },
-  // {
-  //   href: "/profile",
-  //   name: "Profile",
-  //   icon: <FaUserAlt color="#fff" size={20} />,
-  // },
 ];
 
 export default navLinks;
