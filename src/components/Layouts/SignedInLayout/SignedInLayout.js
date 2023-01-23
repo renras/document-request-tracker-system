@@ -240,9 +240,10 @@ const SignedInLayout = ({ children }) => {
                 <li
                   className="dropdown-item d-flex gap-2 align-items-center"
                   style={{ cursor: "pointer" }}
+                  onClick={handleSignOut}
                 >
                   <BiLogOut size={20} />
-                  <button onClick={() => handleSignOut()}>Logout</button>
+                  Logout
                 </li>
               </ul>
             </div>
