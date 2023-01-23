@@ -3,43 +3,83 @@ import { DOCUMENT_TYPES } from "../Documents/CreateDocumentModal/documentTypes";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { useEffect } from "react";
+import { useState } from "react";
+import Loader from "../../components/Loader/Loader";
+import Error from "../../components/Error/Error";
 
 const Reports = () => {
+  const [reports, setReports] = useState(null);
+  const [reportsLoading, setReportsLoading] = useState(true);
+  const [reportsError, setReportsError] = useState(null);
   const documentTypes = DOCUMENT_TYPES.filter(
     (document) => document.value !== ""
   );
 
-  const getDocumentTypeCount = async (documentType) => {
+  const getDocumentTypeReport = async (documentType) => {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
-        const q = query(
+        const qRequestsCount = await query(
           collection(db, "documents"),
           where("documentType", "==", documentType)
         );
-        const querySnapshot = await getDocs(q);
-        const documentTypeCount = querySnapshot.size;
-        resolve({ data: documentTypeCount, error: null });
+        const qCompletedRequestsCount = query(
+          collection(db, "documents"),
+          where("documentType", "==", documentType),
+          where("status", "==", "RELEASED")
+        );
+
+        const querySnapshotRequestsCount = await getDocs(qRequestsCount);
+        const querySnapshotCompletedRequestsCount = await getDocs(
+          qCompletedRequestsCount
+        );
+        const documentTypeRequestsCount = querySnapshotRequestsCount.size;
+        const documentTypeCompletedRequestsCount =
+          querySnapshotCompletedRequestsCount.size;
+
+        resolve({
+          data: {
+            requestsCount: documentTypeRequestsCount,
+            completedRequestsCount: documentTypeCompletedRequestsCount,
+          },
+          error: null,
+        });
       } catch (error) {
         console.error(error);
-        reject({ data: null, error: "Failed to get document type count" });
+        reject({ data: null, error: "Failed to fetch reports" });
       }
     });
   };
 
   useEffect(() => {
     (async () => {
-      const documentTypeCounts = await Promise.all(
-        documentTypes.map(async (documentType) => {
-          const { data: requestsCount } = await getDocumentTypeCount(
-            documentType.value
-          );
-          return { requestsCount: requestsCount };
-        })
-      );
-      console.log(documentTypeCounts);
+      try {
+        const documentTypeCounts = await Promise.all(
+          documentTypes.map(async (documentType) => {
+            const { data } = await getDocumentTypeReport(documentType.value);
+            return data;
+          })
+        );
+        setReports(documentTypeCounts);
+      } catch (error) {
+        console.error(error);
+        setReportsError("Failed to fetch reports");
+      } finally {
+        setReportsLoading(false);
+      }
     })();
   }, [documentTypes]);
+
+  if (reportsLoading) return <Loader />;
+  if (reportsError) return <Error />;
+
+  const reportsByDocumentType = documentTypes.map((documentType, index) => {
+    return {
+      label: documentType.label,
+      requestsCount: reports[index].requestsCount,
+      completedRequestsCount: reports[index].completedRequestsCount,
+    };
+  });
 
   return (
     <SignedInLayout>
@@ -54,11 +94,11 @@ const Reports = () => {
             </tr>
           </thead>
           <tbody>
-            {documentTypes.map((document, index) => (
+            {reportsByDocumentType.map((document, index) => (
               <tr key={index}>
                 <td>{document.label}</td>
-                <td>0</td>
-                <td>0</td>
+                <td>{document.requestsCount}</td>
+                <td>{document.completedRequestsCount}</td>
               </tr>
             ))}
           </tbody>
