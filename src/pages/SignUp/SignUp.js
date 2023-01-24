@@ -17,11 +17,9 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [value, setValue] = useState();
-  const [hidePassword, setHidePassword] = useState(true);
-  const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
-  const togglePasswordVisibility = () => setHidePassword(!hidePassword);
-  const toggleConfirmPasswordVisibility = () =>
-    setHideConfirmPassword(!hideConfirmPassword);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
 
   const onSubmit = async (data) => {
     const { fullName, email, password, phone, confirmPassword } = data;
@@ -112,15 +110,17 @@ const SignUp = () => {
           <input
             className="form-control form-control-lg"
             id="password"
-            type={hidePassword ? "password" : "text"}
+            type={!isPasswordVisible ? "password" : "text"}
             {...register("password", { required: true })}
           />
-          <span className="input-group-text">
-            <FontAwesomeIcon
-              icon={hidePassword ? faEye : faEyeSlash}
-              onClick={togglePasswordVisibility}
-            />
-          </span>
+          <button
+            type="button"
+            className="input-group-text"
+            onClick={() => setIsPasswordVisible((prev) => !prev)}
+            style={{ width: "2.75rem" }}
+          >
+            <FontAwesomeIcon icon={isPasswordVisible ? faEye : faEyeSlash} />
+          </button>
         </div>
 
         {/* confirm password */}
@@ -131,15 +131,19 @@ const SignUp = () => {
           <input
             className="form-control form-control-lg"
             id="confirm-password"
-            type={hideConfirmPassword ? "password" : "text"}
+            type={!isConfirmPasswordVisible ? "password" : "text"}
             {...register("confirmPassword", { required: true })}
           />
-          <span className="input-group-text">
+          <button
+            type="button"
+            className="input-group-text"
+            onClick={() => setIsConfirmPasswordVisible((prev) => !prev)}
+            style={{ width: "2.75rem" }}
+          >
             <FontAwesomeIcon
-              icon={hideConfirmPassword ? faEye : faEyeSlash}
-              onClick={toggleConfirmPasswordVisibility}
+              icon={isConfirmPasswordVisible ? faEye : faEyeSlash}
             />
-          </span>
+          </button>
         </div>
 
         <button
