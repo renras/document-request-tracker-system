@@ -9,12 +9,19 @@ import { useState } from "react";
 import PhoneInput from "react-phone-number-input";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const SignUp = () => {
   const { register, handleSubmit } = useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [value, setValue] = useState();
+  const [hidePassword, setHidePassword] = useState(true);
+  const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
+  const togglePasswordVisibility = () => setHidePassword(!hidePassword);
+  const toggleConfirmPasswordVisibility = () =>
+    setHideConfirmPassword(!hideConfirmPassword);
 
   const onSubmit = async (data) => {
     const { fullName, email, password, phone, confirmPassword } = data;
@@ -97,28 +104,43 @@ const SignUp = () => {
           type="email"
           {...register("email", { required: true })}
         />
-
         {/* password */}
-        <label className="form-label mt-3" htmlFor="password">
+        <label className="form-label mt-4" htmlFor="password">
           Password
         </label>
-        <input
-          className="form-control form-control-lg"
-          id="password"
-          type="password"
-          {...register("password", { required: true })}
-        />
+        <div className="input-group">
+          <input
+            className="form-control form-control-lg"
+            id="password"
+            type={hidePassword ? "password" : "text"}
+            {...register("password", { required: true })}
+          />
+          <span className="input-group-text">
+            <FontAwesomeIcon
+              icon={hidePassword ? faEye : faEyeSlash}
+              onClick={togglePasswordVisibility}
+            />
+          </span>
+        </div>
 
         {/* confirm password */}
-        <label className="form-label mt-3" htmlFor="password">
+        <label className="form-label mt-4" htmlFor="confirm-password">
           Confirm Password
         </label>
-        <input
-          className="form-control form-control-lg"
-          id="confirm-password"
-          type="password"
-          {...register("confirmPassword", { required: true })}
-        />
+        <div className="input-group">
+          <input
+            className="form-control form-control-lg"
+            id="confirm-password"
+            type={hideConfirmPassword ? "password" : "text"}
+            {...register("confirmPassword", { required: true })}
+          />
+          <span className="input-group-text">
+            <FontAwesomeIcon
+              icon={hideConfirmPassword ? faEye : faEyeSlash}
+              onClick={toggleConfirmPasswordVisibility}
+            />
+          </span>
+        </div>
 
         <button
           className="btn btn-success btn-lg w-100 mt-5"
