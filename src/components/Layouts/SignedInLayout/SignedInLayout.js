@@ -1,4 +1,8 @@
-import { signOut, sendEmailVerification } from "firebase/auth";
+import {
+  signOut,
+  sendEmailVerification,
+  onAuthStateChanged,
+} from "firebase/auth";
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +21,7 @@ import useClickAway from "../../../hooks/useClickAway";
 import { GrNotification } from "react-icons/gr";
 import { useCollection } from "react-firebase-hooks/firestore";
 import NotificationBox from "./NotificationBox";
+import { useLayoutEffect } from "react";
 
 const SignedInLayout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -56,8 +61,12 @@ const SignedInLayout = ({ children }) => {
     setIsUserMenuOpen(false);
   });
 
+  useLayoutEffect(() => {
+    console.log("hello");
+  }, []);
+
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         navigate("/sign-in");
       }
