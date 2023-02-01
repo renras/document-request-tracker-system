@@ -52,23 +52,25 @@ const Reports = () => {
   };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const documentTypeCounts = await Promise.all(
-          documentTypes.map(async (documentType) => {
-            const { data } = await getDocumentTypeReport(documentType.value);
-            return data;
-          })
-        );
-        setReports(documentTypeCounts);
-      } catch (error) {
-        console.error(error);
-        setReportsError("Failed to fetch reports");
-      } finally {
-        setReportsLoading(false);
-      }
-    })();
-  }, [documentTypes]);
+    if (!reports) {
+      (async () => {
+        try {
+          const documentTypeCounts = await Promise.all(
+            documentTypes.map(async (documentType) => {
+              const { data } = await getDocumentTypeReport(documentType.value);
+              return data;
+            })
+          );
+          setReports(documentTypeCounts);
+        } catch (error) {
+          console.error(error);
+          setReportsError("Failed to fetch reports");
+        } finally {
+          setReportsLoading(false);
+        }
+      })();
+    }
+  }, [documentTypes, reports]);
 
   if (reportsLoading) return <Loader />;
   if (reportsError) return <Error />;
