@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 import { storage } from "../../../firebase-config";
 import { ref, uploadBytes } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
-
+import Select from "react-select";
 const QUANTITIES = [
   { label: "1", value: "1" },
   { label: "2", value: "2" },
@@ -20,13 +20,20 @@ const QUANTITIES = [
 ];
 
 const CreateDocument = ({ profile }) => {
-  const [documentType, setDocumentType] = useState(DOCUMENT_TYPES[0]);
+  const [documentType, setDocumentType] = useState([]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const [purpose, setPurpose] = useState(PURPOSES[0]);
   const { handleSubmit } = useForm();
   const closeButton = useRef(null);
   const [attachment, setAttachment] = useState(null);
   const navigate = useNavigate();
+  const handleDocumentTypeChange = (selectedOption) => {
+    setDocumentType(selectedOption);
+  };
+
+  const filteredDocumentTypes = DOCUMENT_TYPES.filter((documentType) => {
+    return documentType.value;
+  });
 
   const uploadAttachment = async (id) => {
     if (attachment == null) return;
@@ -113,15 +120,19 @@ const CreateDocument = ({ profile }) => {
           </div>
 
           <div className="modal-body">
-            {/* document type */}
+            {/* document type  */}
             <label htmlFor="document-type" className="form-label mt-3">
               Document Type
             </label>
-            <Dropdown
+            <Select
               id="document-type"
+              options={filteredDocumentTypes}
               value={documentType}
-              options={DOCUMENT_TYPES}
-              onChange={(option) => setDocumentType(option)}
+              onChange={handleDocumentTypeChange}
+              maxMenuHeight={160}
+              isSearchable={true}
+              isLoading={false}
+              placeholder="Search for document type"
             />
 
             {/* quantity with arrow funct */}
