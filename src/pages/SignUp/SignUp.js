@@ -11,20 +11,25 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-
+import ReCAPTCHA from "react-google-recaptcha";
 const SignUp = () => {
   const { register, handleSubmit } = useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [value, setValue] = useState();
+  const [isRecaptchaValid, setIsRecaptchaValid] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
-
   const onSubmit = async (data) => {
     const { fullName, email, password, phone, confirmPassword } = data;
     if (password !== confirmPassword) {
       alert("Passwords do not match");
+      return;
+    }
+
+    if (!isRecaptchaValid) {
+      alert("Please complete the reCAPTCHA");
       return;
     }
 
@@ -56,6 +61,10 @@ const SignUp = () => {
     }
   };
 
+  const handleRecaptchaChange = () => {
+    setIsRecaptchaValid(true);
+  };
+
   return (
     <SignedOutLayout>
       <form
@@ -64,7 +73,6 @@ const SignUp = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <h1 className="h3">Sign Up</h1>
-
         {/* full name */}
         <label className="form-label mt-4" htmlFor="full-name">
           Full Name
@@ -75,7 +83,6 @@ const SignUp = () => {
           placeholder="Juan Dela Cruz"
           {...register("fullName", { required: true })}
         />
-
         {/* phone  */}
         <label className="form-label mt-4">Phone</label>
         <PhoneInput
@@ -90,7 +97,6 @@ const SignUp = () => {
         {value && !isValidPhoneNumber(value) && (
           <p className="text-danger mb-0">Invalid phone number</p>
         )}
-
         {/* email */}
         <label className="form-label mt-4" htmlFor="email">
           Email
@@ -122,7 +128,6 @@ const SignUp = () => {
             <FontAwesomeIcon icon={isPasswordVisible ? faEye : faEyeSlash} />
           </button>
         </div>
-
         {/* confirm password */}
         <label className="form-label mt-4" htmlFor="confirm-password">
           Confirm Password
@@ -134,6 +139,7 @@ const SignUp = () => {
             type={!isConfirmPasswordVisible ? "password" : "text"}
             {...register("confirmPassword", { required: true })}
           />
+
           <button
             type="button"
             className="input-group-text"
@@ -146,6 +152,16 @@ const SignUp = () => {
           </button>
         </div>
 
+        {/* recaptcha */}
+        <div>
+          <ReCAPTCHA
+            sitekey="6Ld2MEMkAAAAAIAATTSzSkuKwLJJtPLw_eyqLGjV"
+            onChange={handleRecaptchaChange}
+            style={{ marginTop: "2em" }}
+          />
+        </div>
+
+        {/* sign up button */}
         <button
           className="btn btn-success btn-lg w-100 mt-5"
           type="submit"
@@ -153,7 +169,6 @@ const SignUp = () => {
         >
           Sign Up
         </button>
-
         {/* sign up link */}
         <div className="text-center mt-4">
           Already have an account?
