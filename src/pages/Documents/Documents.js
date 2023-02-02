@@ -9,19 +9,9 @@ import { AiFillEye } from "react-icons/ai";
 import DocumentModal from "../../components/DocumentModal/DocumentModal";
 const columns = ["Tracking ID", "Document Type", "Purpose", "Action"];
 import useFetchProfile from "../../hooks/useFetchProfile";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 const Documents = () => {
   const [user, userLoading, userError] = useAuthState(auth);
-  const navigate = useNavigate();
-
-  // todo: move this to layout component
-  useEffect(() => {
-    if (!user) {
-      navigate("/sign-in");
-    }
-  });
 
   const {
     data: documentsData,
