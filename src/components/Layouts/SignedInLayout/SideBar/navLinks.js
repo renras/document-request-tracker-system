@@ -7,7 +7,7 @@ import { HiDocumentSearch, HiOutlineDocumentReport } from "react-icons/hi";
 const navLinks = [
   {
     href: "/documents",
-    name: "Documents",
+    name: "Request Documents",
     icon: <FaFileAlt color="#fff" size={20} />,
   },
   {
