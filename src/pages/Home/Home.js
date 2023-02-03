@@ -14,7 +14,7 @@ const Home = () => {
 
         <div className="d-flex justify-content-center gap-4 mt-5">
           <Link to="/documents" className="btn btn-light btn-lg fw-semibold">
-            Create A Document
+            Request for a Document
           </Link>
           <Link
             to="/track-request"
