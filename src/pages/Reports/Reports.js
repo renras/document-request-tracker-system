@@ -23,6 +23,11 @@ const Reports = () => {
           collection(db, "documents"),
           where("documentType", "==", documentType)
         );
+        const qForReleaseCount = query(
+          collection(db, "documents"),
+          where("documentType", "==", documentType),
+          where("status", "==", "FOR RELEASE")
+        );
         const qCompletedRequestsCount = query(
           collection(db, "documents"),
           where("documentType", "==", documentType),
@@ -30,16 +35,19 @@ const Reports = () => {
         );
 
         const querySnapshotRequestsCount = await getDocs(qRequestsCount);
+        const querySnapshotForReleaseCount = await getDocs(qForReleaseCount);
         const querySnapshotCompletedRequestsCount = await getDocs(
           qCompletedRequestsCount
         );
         const documentTypeRequestsCount = querySnapshotRequestsCount.size;
+        const documentTypeForReleaseCount = querySnapshotForReleaseCount.size;
         const documentTypeCompletedRequestsCount =
           querySnapshotCompletedRequestsCount.size;
 
         resolve({
           data: {
             requestsCount: documentTypeRequestsCount,
+            forReleaseCount: documentTypeForReleaseCount,
             completedRequestsCount: documentTypeCompletedRequestsCount,
           },
           error: null,
@@ -79,6 +87,7 @@ const Reports = () => {
     return {
       label: documentType.label,
       requestsCount: reports[index].requestsCount,
+      forReleaseCount: reports[index].forReleaseCount,
       completedRequestsCount: reports[index].completedRequestsCount,
     };
   });
@@ -92,6 +101,7 @@ const Reports = () => {
             <tr className="table-success">
               <th scope="col">Document Type</th>
               <th scope="col">No. of Requests</th>
+              <th scope="col">No. of For Release</th>
               <th scope="col">No. of Completed</th>
             </tr>
           </thead>
@@ -100,6 +110,7 @@ const Reports = () => {
               <tr key={index}>
                 <td>{document.label}</td>
                 <td>{document.requestsCount}</td>
+                <td>{document.forReleaseCount}</td>
                 <td>{document.completedRequestsCount}</td>
               </tr>
             ))}
