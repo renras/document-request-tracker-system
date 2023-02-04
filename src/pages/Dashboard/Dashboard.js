@@ -5,6 +5,7 @@ import Error from "../../components/Error/Error";
 import { auth, db } from "../../firebase-config";
 import { useEffect, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import Card from "./Card";
 
 const Dashboard = () => {
   const [user, userLoading, userError] = useAuthState(auth);
@@ -47,10 +48,47 @@ const Dashboard = () => {
     (doc) => doc.status === "RELEASED"
   );
 
+  const onProcessedDocumentsDoughnutData = {
+    datasets: [
+      {
+        label: ["Requested Documents", "On Processing Documents"],
+        data: [userDocuments.length, onProcessingDocuments.length],
+        backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
+        borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const releasedDocumentsDoughnutData = {
+    datasets: [
+      {
+        label: ["Requested Documents", "Released Documents"],
+        data: [userDocuments.length, releasedDocuments.length],
+        backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
+        borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     <SignedInLayout>
       <div className="px-5">
         <h1 className="h2">Dashboard</h1>
+        <div className="mt-5">
+          {/* doughnuts */}
+          <div className="d-flex gap-5  ">
+            <Card
+              count={onProcessingDocuments.length}
+              data={onProcessedDocumentsDoughnutData}
+            />
+            <Card
+              count={releasedDocuments.length}
+              data={releasedDocumentsDoughnutData}
+            />
+          </div>
+        </div>
         <table className="table mt-5">
           <thead>
             <tr className="table-success">
