@@ -4,6 +4,7 @@ import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import { auth, db } from "../../firebase-config";
 import { useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import Card from "./Card";
 
@@ -12,7 +13,6 @@ const Dashboard = () => {
   const [userDocuments, setUserDocuments] = useState([]);
   const [userDocumentsLoading, setUserDocumentsLoading] = useState(true);
   const [userDocumentsError, setUserDocumentsError] = useState(null);
-  const columns = ["Type", "Count"];
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -63,11 +63,49 @@ const Dashboard = () => {
   const releasedDocumentsDoughnutData = {
     datasets: [
       {
-        label: ["Requested Documents", "Released Documents"],
+        label: ["Requested Documents", "Completed Documents"],
         data: [userDocuments.length, releasedDocuments.length],
         backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
         borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
         borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    // set bar width
+    barThickness: 50,
+    // add margintop to graph
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: true,
+        text: "Documents Count by Status",
+      },
+    },
+  };
+
+  const tableData = {
+    labels: [
+      "Requested Documents",
+      "On Processing Documents",
+      "Completed Documents",
+    ],
+    datasets: [
+      {
+        data: [
+          userDocuments.length,
+          onProcessingDocuments.length,
+          releasedDocuments.length,
+        ],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.5)",
+          "rgba(54, 162, 235, 0.5)",
+          "rgba(75, 192, 192, 0.5)",
+        ],
       },
     ],
   };
@@ -80,40 +118,20 @@ const Dashboard = () => {
           {/* doughnuts */}
           <div className="d-flex gap-5  ">
             <Card
+              label="Requested Documents"
               count={onProcessingDocuments.length}
               data={onProcessedDocumentsDoughnutData}
             />
             <Card
+              label="Completed Documents"
               count={releasedDocuments.length}
               data={releasedDocumentsDoughnutData}
             />
           </div>
         </div>
-        <table className="table mt-5">
-          <thead>
-            <tr className="table-success">
-              {columns.map((column, index) => (
-                <th scope="col" key={index}>
-                  {column}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="align-middle">Requested Documents</td>
-              <td className="align-middle">{userDocuments.length}</td>
-            </tr>
-            <tr>
-              <td className="align-middle">On Processing Documents</td>
-              <td className="align-middle">{onProcessingDocuments.length}</td>
-            </tr>
-            <tr>
-              <td className="align-middle">Released Documents</td>
-              <td className="align-middle">{releasedDocuments.length}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="mt-5" style={{ height: "400px" }}>
+          <Bar data={tableData} options={options} />
+        </div>
       </div>
     </SignedInLayout>
   );
