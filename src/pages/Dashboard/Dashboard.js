@@ -86,6 +86,7 @@ const Dashboard = () => {
         text: "Documents Count by Status",
       },
     },
+    aspectRatio: 1 / 0.4,
   };
 
   const tableData = {
@@ -129,7 +130,7 @@ const Dashboard = () => {
             />
           </div>
         </div>
-        <div className="mt-5" style={{ height: "400px" }}>
+        <div className="mt-5">
           <Bar data={tableData} options={options} />
         </div>
       </div>
