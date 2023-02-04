@@ -13,6 +13,7 @@ import Reset from "./pages/Reset/Reset";
 import "react-chatbot-kit/build/main.css";
 import "./chatbot/chatbot.css";
 import Reports from "./pages/Reports/Reports";
+import Dashboard from "./pages/Dashboard/Dashboard";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
       <Route path="reports" element={<Reports />} />
       <Route path="track-document" element={<TrackDocument />} />
       <Route path="reset" element={<Reset />} />
+      <Route path="dashboard" element={<Dashboard />} />
     </Routes>
   );
 }

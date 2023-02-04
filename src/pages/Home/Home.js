@@ -1,5 +1,5 @@
-import {Link} from 'react-router-dom';
-import SignedOutLayout from '../../components/Layouts/SignedOutLayout/SignedOutLayout';
+import { Link } from "react-router-dom";
+import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
 
 const Home = () => {
   return (
@@ -13,7 +13,7 @@ const Home = () => {
         </h1>
 
         <div className="d-flex justify-content-center gap-4 mt-5">
-          <Link to="/documents" className="btn btn-light btn-lg fw-semibold">
+          <Link to="/dashboard" className="btn btn-light btn-lg fw-semibold">
             Request for a Document
           </Link>
           <Link
@@ -25,7 +25,7 @@ const Home = () => {
         </div>
       </div>
     </SignedOutLayout>
-  )
+  );
 };
 
 export default Home;
