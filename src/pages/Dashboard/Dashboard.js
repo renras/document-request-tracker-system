@@ -118,7 +118,7 @@ const Dashboard = () => {
           {/* doughnuts */}
           <div className="d-flex gap-5  ">
             <Card
-              label="Requested Documents"
+              label="On Processing Documents"
               count={onProcessingDocuments.length}
               data={onProcessedDocumentsDoughnutData}
             />
