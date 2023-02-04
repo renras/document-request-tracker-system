@@ -3,12 +3,18 @@ import { HiDownload } from "react-icons/hi";
 import { FaLightbulb } from "react-icons/fa";
 import { BsBoxArrowUp } from "react-icons/bs";
 import { HiDocumentSearch, HiOutlineDocumentReport } from "react-icons/hi";
+import { RiDashboardFill } from "react-icons/ri";
 
 const navLinks = [
   {
+    href: "/dashboard",
+    name: "Dashboard",
+    icon: <RiDashboardFill color="#fff" size={20} />,
+  },
+  {
     href: "/documents",
     name: "Request Documents",
-    icon: <FaFileAlt color="#fff" size={20} />,
+    icon: <FaFileAlt color="#fff" size={16} />,
   },
   {
     href: "/on-process",

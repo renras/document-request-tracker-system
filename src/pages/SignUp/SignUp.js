@@ -52,7 +52,7 @@ const SignUp = () => {
         avatar: result.user.photoURL,
       });
 
-      navigate("/documents");
+      navigate("/dashboard");
     } catch (e) {
       console.error(e);
       alert("Failed to create user. Please try again later.");
