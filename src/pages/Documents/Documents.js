@@ -9,9 +9,11 @@ import { AiFillEye } from "react-icons/ai";
 import DocumentModal from "../../components/DocumentModal/DocumentModal";
 const columns = ["Tracking ID", "Document Type", "Purpose", "Action"];
 import useFetchProfile from "../../hooks/useFetchProfile";
+import { useState } from "react";
 
 const Documents = () => {
   const [user, userLoading, userError] = useAuthState(auth);
+  const [isViewingDocument, setIsViewingDocument] = useState(null);
 
   const {
     data: documentsData,
@@ -62,12 +64,10 @@ const Documents = () => {
                   <td className="align-middle">
                     <button
                       className="btn btn-light"
-                      data-bs-toggle="modal"
-                      data-bs-target="#view-document-modal"
+                      onClick={() => setIsViewingDocument(document)}
                     >
                       <AiFillEye />
                     </button>
-                    <DocumentModal request={document} />
                   </td>
                 </tr>
               );
@@ -79,6 +79,13 @@ const Documents = () => {
       {/* create document modal */}
       {profile && (
         <CreateDocumentModal profile={{ ...profile, id: user.uid }} />
+      )}
+      {isViewingDocument && (
+        <DocumentModal
+          request={isViewingDocument}
+          isOpen={isViewingDocument ? true : false}
+          onClose={() => setIsViewingDocument(null)}
+        />
       )}
     </SignedInLayout>
   );

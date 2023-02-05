@@ -21,7 +21,6 @@ import useClickAway from "../../../hooks/useClickAway";
 import { GrNotification } from "react-icons/gr";
 import { useCollection } from "react-firebase-hooks/firestore";
 import NotificationBox from "./NotificationBox";
-import { useLayoutEffect } from "react";
 
 const SignedInLayout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -60,10 +59,6 @@ const SignedInLayout = ({ children }) => {
     if (avatarWrapperRef.current.contains(e.target)) return;
     setIsUserMenuOpen(false);
   });
-
-  useLayoutEffect(() => {
-    console.log("hello");
-  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
