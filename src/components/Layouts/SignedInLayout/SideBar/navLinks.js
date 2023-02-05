@@ -4,6 +4,7 @@ import { FaLightbulb } from "react-icons/fa";
 import { BsBoxArrowUp } from "react-icons/bs";
 import { HiDocumentSearch, HiOutlineDocumentReport } from "react-icons/hi";
 import { RiDashboardFill } from "react-icons/ri";
+import { AiFillDelete } from "react-icons/ai";
 
 const navLinks = [
   {
@@ -33,6 +34,12 @@ const navLinks = [
     href: "/released",
     name: "Released",
     icon: <BsBoxArrowUp color="#fff" size={20} />,
+    role: "ADMIN",
+  },
+  {
+    href: "/rejected",
+    name: "Rejected",
+    icon: <AiFillDelete color="#fff" size={20} />,
     role: "ADMIN",
   },
   {
