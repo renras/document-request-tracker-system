@@ -179,7 +179,7 @@ const SignedInLayout = ({ children }) => {
     <>
       <div className={styles.container}>
         <SideBar />
-        <div className={styles.content}>
+        <div className={`${styles.content} pb-4`}>
           <header className="navbar py-4 px-5">
             <div
               className="ms-auto d-flex gap-4 align-items-center"
