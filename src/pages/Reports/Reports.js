@@ -64,21 +64,71 @@ const Reports = () => {
             );
           };
 
+          const getQForReleaseRequestsCount = () => {
+            if (!date)
+              return query(
+                collection(db, "documents"),
+                where("documentType", "==", documentType),
+                where("status", "==", "FOR RELEASE")
+              );
+
+            return query(
+              collection(db, "documents"),
+              where("documentType", "==", documentType),
+              where("status", "==", "FOR RELEASE"),
+              where("documentType", "==", documentType),
+              where("createdAt", ">=", dateYesterday),
+              where("createdAt", "<=", dateTomorrow)
+            );
+          };
+
+          const getQForRejectedRequestsCount = () => {
+            if (!date)
+              return query(
+                collection(db, "documents"),
+                where("documentType", "==", documentType),
+                where("status", "==", "FOR RELEASE")
+              );
+
+            return query(
+              collection(db, "documents"),
+              where("documentType", "==", documentType),
+              where("status", "==", "FOR RELEASE"),
+              where("documentType", "==", documentType),
+              where("createdAt", ">=", dateYesterday),
+              where("createdAt", "<=", dateTomorrow)
+            );
+          };
+
           const qRequestsCount = getQRequestsCount();
+          const qForReleaseRequestsCount = getQForReleaseRequestsCount();
           const qCompletedRequestsCount = getQCompletedRequestsCount();
+          const qRejectedRequestsCount = getQForRejectedRequestsCount();
 
           const querySnapshotRequestsCount = await getDocs(qRequestsCount);
           const querySnapshotCompletedRequestsCount = await getDocs(
             qCompletedRequestsCount
           );
+          const querySnapshotForReleaseRequestsCount = await getDocs(
+            qForReleaseRequestsCount
+          );
+          const querySnapshotRejectedRequestsCount = await getDocs(
+            qRejectedRequestsCount
+          );
           const documentTypeRequestsCount = querySnapshotRequestsCount.size;
           const documentTypeCompletedRequestsCount =
             querySnapshotCompletedRequestsCount.size;
+          const documentTypeForReleaseRequestsCount =
+            querySnapshotForReleaseRequestsCount.size;
+          const documentTypeRejectedRequestsCount =
+            querySnapshotRejectedRequestsCount.size;
 
           resolve({
             data: {
               requestsCount: documentTypeRequestsCount,
+              forReleaseRequestsCount: documentTypeForReleaseRequestsCount,
               completedRequestsCount: documentTypeCompletedRequestsCount,
+              rejectedRequestsCount: documentTypeRejectedRequestsCount,
             },
             error: null,
           });
@@ -114,7 +164,9 @@ const Reports = () => {
     return {
       label: documentType.label,
       requestsCount: reports[index].requestsCount,
+      forReleaseRequestsCount: reports[index].forReleaseRequestsCount,
       completedRequestsCount: reports[index].completedRequestsCount,
+      rejectedRequestsCount: reports[index].rejectedRequestsCount,
     };
   });
 
@@ -142,7 +194,9 @@ const Reports = () => {
             <tr className="table-success">
               <th scope="col">Document Type</th>
               <th scope="col">No. of Requests</th>
-              <th scope="col">No. of Completed</th>
+              <th scope="col">No. of For Release</th>
+              <th scope="col">No. of Released</th>
+              <th scope="col">No. of Rejected</th>
             </tr>
           </thead>
           <tbody>
@@ -150,7 +204,9 @@ const Reports = () => {
               <tr key={index}>
                 <td>{document.label}</td>
                 <td>{document.requestsCount}</td>
+                <td>{document.forReleaseRequestsCount}</td>
                 <td>{document.completedRequestsCount}</td>
+                <td>{document.rejectedRequestsCount}</td>
               </tr>
             ))}
           </tbody>
