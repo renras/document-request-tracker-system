@@ -48,6 +48,7 @@ const OnProcess = () => {
           documents={incomingDocuments}
           onAccept={(id) => handleAcceptDocument(id)}
           onReject={(id) => handleRejectDocument(id)}
+          statusName="For Release"
         />
       </div>
     </SignedInLayout>
