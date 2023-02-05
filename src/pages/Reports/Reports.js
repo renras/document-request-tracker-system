@@ -6,11 +6,13 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
+import DatePicker from "react-datepicker";
 
 const Reports = () => {
   const [reports, setReports] = useState(null);
   const [reportsLoading, setReportsLoading] = useState(true);
   const [reportsError, setReportsError] = useState(null);
+  const [date, setDate] = useState(null);
   const documentTypes = DOCUMENT_TYPES.filter(
     (document) => document.value !== ""
   );
@@ -87,7 +89,16 @@ const Reports = () => {
     <SignedInLayout>
       <div className="px-4">
         <h1 className="h2 mt-5">Reports</h1>
-        <table className="table mt-5">
+        <div className="mt-5">
+          <div style={{ maxWidth: "192px" }}>
+            <DatePicker
+              className="form-control"
+              selected={date}
+              onChange={(date) => setDate(date)}
+            />
+          </div>
+        </div>
+        <table className="table mt-3">
           <thead>
             <tr className="table-success">
               <th scope="col">Document Type</th>
