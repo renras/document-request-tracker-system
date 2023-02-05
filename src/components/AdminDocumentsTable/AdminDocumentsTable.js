@@ -1,23 +1,9 @@
 import PropTypes from "prop-types";
 import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase-config";
 
 const columns = ["Tracking ID", "Document Type", "Purpose", "Requested By"];
 
-const Table = ({ documents, isAcceptable, isRejectable }) => {
-  const handleChangeDocumentStatus = async (id, status) => {
-    try {
-      const docRef = doc(db, "documents", id);
-      await updateDoc(docRef, {
-        status: status,
-      });
-    } catch (e) {
-      console.error(e);
-      alert("Failed to update document status. Please try again later.");
-    }
-  };
-
+const Table = ({ documents, onAccept, onReject }) => {
   return (
     <table className="table mt-5 align-middle">
       <thead>
@@ -27,7 +13,7 @@ const Table = ({ documents, isAcceptable, isRejectable }) => {
               {column}
             </th>
           ))}
-          {(isAcceptable || isRejectable) && <th scope="col">Status</th>}
+          {(onAccept || onReject) && <th scope="col">Status</th>}
         </tr>
       </thead>
       <tbody>
@@ -41,23 +27,21 @@ const Table = ({ documents, isAcceptable, isRejectable }) => {
               <td>{purpose}</td>
               <td>{author?.fullName}</td>
 
-              {(isAcceptable || isRejectable) && (
+              {(onAccept || onReject) && (
                 <td>
-                  {isAcceptable && (
+                  {onAccept && (
                     <button
                       className="btn btn-sm btn-light text-success"
-                      onClick={() =>
-                        handleChangeDocumentStatus(id, "FOR RELEASE")
-                      }
+                      onClick={() => onAccept(id)}
                     >
                       <AiFillCheckCircle size={24} />
                     </button>
                   )}
 
-                  {isRejectable && (
+                  {onReject && (
                     <button
                       className="btn btn-sm btn-light text-danger"
-                      onClick={() => handleChangeDocumentStatus(id, "REJECTED")}
+                      onClick={() => onReject(id)}
                     >
                       <AiFillCloseCircle size={24} />
                     </button>
@@ -76,6 +60,6 @@ export default Table;
 
 Table.propTypes = {
   documents: PropTypes.array,
-  isAcceptable: PropTypes.bool,
-  isRejectable: PropTypes.bool,
+  onAccept: PropTypes.func,
+  onReject: PropTypes.func,
 };
