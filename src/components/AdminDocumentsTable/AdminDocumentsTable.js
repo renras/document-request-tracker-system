@@ -1,74 +1,9 @@
 import PropTypes from "prop-types";
-// import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase-config";
-import Kebab from "../ui/Kebab/Kebab";
-import { useLocation } from "react-router-dom";
-import { kebabCase } from "lodash";
+import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 
-const columns = [
-  "Tracking ID",
-  "Document Type",
-  "Purpose",
-  "Requested By",
-  "Status",
-];
+const columns = ["Tracking ID", "Document Type", "Purpose", "Requested By"];
 
-const KEBAB_OPTIONS = [
-  {
-    label: "On Process",
-    value: "ON PROCESS",
-  },
-  {
-    label: "For Release",
-    value: "FOR RELEASE",
-  },
-  {
-    label: "Released",
-    value: "RELEASED",
-  },
-];
-
-const Table = ({ documents }) => {
-  const location = useLocation();
-  const kebabOptions = KEBAB_OPTIONS.filter(
-    (option) => !location.pathname.includes(kebabCase(option.value))
-  );
-
-  // const handleAcceptDocument = async (id) => {
-  //   try {
-  //     const docRef = doc(db, "documents", id);
-  //     await updateDoc(docRef, {
-  //       status: "RECEIVED",
-  //     });
-  //   } catch {
-  //     alert("Failed to receive document. Please try again later.");
-  //   }
-  // };
-
-  // const handleReturnDocument = async (id) => {
-  //   try {
-  //     const docRef = doc(db, "documents", id);
-  //     await updateDoc(docRef, {
-  //       status: "RETURNED",
-  //     });
-  //   } catch {
-  //     alert("Failed to return document. Please try again later.");
-  //   }
-  // };
-
-  const handleChangeDocumentStatus = async (id, status) => {
-    try {
-      const docRef = doc(db, "documents", id);
-      await updateDoc(docRef, {
-        status: status,
-      });
-    } catch (e) {
-      console.error(e);
-      alert("Failed to update document status. Please try again later.");
-    }
-  };
-
+const Table = ({ documents, onAccept, onReject }) => {
   return (
     <table className="table mt-5 align-middle">
       <thead>
@@ -78,6 +13,7 @@ const Table = ({ documents }) => {
               {column}
             </th>
           ))}
+          {(onAccept || onReject) && <th scope="col">Status</th>}
         </tr>
       </thead>
       <tbody>
@@ -90,34 +26,28 @@ const Table = ({ documents }) => {
               <td>{documentType}</td>
               <td>{purpose}</td>
               <td>{author?.fullName}</td>
-              {/* {status === "INCOMING" && (
+
+              {(onAccept || onReject) && (
                 <td>
-                  <div className="d-flex gap-2">
+                  {onAccept && (
                     <button
                       className="btn btn-sm btn-light text-success"
-                      onClick={() => handleAcceptDocument(id)}
+                      onClick={() => onAccept(id)}
                     >
                       <AiFillCheckCircle size={24} />
                     </button>
+                  )}
+
+                  {onReject && (
                     <button
                       className="btn btn-sm btn-light text-danger"
-                      onClick={() => handleReturnDocument(id)}
+                      onClick={() => onReject(id)}
                     >
                       <AiFillCloseCircle size={24} />
                     </button>
-                  </div>
+                  )}
                 </td>
-              )} */}
-
-              <td>
-                <Kebab
-                  id="document menu"
-                  onChange={(option) =>
-                    handleChangeDocumentStatus(id, option.value)
-                  }
-                  options={kebabOptions}
-                />
-              </td>
+              )}
             </tr>
           );
         })}
@@ -130,4 +60,6 @@ export default Table;
 
 Table.propTypes = {
   documents: PropTypes.array,
+  onAccept: PropTypes.func,
+  onReject: PropTypes.func,
 };
