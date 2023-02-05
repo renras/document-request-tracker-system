@@ -6,9 +6,12 @@ const Modal = ({ isOpen, children, onClose, className, style }) => {
 
   return ReactDom.createPortal(
     <div
-      className="modal fade show"
+      className={`modal fade show`}
       tabIndex={-1}
-      style={{ display: isOpen ? "block" : "none" }}
+      style={{
+        display: isOpen ? "block" : "none",
+        backgroundColor: "rgba(0, 0, 0, 0.30)",
+      }}
       onClick={onClose}
     >
       <div className={`modal-dialog ${className}`} style={style}>
