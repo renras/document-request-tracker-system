@@ -8,6 +8,7 @@ import Error from "../../components/Error/Error";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import useDeepCompareEffect from "use-deep-compare-effect";
+import { MdDateRange } from "react-icons/md";
 
 const Reports = () => {
   const [reports, setReports] = useState([]);
@@ -23,12 +24,12 @@ const Reports = () => {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve, reject) => {
         try {
+          const formatDate = moment(date).format("YYYY-MM-DD");
           const dateYesterday = date
-            ? moment(date).subtract(1, "days").format("LL")
+            ? new Date(`${formatDate} 00:00:00`)
             : null;
-          const dateTomorrow = date
-            ? moment(date).add(1, "days").format("LL")
-            : null;
+
+          const dateTomorrow = date ? new Date(`${formatDate} 23:59:59`) : null;
 
           const getQRequestsCount = () => {
             if (!date)
@@ -40,8 +41,8 @@ const Reports = () => {
             return query(
               collection(db, "documents"),
               where("documentType", "==", documentType),
-              where("createdAt", ">=", new Date(dateYesterday)),
-              where("createdAt", "<=", new Date(dateTomorrow))
+              where("createdAt", ">=", dateYesterday),
+              where("createdAt", "<=", dateTomorrow)
             );
           };
 
@@ -58,8 +59,8 @@ const Reports = () => {
               where("documentType", "==", documentType),
               where("status", "==", "RELEASED"),
               where("documentType", "==", documentType),
-              where("createdAt", ">=", new Date(dateYesterday)),
-              where("createdAt", "<=", new Date(dateTomorrow))
+              where("createdAt", ">=", dateYesterday),
+              where("createdAt", "<=", dateTomorrow)
             );
           };
 
@@ -104,7 +105,6 @@ const Reports = () => {
         setReportsLoading(false);
       }
     })();
-    console.log(reports);
   }, [date, reports]);
 
   if (reportsLoading) return <Loader />;
@@ -123,11 +123,17 @@ const Reports = () => {
       <div className="px-4">
         <h1 className="h2 mt-5">Reports</h1>
         <div className="mt-5">
-          <div style={{ maxWidth: "192px" }}>
+          <div className="position-relative" style={{ maxWidth: "192px" }}>
             <DatePicker
               className="form-control"
               selected={date}
               onChange={(date) => setDate(date)}
+            />
+            <MdDateRange
+              className="position-absolute top-50 translate-middle-y"
+              size={20}
+              color="#6c757d"
+              style={{ right: "10px" }}
             />
           </div>
         </div>
