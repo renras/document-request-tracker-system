@@ -18,7 +18,7 @@ const ForRelease = () => {
     <SignedInLayout>
       <div className="px-4">
         <h1 className="h2">For Release</h1>
-        <AdminDocumentsTable documents={forReleaseDocuments} />
+        <AdminDocumentsTable documents={forReleaseDocuments} isRejectable />
       </div>
     </SignedInLayout>
   );

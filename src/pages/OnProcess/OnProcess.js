@@ -18,7 +18,11 @@ const OnProcess = () => {
     <SignedInLayout>
       <div className="px-4">
         <h1 className="h2">On Process</h1>
-        <AdminDocumentsTable documents={incomingDocuments} />
+        <AdminDocumentsTable
+          documents={incomingDocuments}
+          isAcceptable
+          isRejectable
+        />
       </div>
     </SignedInLayout>
   );
