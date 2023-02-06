@@ -48,6 +48,7 @@ const ForRelease = () => {
           documents={forReleaseDocuments}
           onAccept={(id) => handleAcceptDocument(id)}
           onReject={(id) => handleRejectDocument(id)}
+          statusName="Release"
         />
       </div>
     </SignedInLayout>

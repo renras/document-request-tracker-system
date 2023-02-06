@@ -3,7 +3,7 @@ import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 
 const columns = ["Tracking ID", "Document Type", "Purpose", "Requested By"];
 
-const Table = ({ documents, onAccept, onReject }) => {
+const Table = ({ documents, onAccept, onReject, statusName }) => {
   return (
     <table className="table mt-5 align-middle">
       <thead>
@@ -13,7 +13,7 @@ const Table = ({ documents, onAccept, onReject }) => {
               {column}
             </th>
           ))}
-          {(onAccept || onReject) && <th scope="col">Status</th>}
+          {(onAccept || onReject) && <th scope="col">{statusName}</th>}
         </tr>
       </thead>
       <tbody>
@@ -62,4 +62,5 @@ Table.propTypes = {
   documents: PropTypes.array,
   onAccept: PropTypes.func,
   onReject: PropTypes.func,
+  statusName: PropTypes.string,
 };
