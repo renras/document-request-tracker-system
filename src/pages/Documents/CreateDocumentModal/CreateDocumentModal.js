@@ -11,6 +11,8 @@ import { storage } from "../../../firebase-config";
 import { ref, uploadBytes } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { increment, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+
 const QUANTITIES = [
   { label: "1", value: "1" },
   { label: "2", value: "2" },
@@ -51,6 +53,35 @@ const CreateDocument = ({ profile }) => {
     });
   };
 
+  const incrementDocumentsCount = async () => {
+    return new Promise((resolve, reject) => {
+      (async () => {
+        try {
+          const docRef = doc(db, "documents", "data");
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            await updateDoc(docRef, {
+              count: increment(1),
+            });
+            resolve(docSnap.data().count + 1);
+            return;
+          }
+
+          await setDoc(docRef, {
+            count: increment(1),
+          });
+          resolve(1);
+        } catch (e) {
+          reject(e);
+        }
+      })();
+    });
+  };
+
+  const addPadstartToNumber = (num, padStart) => {
+    return num.toString().padStart(padStart, "0");
+  };
+
   const createRequestNotification = async (id) => {
     try {
       await addDoc(collection(db, "notifications"), {
@@ -83,7 +114,15 @@ const CreateDocument = ({ profile }) => {
     }
 
     try {
-      const doc = await addDoc(collection(db, "documents"), {
+      const count = await incrementDocumentsCount();
+      const year = new Date().getFullYear();
+      const day = new Date().getDay();
+
+      const formattedId = `${year}-${addPadstartToNumber(
+        day,
+        2
+      )}-${addPadstartToNumber(count, 4)}`;
+      await setDoc(doc(db, "documents", formattedId), {
         documentType: documentType.value,
         quantity: quantity.value,
         purpose: purpose.value,
@@ -93,8 +132,9 @@ const CreateDocument = ({ profile }) => {
         updatedAt: Timestamp.now(),
       });
 
-      await uploadAttachment(doc.id);
+      await uploadAttachment(formattedId);
       await createRequestNotification(profile.id);
+
       navigate(0);
     } catch (e) {
       console.error(e);
