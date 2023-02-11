@@ -78,6 +78,10 @@ const CreateDocument = ({ profile }) => {
     });
   };
 
+  const addPadstartToNumber = (num, padStart) => {
+    return num.toString().padStart(padStart, "0");
+  };
+
   const createRequestNotification = async (id) => {
     try {
       await addDoc(collection(db, "notifications"), {
@@ -111,8 +115,14 @@ const CreateDocument = ({ profile }) => {
 
     try {
       const count = await incrementDocumentsCount();
-      console.log(count);
-      const doc = await addDoc(collection(db, "documents"), {
+      const year = new Date().getFullYear();
+      const day = new Date().getDay();
+
+      const formattedId = `${year}-${addPadstartToNumber(
+        day,
+        2
+      )}-${addPadstartToNumber(count, 4)}`;
+      await setDoc(doc(db, "documents", formattedId), {
         documentType: documentType.value,
         quantity: quantity.value,
         purpose: purpose.value,
@@ -122,12 +132,9 @@ const CreateDocument = ({ profile }) => {
         updatedAt: Timestamp.now(),
       });
 
-      await uploadAttachment(doc.id);
+      await uploadAttachment(formattedId);
       await createRequestNotification(profile.id);
 
-      return;
-
-      // eslint-disable-next-line no-unreachable
       navigate(0);
     } catch (e) {
       console.error(e);
