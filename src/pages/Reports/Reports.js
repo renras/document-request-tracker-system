@@ -174,20 +174,25 @@ const Reports = () => {
     <SignedInLayout>
       <div className="px-4">
         <h1 className="h2 mt-5">Reports</h1>
-        <div className="mt-5">
-          <div className="position-relative" style={{ maxWidth: "192px" }}>
-            <DatePicker
-              className="form-control"
-              selected={date}
-              onChange={(date) => setDate(date)}
-            />
-            <MdDateRange
-              className="position-absolute top-50 translate-middle-y"
-              size={20}
-              color="#6c757d"
-              style={{ right: "10px" }}
-            />
+        <div className="d-flex">
+          <div className="mt-5">
+            <div className="position-relative" style={{ maxWidth: "192px" }}>
+              <DatePicker
+                className="form-control"
+                selected={date}
+                onChange={(date) => setDate(date)}
+              />
+              <MdDateRange
+                className="position-absolute top-50 translate-middle-y"
+                size={20}
+                color="#6c757d"
+                style={{ right: "10px" }}
+              />
+            </div>
           </div>
+          <button className="btn btn-success mt-5 ms-auto">
+            Export to Excel
+          </button>
         </div>
         <table className="table mt-3">
           <thead>
