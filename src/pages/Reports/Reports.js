@@ -2,13 +2,14 @@ import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayo
 import { DOCUMENT_TYPES } from "../Documents/CreateDocumentModal/documentTypes";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import { MdDateRange } from "react-icons/md";
+import { DownloadTableExcel } from "react-export-table-to-excel";
 
 const Reports = () => {
   const [reports, setReports] = useState([]);
@@ -18,6 +19,7 @@ const Reports = () => {
   const documentTypes = DOCUMENT_TYPES.filter(
     (document) => document.value !== ""
   );
+  const tableRef = useRef(null);
 
   useDeepCompareEffect(() => {
     const getDocumentTypeReport = async (documentType) => {
@@ -174,22 +176,33 @@ const Reports = () => {
     <SignedInLayout>
       <div className="px-4">
         <h1 className="h2 mt-5">Reports</h1>
-        <div className="mt-5">
-          <div className="position-relative" style={{ maxWidth: "192px" }}>
-            <DatePicker
-              className="form-control"
-              selected={date}
-              onChange={(date) => setDate(date)}
-            />
-            <MdDateRange
-              className="position-absolute top-50 translate-middle-y"
-              size={20}
-              color="#6c757d"
-              style={{ right: "10px" }}
-            />
+        <div className="d-flex mt-5" style={{ alignItems: "flex-end" }}>
+          <div style={{ flexGrow: 1 }}>
+            <div className="position-relative" style={{ maxWidth: "192px" }}>
+              <DatePicker
+                className="form-control"
+                selected={date}
+                onChange={(date) => setDate(date)}
+              />
+              <MdDateRange
+                className="position-absolute top-50 translate-middle-y"
+                size={20}
+                color="#6c757d"
+                style={{ right: "10px" }}
+              />
+            </div>
           </div>
+          <DownloadTableExcel
+            filename="reports"
+            sheet="requests"
+            currentTableRef={tableRef.current}
+          >
+            <button className="btn btn-success mt-5 ms-auto">
+              Export to Excel
+            </button>
+          </DownloadTableExcel>
         </div>
-        <table className="table mt-3">
+        <table className="table mt-3" ref={tableRef}>
           <thead>
             <tr className="table-success">
               <th scope="col">Document Type</th>
