@@ -15,7 +15,8 @@ const Reports = () => {
   const [reports, setReports] = useState([]);
   const [reportsLoading, setReportsLoading] = useState(true);
   const [reportsError, setReportsError] = useState(null);
-  const [date, setDate] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const documentTypes = DOCUMENT_TYPES.filter(
     (document) => document.value !== ""
   );
@@ -26,15 +27,15 @@ const Reports = () => {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve, reject) => {
         try {
-          const formatDate = moment(date).format("YYYY-MM-DD");
-          const dateYesterday = date
-            ? new Date(`${formatDate} 00:00:00`)
+          const startDateYesterday = startDate
+            ? new Date(`${moment(startDate).format("YYYY-MM-DD")} 00:00:00`)
+            : null;
+          const endDateTomorrow = endDate
+            ? new Date(`${moment(endDate).format("YYYY-MM-DD")} 23:59:59`)
             : null;
 
-          const dateTomorrow = date ? new Date(`${formatDate} 23:59:59`) : null;
-
           const getQRequestsCount = () => {
-            if (!date)
+            if (!startDate || !endDate)
               return query(
                 collection(db, "documents"),
                 where("documentType", "==", documentType)
@@ -43,13 +44,13 @@ const Reports = () => {
             return query(
               collection(db, "documents"),
               where("documentType", "==", documentType),
-              where("createdAt", ">=", dateYesterday),
-              where("createdAt", "<=", dateTomorrow)
+              where("createdAt", ">=", startDateYesterday),
+              where("createdAt", "<=", endDateTomorrow)
             );
           };
 
           const getQCompletedRequestsCount = () => {
-            if (!date)
+            if (!startDate || !endDate)
               return query(
                 collection(db, "documents"),
                 where("documentType", "==", documentType),
@@ -61,13 +62,13 @@ const Reports = () => {
               where("documentType", "==", documentType),
               where("status", "==", "RELEASED"),
               where("documentType", "==", documentType),
-              where("createdAt", ">=", dateYesterday),
-              where("createdAt", "<=", dateTomorrow)
+              where("createdAt", ">=", startDateYesterday),
+              where("createdAt", "<=", endDateTomorrow)
             );
           };
 
           const getQForReleaseRequestsCount = () => {
-            if (!date)
+            if (!startDate || !endDate)
               return query(
                 collection(db, "documents"),
                 where("documentType", "==", documentType),
@@ -79,13 +80,13 @@ const Reports = () => {
               where("documentType", "==", documentType),
               where("status", "==", "FOR RELEASE"),
               where("documentType", "==", documentType),
-              where("createdAt", ">=", dateYesterday),
-              where("createdAt", "<=", dateTomorrow)
+              where("createdAt", ">=", startDateYesterday),
+              where("createdAt", "<=", endDateTomorrow)
             );
           };
 
           const getQForRejectedRequestsCount = () => {
-            if (!date)
+            if (!startDate || !endDate)
               return query(
                 collection(db, "documents"),
                 where("documentType", "==", documentType),
@@ -97,8 +98,8 @@ const Reports = () => {
               where("documentType", "==", documentType),
               where("status", "==", "FOR RELEASE"),
               where("documentType", "==", documentType),
-              where("createdAt", ">=", dateYesterday),
-              where("createdAt", "<=", dateTomorrow)
+              where("createdAt", ">=", startDateYesterday),
+              where("createdAt", "<=", endDateTomorrow)
             );
           };
 
@@ -157,7 +158,7 @@ const Reports = () => {
         setReportsLoading(false);
       }
     })();
-  }, [date, reports]);
+  }, [startDate, endDate, reports]);
 
   if (reportsLoading) return <Loader />;
   if (reportsError) return <Error />;
@@ -177,19 +178,53 @@ const Reports = () => {
       <div className="px-4">
         <h1 className="h2 mt-5">Reports</h1>
         <div className="d-flex mt-5" style={{ alignItems: "flex-end" }}>
-          <div style={{ flexGrow: 1 }}>
-            <div className="position-relative" style={{ maxWidth: "192px" }}>
-              <DatePicker
-                className="form-control"
-                selected={date}
-                onChange={(date) => setDate(date)}
-              />
-              <MdDateRange
-                className="position-absolute top-50 translate-middle-y"
-                size={20}
-                color="#6c757d"
-                style={{ right: "10px" }}
-              />
+          <div className="d-flex gap-4" style={{ flexGrow: 1 }}>
+            <div className="d-flex gap-2 align-items-center">
+              <label className="form-label m-0" htmlFor="startDate">
+                From:
+              </label>
+              <div className="position-relative" style={{ width: "130px" }}>
+                <DatePicker
+                  className="form-control"
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                  dateFormat="MM/dd/yyyy"
+                  placeholderText="Start Date"
+                />
+                <MdDateRange
+                  className="position-absolute top-50 translate-middle-y"
+                  size={20}
+                  color="#6c757d"
+                  style={{ right: "10px" }}
+                />
+              </div>
+            </div>
+            <div className="d-flex align-items-center gap-2">
+              <label className="form-label m-0" htmlFor="endDate">
+                To:
+              </label>
+              <div className="position-relative" style={{ width: "130px" }}>
+                <DatePicker
+                  className="form-control"
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  selectsEnd
+                  startDate={startDate}
+                  endDate={endDate}
+                  dateFormat="MM/dd/yyyy"
+                  placeholderText="End Date"
+                />
+
+                <MdDateRange
+                  className="position-absolute top-50 translate-middle-y"
+                  size={20}
+                  color="#6c757d"
+                  style={{ right: "10px" }}
+                />
+              </div>
             </div>
           </div>
           <DownloadTableExcel
