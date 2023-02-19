@@ -1,54 +1,23 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 import { useForm } from "react-hook-form";
 import { auth, db } from "../../firebase-config";
-import { doc, updateDoc, Timestamp, getDoc } from "firebase/firestore";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
-import { useState, useEffect } from "react";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import { useAuthState } from "react-firebase-hooks/auth";
 import defaultAvatar from "../../assets/images/avatar.jpg";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 
 const Profile = () => {
   const { register, handleSubmit } = useForm();
   const [user, userLoading, userError] = useAuthState(auth);
-  const [profile, setProfile] = useState(null);
-  const [error, setError] = useState(null);
-  const [profileLoading, setProfileLoading] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-
-    if (!user) return;
-
-    if (mounted) {
-      (async () => {
-        try {
-          const docRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists) {
-            setProfile(docSnap.data());
-          } else {
-            throw new Error("Failed to fetch user data");
-          }
-        } catch (error) {
-          setError(error);
-        } finally {
-          setProfileLoading(false);
-        }
-      })();
-    }
-
-    return () => {
-      mounted = false;
-    };
-  }, [user]);
+  const [profile, profileLoading, profileError] = useDocumentData(
+    user ? doc(db, "users", user.uid) : null
+  );
 
   if (profileLoading || userLoading) return <Loader />;
-  if (error || userError) return <Error />;
-
-  const { fullName, phone, email, aboutMe, avatar } = profile;
+  if (profileError || userError) return <Error />;
 
   const onSubmit = async (data) => {
     const { fullName, phone, aboutMe } = data;
@@ -78,7 +47,7 @@ const Profile = () => {
 
           <div className="mt-5 text-center">
             <img
-              src={avatar || defaultAvatar}
+              src={profile?.avatar || defaultAvatar}
               className="rounded-circle border"
               style={{ width: "150px", cursor: "pointer" }}
               alt="Avatar"
@@ -93,7 +62,7 @@ const Profile = () => {
             className="form-control"
             type="text"
             id="full-name"
-            defaultValue={fullName}
+            defaultValue={profile?.fullName}
             {...register("fullName", { required: true })}
           />
 
@@ -104,7 +73,7 @@ const Profile = () => {
           <input
             className="form-control"
             id="phone"
-            defaultValue={phone}
+            defaultValue={profile?.phone}
             {...register("phone", { required: true })}
           />
 
@@ -121,7 +90,7 @@ const Profile = () => {
             type="text"
             id="email"
             readOnly
-            defaultValue={email}
+            defaultValue={profile?.email}
           />
 
           {/* about me */}
@@ -132,7 +101,7 @@ const Profile = () => {
             className="form-control"
             id="aboutme"
             rows="5"
-            defaultValue={aboutMe}
+            defaultValue={profile?.aboutMe}
             {...register("aboutMe", { required: true })}
           />
 
