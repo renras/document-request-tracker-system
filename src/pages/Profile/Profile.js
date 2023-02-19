@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import { useAuthState } from "react-firebase-hooks/auth";
+import defaultAvatar from "../../assets/images/avatar.jpg";
 
 const Profile = () => {
   const { register, handleSubmit } = useForm();
@@ -47,7 +48,7 @@ const Profile = () => {
   if (profileLoading || userLoading) return <Loader />;
   if (error || userError) return <Error />;
 
-  const { fullName, phone, email, aboutMe } = profile;
+  const { fullName, phone, email, aboutMe, avatar } = profile;
 
   const onSubmit = async (data) => {
     const { fullName, phone, aboutMe } = data;
@@ -72,11 +73,20 @@ const Profile = () => {
   return (
     <SignedInLayout>
       <div className="p-5">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <h2 className="h3">Profile</h2>
+        <form className="mw-sm m-auto" onSubmit={handleSubmit(onSubmit)}>
+          <h2 className="h2">Profile</h2>
+
+          <div className="mt-5 text-center">
+            <img
+              src={avatar || defaultAvatar}
+              className="rounded-circle border"
+              style={{ width: "150px", cursor: "pointer" }}
+              alt="Avatar"
+            />
+          </div>
 
           {/* fullname */}
-          <label className="form-label mt-4" htmlFor="full-name">
+          <label className="form-label mt-3" htmlFor="full-name">
             Full Name
           </label>
           <input
