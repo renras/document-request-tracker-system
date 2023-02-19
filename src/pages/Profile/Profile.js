@@ -6,32 +6,35 @@ import { updateProfile } from "firebase/auth";
 import { useState, useEffect } from "react";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const Profile = () => {
   const { register, handleSubmit } = useForm();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, userLoading, userError] = useAuthState(auth);
+  const [profile, setProfile] = useState(null);
   const [error, setError] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
 
-    if (!auth.currentUser.uid) return;
+    if (!user) return;
+
     if (mounted) {
       (async () => {
         try {
-          const docRef = doc(db, "users", auth.currentUser.uid);
+          const docRef = doc(db, "users", user.uid);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists) {
-            setUser(docSnap.data());
+            setProfile(docSnap.data());
           } else {
             throw new Error("Failed to fetch user data");
           }
         } catch (error) {
           setError(error);
         } finally {
-          setLoading(false);
+          setProfileLoading(false);
         }
       })();
     }
@@ -39,12 +42,12 @@ const Profile = () => {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [user]);
 
-  if (loading) return <Loader />;
-  if (error) return <Error />;
+  if (profileLoading || userLoading) return <Loader />;
+  if (error || userError) return <Error />;
 
-  const { fullName, phone, email, aboutMe } = user;
+  const { fullName, phone, email, aboutMe } = profile;
 
   const onSubmit = async (data) => {
     const { fullName, phone, aboutMe } = data;
@@ -69,7 +72,7 @@ const Profile = () => {
   return (
     <SignedInLayout>
       <div className="p-5">
-        <form className="mw-md mx-auto" onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <h2 className="h3">Profile</h2>
 
           {/* fullname */}
@@ -124,7 +127,7 @@ const Profile = () => {
           />
 
           <div className="d-flex mt-4">
-            <button className="btn btn-success ms-auto">Save changes</button>
+            <button className="btn btn-success ">Save changes</button>
           </div>
         </form>
       </div>
