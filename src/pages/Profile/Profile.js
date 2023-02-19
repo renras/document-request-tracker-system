@@ -1,86 +1,96 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 import { useForm } from "react-hook-form";
-import { auth, db } from "../../firebase-config";
-import { doc, updateDoc, Timestamp, getDoc } from "firebase/firestore";
-import { updateProfile } from "firebase/auth";
-import { useState, useEffect } from "react";
+import { auth, db, storage } from "../../firebase-config";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
+import { useAuthState } from "react-firebase-hooks/auth";
+import defaultAvatar from "../../assets/images/avatar.jpg";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+import { useState } from "react";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const Profile = () => {
   const { register, handleSubmit } = useForm();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [user, userLoading, userError] = useAuthState(auth);
+  const [profile, profileLoading, profileError] = useDocumentData(
+    user ? doc(db, "users", user.uid) : null
+  );
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
 
-  useEffect(() => {
-    let mounted = true;
-
-    if (!auth.currentUser.uid) return;
-    if (mounted) {
-      (async () => {
-        try {
-          const docRef = doc(db, "users", auth.currentUser.uid);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists) {
-            setUser(docSnap.data());
-          } else {
-            throw new Error("Failed to fetch user data");
-          }
-        } catch (error) {
-          setError(error);
-        } finally {
-          setLoading(false);
-        }
-      })();
-    }
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  if (loading) return <Loader />;
-  if (error) return <Error />;
-
-  const { fullName, phone, email, aboutMe } = user;
+  if (profileLoading || userLoading) return <Loader />;
+  if (profileError || userError) return <Error />;
 
   const onSubmit = async (data) => {
     const { fullName, phone, aboutMe } = data;
 
     try {
-      await updateProfile(auth.currentUser, {
-        displayName: fullName,
-      });
+      let url = profile?.avatar;
+      if (avatarFile) {
+        const storageRef = ref(storage, `avatars/${user.uid}`);
+        await uploadBytes(storageRef, avatarFile);
+        url = await getDownloadURL(storageRef);
+      }
+
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        avatar: url,
         fullName: fullName,
         phone: phone,
         aboutMe: aboutMe,
         updatedAt: Timestamp.now(),
       });
-      await auth.currentUser.reload();
       alert("Profile updated successfully");
     } catch {
       alert("Failed to update profile. Please try again later.");
     }
   };
 
+  const handleFileInputChange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+
+    if (file) {
+      setAvatarPreview(URL.createObjectURL(file));
+      setAvatarFile(file);
+    }
+  };
+
   return (
     <SignedInLayout>
       <div className="p-5">
-        <form className="mw-md mx-auto" onSubmit={handleSubmit(onSubmit)}>
-          <h2 className="h3">Profile</h2>
+        <form className="mw-sm m-auto" onSubmit={handleSubmit(onSubmit)}>
+          <h2 className="h2">Profile</h2>
+
+          <label htmlFor="avatar" className="d-block mt-5 text-center">
+            <img
+              src={avatarPreview || profile?.avatar || defaultAvatar}
+              className="rounded-circle border"
+              style={{
+                width: "150px",
+                height: "150px",
+                cursor: "pointer",
+                objectFit: "cover",
+              }}
+              alt="Avatar"
+            />
+            <input
+              type="file"
+              accept="image/jpg,image/jpeg,image/png"
+              id="avatar"
+              hidden
+              onChange={handleFileInputChange}
+            />
+          </label>
 
           {/* fullname */}
-          <label className="form-label mt-4" htmlFor="full-name">
+          <label className="form-label mt-3" htmlFor="full-name">
             Full Name
           </label>
           <input
             className="form-control"
             type="text"
             id="full-name"
-            defaultValue={fullName}
+            defaultValue={profile?.fullName}
             {...register("fullName", { required: true })}
           />
 
@@ -91,7 +101,7 @@ const Profile = () => {
           <input
             className="form-control"
             id="phone"
-            defaultValue={phone}
+            defaultValue={profile?.phone}
             {...register("phone", { required: true })}
           />
 
@@ -108,7 +118,7 @@ const Profile = () => {
             type="text"
             id="email"
             readOnly
-            defaultValue={email}
+            defaultValue={profile?.email}
           />
 
           {/* about me */}
@@ -119,12 +129,12 @@ const Profile = () => {
             className="form-control"
             id="aboutme"
             rows="5"
-            defaultValue={aboutMe}
-            {...register("aboutMe", { required: true })}
+            defaultValue={profile?.aboutMe}
+            {...register("aboutMe")}
           />
 
           <div className="d-flex mt-4">
-            <button className="btn btn-success ms-auto">Save changes</button>
+            <button className="btn btn-success ">Save changes</button>
           </div>
         </form>
       </div>

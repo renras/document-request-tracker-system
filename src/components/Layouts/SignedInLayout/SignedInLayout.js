@@ -13,7 +13,6 @@ import Loader from "../../Loader/Loader";
 import { doc, getDoc, collection, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import Error from "../../Error/Error";
-import { CgProfile } from "react-icons/cg";
 import { BsChevronDown, BsPerson } from "react-icons/bs";
 import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
@@ -21,11 +20,15 @@ import useClickAway from "../../../hooks/useClickAway";
 import { GrNotification } from "react-icons/gr";
 import { useCollection } from "react-firebase-hooks/firestore";
 import NotificationBox from "./NotificationBox";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+import defaultAvatar from "../../../assets/images/avatar.jpg";
 
 const SignedInLayout = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [user, userLoading, userError] = useAuthState(auth);
+  const [profile, profileLoading, profileError] = useDocumentData(
+    user ? doc(db, "users", user.uid) : null
+  );
   const [emailVerifiedLoading, setEmailVerifiedLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -78,22 +81,6 @@ const SignedInLayout = ({ children }) => {
         setIsVerified(true);
         setEmailVerifiedLoading(false);
       }
-
-      try {
-        const userDoc = doc(db, "users", user.uid);
-        const docSnap = await getDoc(userDoc);
-
-        if (docSnap.exists()) {
-          setUser(docSnap.data());
-        } else {
-          throw "User data not found";
-        }
-      } catch (e) {
-        console.error(e);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
     });
 
     return () => unsubscribe();
@@ -144,13 +131,19 @@ const SignedInLayout = ({ children }) => {
   }, [notificationsData]);
 
   if (
-    loading ||
+    userLoading ||
+    profileLoading ||
     emailVerifiedLoading ||
     notificationsLoading ||
     notificationsWithSenderDataLoading
   )
     return <Loader />;
-  if (error || notificationsError || notificationsWithSenderDataError)
+  if (
+    userError ||
+    profileError ||
+    notificationsError ||
+    notificationsWithSenderDataError
+  )
     return <Error />;
   if (user && !isVerified) return <div>Please verify your email...</div>;
 
@@ -212,9 +205,19 @@ const SignedInLayout = ({ children }) => {
                 className="d-flex align-items-center gap-2"
                 onClick={() => setIsUserMenuOpen((prev) => !prev)}
               >
-                <CgProfile size={25} />
-                <p style={{ margin: 0 }}>{user.fullName}</p>
-                <div>
+                <img
+                  className="rounded-circle border"
+                  src={profile.avatar || defaultAvatar}
+                  alt="avatar"
+                  style={{
+                    width: "25px",
+                    height: "25px",
+                    objectFit: "cover",
+                  }}
+                />
+
+                <p style={{ margin: 0 }}>{profile.fullName}</p>
+                <div className="ms-2">
                   <BsChevronDown size={15} />
                 </div>
               </button>
