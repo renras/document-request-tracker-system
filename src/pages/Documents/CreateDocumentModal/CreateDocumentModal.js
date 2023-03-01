@@ -11,7 +11,7 @@ import { storage } from "../../../firebase-config";
 import { ref, uploadBytes } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
-import { increment, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, runTransaction } from "firebase/firestore";
 
 const QUANTITIES = [
   { label: "1", value: "1" },
@@ -22,15 +22,16 @@ const QUANTITIES = [
 ];
 
 const CreateDocument = ({ profile }) => {
-  const [documentType, setDocumentType] = useState([]);
+  const [requestedDocumentTypes, setRequestedDocumentTypes] = useState([]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const [purpose, setPurpose] = useState(PURPOSES[0]);
   const { handleSubmit } = useForm();
   const closeButton = useRef(null);
   const [attachment, setAttachment] = useState(null);
   const navigate = useNavigate();
-  const handleDocumentTypeChange = (selectedOption) => {
-    setDocumentType(selectedOption);
+
+  const handleChangeRequestedDocumentTypes = (documentTypes) => {
+    setRequestedDocumentTypes(documentTypes);
   };
 
   const filteredDocumentTypes = DOCUMENT_TYPES.filter((documentType) => {
@@ -57,20 +58,21 @@ const CreateDocument = ({ profile }) => {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const docRef = doc(db, "documents", "data");
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            await updateDoc(docRef, {
-              count: increment(1),
-            });
-            resolve(docSnap.data().count + 1);
-            return;
-          }
+          const count = await runTransaction(db, async (transaction) => {
+            const countDocRef = doc(db, "documents", "data");
+            const countDoc = await transaction.get(countDocRef);
 
-          await setDoc(docRef, {
-            count: increment(1),
+            if (!countDoc.exists()) {
+              transaction.set(countDocRef, { count: 1 });
+              return 1;
+            }
+
+            const newCount = countDoc.data().count + 1;
+            transaction.update(countDocRef, { count: newCount });
+            return newCount;
           });
-          resolve(1);
+
+          resolve(count);
         } catch (e) {
           reject(e);
         }
@@ -97,8 +99,42 @@ const CreateDocument = ({ profile }) => {
     }
   };
 
+  const createRequest = async (requestedDocumentType) => {
+    return new Promise((resolve, reject) => {
+      (async () => {
+        try {
+          const count = await incrementDocumentsCount();
+          const year = new Date().getFullYear();
+          const day = new Date().getDay();
+
+          const formattedId = `${year}-${addPadstartToNumber(
+            day,
+            2
+          )}-${addPadstartToNumber(count, 4)}`;
+
+          await setDoc(doc(db, "documents", formattedId), {
+            documentType: requestedDocumentType.value,
+            quantity: quantity.value,
+            purpose: purpose.value,
+            status: "ON PROCESS",
+            authorId: profile.id,
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now(),
+          });
+
+          await uploadAttachment(formattedId);
+          await createRequestNotification(profile.id);
+
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      })();
+    });
+  };
+
   const onSubmit = async () => {
-    if (!documentType.value) {
+    if (!requestedDocumentTypes.length > 0) {
       alert("Please select a document type");
       return;
     }
@@ -114,26 +150,11 @@ const CreateDocument = ({ profile }) => {
     }
 
     try {
-      const count = await incrementDocumentsCount();
-      const year = new Date().getFullYear();
-      const day = new Date().getDay();
-
-      const formattedId = `${year}-${addPadstartToNumber(
-        day,
-        2
-      )}-${addPadstartToNumber(count, 4)}`;
-      await setDoc(doc(db, "documents", formattedId), {
-        documentType: documentType.value,
-        quantity: quantity.value,
-        purpose: purpose.value,
-        status: "ON PROCESS",
-        authorId: profile.id,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-      });
-
-      await uploadAttachment(formattedId);
-      await createRequestNotification(profile.id);
+      await Promise.all(
+        requestedDocumentTypes.map(async (requestedDocumentType) => {
+          await createRequest(requestedDocumentType);
+        })
+      );
 
       navigate(0);
     } catch (e) {
@@ -167,11 +188,12 @@ const CreateDocument = ({ profile }) => {
             <Select
               id="document-type"
               options={filteredDocumentTypes}
-              value={documentType}
-              onChange={handleDocumentTypeChange}
+              value={requestedDocumentTypes}
+              onChange={handleChangeRequestedDocumentTypes}
               maxMenuHeight={160}
               isSearchable={true}
               isLoading={false}
+              isMulti
               placeholder="Search for document type"
             />
 
