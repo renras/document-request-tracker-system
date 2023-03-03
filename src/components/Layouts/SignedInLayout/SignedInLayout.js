@@ -10,7 +10,14 @@ import { auth } from "../../../firebase-config";
 import SideBar from "./SideBar/SideBar";
 import styles from "./SignedInLayout.module.css";
 import Loader from "../../Loader/Loader";
-import { doc, getDoc, collection, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  updateDoc,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import Error from "../../Error/Error";
 import { BsChevronDown, BsPerson } from "react-icons/bs";
@@ -18,10 +25,9 @@ import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import useClickAway from "../../../hooks/useClickAway";
 import { GrNotification } from "react-icons/gr";
-import { useCollection } from "react-firebase-hooks/firestore";
 import NotificationBox from "./NotificationBox";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useDocumentData } from "react-firebase-hooks/firestore";
+import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
 import defaultAvatar from "../../../assets/images/avatar.jpg";
 
 const SignedInLayout = ({ children }) => {
@@ -33,8 +39,15 @@ const SignedInLayout = ({ children }) => {
   const [isVerified, setIsVerified] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationBoxOpen, setIsNotificationBoxOpen] = useState(false);
-  const [notificationsData, notificationsLoading, notificationsError] =
-    useCollection(collection(db, "notifications"));
+  const [
+    requestNotifications,
+    requestNotificationsLoading,
+    requestNotificationsError,
+  ] = useCollection(
+    profile?.role === "ADMIN"
+      ? query(collection(db, "notifications"), where("type", "==", "REQUEST"))
+      : null
+  );
   const userMenuRef = useRef(null);
   const avatarWrapperRef = useRef(null);
   const navigate = useNavigate();
@@ -87,13 +100,16 @@ const SignedInLayout = ({ children }) => {
   }, [navigate]);
 
   useEffect(() => {
-    if (!notificationsData) return;
+    if (!requestNotifications) {
+      setNotificationsWithSenderDataLoading(false);
+      return;
+    }
 
     let ignore = true;
     try {
       (async () => {
         const newNotifications = await Promise.all(
-          notificationsData.docs.map(async (document) => {
+          requestNotifications.docs.map(async (document) => {
             const docRef = doc(db, "users", document.data().senderId);
             const docSnap = await getDoc(docRef);
 
@@ -128,21 +144,24 @@ const SignedInLayout = ({ children }) => {
     return () => {
       ignore = false;
     };
-  }, [notificationsData]);
+  }, [requestNotifications]);
 
   if (
     userLoading ||
     profileLoading ||
     emailVerifiedLoading ||
-    notificationsLoading ||
-    notificationsWithSenderDataLoading
-  )
+    notificationsWithSenderDataLoading ||
+    requestNotificationsLoading
+  ) {
+    console.log(notificationsWithSenderDataLoading);
     return <Loader />;
+  }
+
   if (
     userError ||
     profileError ||
-    notificationsError ||
-    notificationsWithSenderDataError
+    notificationsWithSenderDataError ||
+    requestNotificationsError
   )
     return <Error />;
   if (user && !isVerified) return <div>Please verify your email...</div>;
@@ -168,6 +187,7 @@ const SignedInLayout = ({ children }) => {
       : notificationsWithSenderData?.filter(
           (notification) => !notification.isRead
         ).length;
+
   return (
     <>
       <div className={styles.container}>
