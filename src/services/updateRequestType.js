@@ -19,7 +19,7 @@ const updateDocumentType = async (id, type, senderId, recipientId, body) => {
       body: body,
       senderId: senderId,
       recipientId: recipientId,
-      clickAction: `${window.location.origin}/documents`,
+      clickAction: "/documents",
       isRead: false,
       createdAt: Timestamp.now(),
     });

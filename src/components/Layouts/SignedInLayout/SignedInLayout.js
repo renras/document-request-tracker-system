@@ -213,7 +213,8 @@ const SignedInLayout = ({ children }) => {
       await updateDoc(notificationRef, {
         isRead: true,
       });
-      navigate("/on-process");
+
+      navigate(notification.clickAction);
     } catch (error) {
       alert("Server error");
     }
