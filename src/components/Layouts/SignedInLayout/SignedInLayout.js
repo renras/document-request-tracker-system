@@ -147,10 +147,6 @@ const SignedInLayout = ({ children }) => {
     return <Error />;
   if (user && !isVerified) return <div>Please verify your email...</div>;
 
-  const unreadNotificationsCount = notificationsWithSenderData?.filter(
-    (notification) => !notification.isRead
-  ).length;
-
   const handleNotificationClick = async (notification) => {
     const notificationRef = doc(db, "notifications", notification.id);
 
@@ -163,6 +159,15 @@ const SignedInLayout = ({ children }) => {
       alert("Server error");
     }
   };
+
+  const notifications =
+    profile?.role === "MEMBER" ? [] : notificationsWithSenderData;
+  const unreadNotificationsCount =
+    profile?.role === "MEMBER"
+      ? 0
+      : notificationsWithSenderData?.filter(
+          (notification) => !notification.isRead
+        ).length;
   return (
     <>
       <div className={styles.container}>
@@ -195,7 +200,7 @@ const SignedInLayout = ({ children }) => {
                   }}
                 >
                   <NotificationBox
-                    data={notificationsWithSenderData}
+                    data={notifications}
                     onClick={(data) => handleNotificationClick(data)}
                   />
                 </div>
