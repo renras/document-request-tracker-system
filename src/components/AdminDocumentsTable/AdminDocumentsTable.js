@@ -4,6 +4,7 @@ import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 const columns = ["Tracking ID", "Document Type", "Purpose", "Requested By"];
 
 const Table = ({ documents, onAccept, onReject, statusName }) => {
+  console.log(documents);
   return (
     <table className="table mt-5 align-middle">
       <thead>
@@ -18,7 +19,7 @@ const Table = ({ documents, onAccept, onReject, statusName }) => {
       </thead>
       <tbody>
         {documents.map((document) => {
-          const { id, documentType, purpose, author } = document;
+          const { id, documentType, purpose, author, authorId } = document;
 
           return (
             <tr key={id}>
@@ -32,7 +33,7 @@ const Table = ({ documents, onAccept, onReject, statusName }) => {
                   {onAccept && (
                     <button
                       className="btn btn-sm btn-light text-success"
-                      onClick={() => onAccept(id)}
+                      onClick={() => onAccept(id, authorId)}
                     >
                       <AiFillCheckCircle size={24} />
                     </button>
@@ -41,7 +42,7 @@ const Table = ({ documents, onAccept, onReject, statusName }) => {
                   {onReject && (
                     <button
                       className="btn btn-sm btn-light text-danger"
-                      onClick={() => onReject(id)}
+                      onClick={() => onReject(id, authorId)}
                     >
                       <AiFillCloseCircle size={24} />
                     </button>

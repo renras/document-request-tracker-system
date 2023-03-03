@@ -90,6 +90,7 @@ const CreateRequestModal = ({ profile }) => {
         type: "REQUEST",
         body: "has created a request",
         senderId: id,
+        recipientId: null,
         clickAction: `${window.location.origin}/on-process`,
         isRead: false,
         createdAt: Timestamp.now(),
