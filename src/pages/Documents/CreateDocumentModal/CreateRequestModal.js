@@ -21,7 +21,7 @@ const QUANTITIES = [
   { label: "5", value: "5" },
 ];
 
-const CreateDocument = ({ profile }) => {
+const CreateRequestModal = ({ profile }) => {
   const [requestedDocumentTypes, setRequestedDocumentTypes] = useState([]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const [purpose, setPurpose] = useState(PURPOSES[0]);
@@ -90,6 +90,7 @@ const CreateDocument = ({ profile }) => {
         type: "REQUEST",
         body: "has created a request",
         senderId: id,
+        recipientId: null,
         clickAction: `${window.location.origin}/on-process`,
         isRead: false,
         createdAt: Timestamp.now(),
@@ -251,8 +252,8 @@ const CreateDocument = ({ profile }) => {
   );
 };
 
-export default CreateDocument;
+export default CreateRequestModal;
 
-CreateDocument.propTypes = {
+CreateRequestModal.propTypes = {
   profile: PropTypes.object.isRequired,
 };

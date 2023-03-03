@@ -1,5 +1,5 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
-import CreateDocumentModal from "./CreateDocumentModal/CreateDocumentModal";
+import CreateRequestModal from "./CreateDocumentModal/CreateRequestModal";
 import useFetchUserDocuments from "../../hooks/useFetchUserDocuments";
 import { auth } from "../../firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -77,9 +77,7 @@ const Documents = () => {
       </div>
 
       {/* create document modal */}
-      {profile && (
-        <CreateDocumentModal profile={{ ...profile, id: user.uid }} />
-      )}
+      {profile && <CreateRequestModal profile={{ ...profile, id: user.uid }} />}
       {isViewingDocument && (
         <DocumentModal
           request={isViewingDocument}
