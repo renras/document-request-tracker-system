@@ -3,8 +3,9 @@ import AdminDocumentsTable from "../../components/AdminDocumentsTable/AdminDocum
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import useFetchDocuments from "../../hooks/useFetchDocuments";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase-config";
+import { auth } from "../../firebase-config";
+import updateRequestType from "../../services/updateRequestType";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const ForRelease = () => {
   const {
@@ -12,28 +13,35 @@ const ForRelease = () => {
     loading,
     error,
   } = useFetchDocuments("FOR RELEASE");
+  const [user, userLoading, userError] = useAuthState(auth);
 
-  if (loading) return <Loader />;
-  if (error) return <Error />;
+  if (loading || userLoading) return <Loader />;
+  if (error || userError) return <Error />;
 
-  const handleAcceptDocument = async (id) => {
+  const handleAcceptDocument = async (id, recipientId) => {
     try {
-      const docRef = doc(db, "documents", id);
-      await updateDoc(docRef, {
-        status: "RELEASED",
-      });
+      await updateRequestType(
+        id,
+        "RELEASED",
+        user.uid,
+        recipientId,
+        "has released your request"
+      );
     } catch (e) {
       console.error(e);
       alert("Failed to update document status. Please try again later.");
     }
   };
 
-  const handleRejectDocument = async (id) => {
+  const handleRejectDocument = async (id, recipientId) => {
     try {
-      const docRef = doc(db, "documents", id);
-      await updateDoc(docRef, {
-        status: "REJECTED",
-      });
+      await updateRequestType(
+        id,
+        "RELEASED",
+        user.uid,
+        recipientId,
+        "has rejected your request"
+      );
     } catch (e) {
       console.error(e);
       alert("Failed to update document status. Please try again later.");
@@ -46,8 +54,8 @@ const ForRelease = () => {
         <h1 className="h2">For Release</h1>
         <AdminDocumentsTable
           documents={forReleaseDocuments}
-          onAccept={(id) => handleAcceptDocument(id)}
-          onReject={(id) => handleRejectDocument(id)}
+          onAccept={(id, recipientId) => handleAcceptDocument(id, recipientId)}
+          onReject={(id, recipientId) => handleRejectDocument(id, recipientId)}
           statusName="Release"
         />
       </div>
