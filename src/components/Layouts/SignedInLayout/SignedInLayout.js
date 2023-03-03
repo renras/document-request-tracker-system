@@ -48,6 +48,16 @@ const SignedInLayout = ({ children }) => {
       ? query(collection(db, "notifications"), where("type", "==", "REQUEST"))
       : null
   );
+  const [userNotifications, userNotificationsLoading, userNotificationsError] =
+    useCollection(
+      user
+        ? query(
+            collection(db, "notifications"),
+            where("recipientId", "==", user.uid)
+          )
+        : null
+    );
+
   const userMenuRef = useRef(null);
   const avatarWrapperRef = useRef(null);
   const navigate = useNavigate();
@@ -100,32 +110,57 @@ const SignedInLayout = ({ children }) => {
   }, [navigate]);
 
   useEffect(() => {
-    if (!requestNotifications) {
+    if (requestNotificationsLoading || userNotificationsLoading) {
+      return;
+    }
+    if (!requestNotifications && !userNotifications) {
       setNotificationsWithSenderDataLoading(false);
       return;
     }
 
     let ignore = true;
     try {
+      const mergedNotifications = [
+        ...(requestNotifications?.docs || []),
+        ...(userNotifications?.docs || []),
+      ].sort((a, b) => b.data().createdAt - a.data().createdAt);
+
       (async () => {
         const newNotifications = await Promise.all(
-          requestNotifications.docs.map(async (document) => {
-            const docRef = doc(db, "users", document.data().senderId);
-            const docSnap = await getDoc(docRef);
+          mergedNotifications.map(async (document) => {
+            const senderRef = doc(db, "users", document.data().senderId);
 
-            if (docSnap.exists()) {
+            const recipientRef = document.data().recipientId
+              ? doc(db, "users", document.data().recipientId)
+              : null;
+            const senderSnap = await getDoc(senderRef);
+            const recipientSnap = recipientRef
+              ? await getDoc(recipientRef)
+              : null;
+
+            if (senderSnap.exists() && recipientSnap?.exists()) {
               return {
                 ...document.data(),
-                sender: docSnap.data(),
-                id: document.id,
-              };
-            } else {
-              return {
-                ...document.data(),
-                sender: null,
+                sender: senderSnap.data(),
+                recipient: recipientSnap.data(),
                 id: document.id,
               };
             }
+
+            if (senderSnap.exists() && !recipientSnap?.exists()) {
+              return {
+                ...document.data(),
+                sender: senderSnap.data(),
+                recipient: null,
+                id: document.id,
+              };
+            }
+
+            return {
+              ...document.data(),
+              sender: null,
+              id: document.id,
+            };
           })
         );
 
@@ -144,24 +179,29 @@ const SignedInLayout = ({ children }) => {
     return () => {
       ignore = false;
     };
-  }, [requestNotifications]);
+  }, [
+    requestNotifications,
+    userNotifications,
+    requestNotificationsLoading,
+    userNotificationsLoading,
+  ]);
 
   if (
     userLoading ||
     profileLoading ||
     emailVerifiedLoading ||
     notificationsWithSenderDataLoading ||
-    requestNotificationsLoading
-  ) {
-    console.log(notificationsWithSenderDataLoading);
+    requestNotificationsLoading ||
+    userNotificationsLoading
+  )
     return <Loader />;
-  }
 
   if (
     userError ||
     profileError ||
     notificationsWithSenderDataError ||
-    requestNotificationsError
+    requestNotificationsError ||
+    userNotificationsError
   )
     return <Error />;
   if (user && !isVerified) return <div>Please verify your email...</div>;
@@ -179,14 +219,9 @@ const SignedInLayout = ({ children }) => {
     }
   };
 
-  const notifications =
-    profile?.role === "MEMBER" ? [] : notificationsWithSenderData;
-  const unreadNotificationsCount =
-    profile?.role === "MEMBER"
-      ? 0
-      : notificationsWithSenderData?.filter(
-          (notification) => !notification.isRead
-        ).length;
+  const unreadNotificationsCount = notificationsWithSenderData?.filter(
+    (notification) => !notification.isRead
+  ).length;
 
   return (
     <>
@@ -220,7 +255,7 @@ const SignedInLayout = ({ children }) => {
                   }}
                 >
                   <NotificationBox
-                    data={notifications}
+                    data={notificationsWithSenderData}
                     onClick={(data) => handleNotificationClick(data)}
                   />
                 </div>

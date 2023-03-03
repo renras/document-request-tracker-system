@@ -14,17 +14,9 @@ const Notification = ({ data, onClick }) => {
             <CgProfile size={25} />
           </div>
 
-          {data.type === "REQUEST" && (
-            <div>
-              <b>{data.sender.fullName}</b> {data.body}
-            </div>
-          )}
-
-          {data.type === "REQUEST_UPDATE" && (
-            <div>
-              <b>{data.recipient.fullName}</b> {data.body}
-            </div>
-          )}
+          <div>
+            <b>{data.sender.fullName}</b> {data.body}
+          </div>
         </div>
       </div>
     </button>
