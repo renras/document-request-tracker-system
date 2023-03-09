@@ -7,11 +7,19 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase-config";
 
-const updateDocumentType = async (id, type, senderId, recipientId, body) => {
+const updateDocumentType = async (
+  id,
+  type,
+  senderId,
+  recipientId,
+  body,
+  claimingDate
+) => {
   try {
     const docRef = doc(db, "documents", id);
     await updateDoc(docRef, {
       status: type,
+      claimingDate: claimingDate ? claimingDate : null,
     });
 
     await addDoc(collection(db, "notifications"), {

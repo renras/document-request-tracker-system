@@ -2,6 +2,7 @@ import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayo
 import { useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
+import moment from "moment/moment";
 
 const TrackDocument = () => {
   const [search, setSearch] = useState("");
@@ -51,6 +52,7 @@ const TrackDocument = () => {
               <th scope="col">Tracking ID</th>
               <th scope="col">Document Type</th>
               <th scope="col">Status</th>
+              <th scope="col">Claiming Date</th>
             </tr>
           </thead>
           <tbody>
@@ -59,6 +61,13 @@ const TrackDocument = () => {
                 <td>{documentId}</td>
                 <td>{document.documentType}</td>
                 <td>{document.status}</td>
+                <td>
+                  {document.claimingDate
+                    ? moment(document.claimingDate?.toDate()).format(
+                        "MMMM DD, YYYY"
+                      )
+                    : "---"}
+                </td>
               </tr>
             )}
           </tbody>
