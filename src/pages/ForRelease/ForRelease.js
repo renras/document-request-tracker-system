@@ -18,6 +18,7 @@ const ForRelease = () => {
     error,
   } = useFetchDocuments("FOR RELEASE");
   const [user, userLoading, userError] = useAuthState(auth);
+
   const [documentForRelease, setDocumentForRelease] = useState(null);
   const { register, handleSubmit } = useForm();
 
