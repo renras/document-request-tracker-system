@@ -37,7 +37,7 @@ const OnProcess = () => {
     try {
       await updateRequestType(
         id,
-        "FOR RELEASE",
+        "REJECTED",
         user.uid,
         recipientId,
         "has rejected your request"

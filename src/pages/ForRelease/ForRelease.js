@@ -52,7 +52,7 @@ const ForRelease = () => {
     try {
       await updateRequestType(
         id,
-        "RELEASED",
+        "REJECTED",
         user.uid,
         recipientId,
         "has rejected your request"
