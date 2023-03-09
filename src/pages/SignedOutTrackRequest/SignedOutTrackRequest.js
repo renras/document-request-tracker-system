@@ -2,6 +2,7 @@ import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutL
 import { useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
+import moment from "moment/moment";
 
 const SignedOutTrackRequest = () => {
   const [search, setSearch] = useState("");
@@ -47,6 +48,7 @@ const SignedOutTrackRequest = () => {
             <th scope="col">Tracking ID</th>
             <th scope="col">Document Type</th>
             <th scope="col">Status</th>
+            <th scope="col">Claiming Date</th>
           </tr>
         </thead>
         <tbody>
@@ -55,6 +57,13 @@ const SignedOutTrackRequest = () => {
               <td>{documentId}</td>
               <td>{document.documentType}</td>
               <td>{document.status}</td>
+              <td>
+                {document.claimingDate
+                  ? moment(document.claimingDate?.toDate()).format(
+                      "MMMM DD, YYYY"
+                    )
+                  : "---"}
+              </td>
             </tr>
           )}
         </tbody>

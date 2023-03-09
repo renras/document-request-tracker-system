@@ -18,7 +18,7 @@ const Released = () => {
     <SignedInLayout>
       <div className="px-4">
         <h1 className="h2">Released</h1>
-        <AdminDocumentsTable documents={releasedDocuments} />
+        <AdminDocumentsTable documents={releasedDocuments} showClaimingDate />
       </div>
     </SignedInLayout>
   );

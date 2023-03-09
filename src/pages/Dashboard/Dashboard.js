@@ -5,23 +5,35 @@ import Error from "../../components/Error/Error";
 import { auth, db } from "../../firebase-config";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc } from "firebase/firestore";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 import Card from "./Card";
 
 const Dashboard = () => {
   const [user, userLoading, userError] = useAuthState(auth);
+  const [profile, profileLoading, profileError] = useDocumentData(
+    auth?.currentUser?.uid ? doc(db, "users", auth.currentUser.uid) : null
+  );
   const [userDocuments, setUserDocuments] = useState([]);
   const [userDocumentsLoading, setUserDocumentsLoading] = useState(true);
   const [userDocumentsError, setUserDocumentsError] = useState(null);
 
   useEffect(() => {
-    if (!user?.uid) return;
+    if (!userLoading && profileLoading && !user?.uid && !profile?.role) return;
+
     (async () => {
+      console.log("hello");
       try {
         const documentsRef = collection(db, "documents");
-        const q = query(documentsRef, where("authorId", "==", user.uid));
+        const adminQuery = query(documentsRef);
+        const memberQuery = query(
+          documentsRef,
+          where("authorId", "==", user.uid)
+        );
 
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(
+          profile?.role === "ADMIN" ? adminQuery : memberQuery
+        );
         const docs = querySnapshot.docs.map((doc) => {
           return {
             id: doc.id,
@@ -36,10 +48,12 @@ const Dashboard = () => {
         setUserDocumentsLoading(false);
       }
     })();
-  }, [user?.uid, setUserDocuments]);
+  }, [user?.uid, setUserDocuments, profile?.role, profileLoading, userLoading]);
 
-  if (userLoading || userDocumentsLoading) return <Loader />;
-  if (userError || userDocumentsError) return <Error />;
+  if (userLoading || userDocumentsLoading || profileLoading) return <Loader />;
+  if (userError || userDocumentsError || profileError) return <Error />;
+
+  console.log(profile);
 
   const onProcessingDocuments = userDocuments.filter(
     (doc) => doc.status === "ON PROCESS"

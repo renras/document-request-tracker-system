@@ -1,10 +1,16 @@
 import PropTypes from "prop-types";
 import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
+import moment from "moment/moment";
 
 const columns = ["Tracking ID", "Document Type", "Purpose", "Requested By"];
 
-const Table = ({ documents, onAccept, onReject, statusName }) => {
-  console.log(documents);
+const Table = ({
+  documents,
+  onAccept,
+  onReject,
+  statusName,
+  showClaimingDate,
+}) => {
   return (
     <table className="table mt-5 align-middle">
       <thead>
@@ -14,12 +20,14 @@ const Table = ({ documents, onAccept, onReject, statusName }) => {
               {column}
             </th>
           ))}
+          {showClaimingDate && <th scope="col">Claiming Date</th>}
           {(onAccept || onReject) && <th scope="col">{statusName}</th>}
         </tr>
       </thead>
       <tbody>
         {documents.map((document) => {
-          const { id, documentType, purpose, author, authorId } = document;
+          const { id, documentType, purpose, author, authorId, claimingDate } =
+            document;
 
           return (
             <tr key={id}>
@@ -27,6 +35,9 @@ const Table = ({ documents, onAccept, onReject, statusName }) => {
               <td>{documentType}</td>
               <td>{purpose}</td>
               <td>{author?.fullName}</td>
+              {showClaimingDate && (
+                <td>{moment(claimingDate.toDate()).format("MMMM DD, YYYY")}</td>
+              )}
 
               {(onAccept || onReject) && (
                 <td>
@@ -64,4 +75,5 @@ Table.propTypes = {
   onAccept: PropTypes.func,
   onReject: PropTypes.func,
   statusName: PropTypes.string,
+  showClaimingDate: PropTypes.bool,
 };
