@@ -90,13 +90,13 @@ const Reports = () => {
               return query(
                 collection(db, "documents"),
                 where("documentType", "==", documentType),
-                where("status", "==", "FOR RELEASE")
+                where("status", "==", "REJECTED")
               );
 
             return query(
               collection(db, "documents"),
               where("documentType", "==", documentType),
-              where("status", "==", "FOR RELEASE"),
+              where("status", "==", "REJECTED"),
               where("documentType", "==", documentType),
               where("createdAt", ">=", startDateYesterday),
               where("createdAt", "<=", endDateTomorrow)
