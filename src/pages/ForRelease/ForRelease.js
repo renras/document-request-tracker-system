@@ -52,7 +52,7 @@ const ForRelease = () => {
     try {
       await updateRequestType(
         id,
-        "RELEASED",
+        "REJECTED",
         user.uid,
         recipientId,
         "has rejected your request"
@@ -93,7 +93,7 @@ const ForRelease = () => {
           <div className="modal-body">
             <p id="claiming-date-input-description">
               Please enter the date on which the document will be available for
-              the student to claim
+              the requestor to claim
             </p>
             <input
               type="date"
