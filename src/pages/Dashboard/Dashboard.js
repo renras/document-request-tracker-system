@@ -22,7 +22,6 @@ const Dashboard = () => {
     if (!userLoading && profileLoading && !user?.uid && !profile?.role) return;
 
     (async () => {
-      console.log("hello");
       try {
         const documentsRef = collection(db, "documents");
         const adminQuery = query(documentsRef);
@@ -52,8 +51,6 @@ const Dashboard = () => {
 
   if (userLoading || userDocumentsLoading || profileLoading) return <Loader />;
   if (userError || userDocumentsError || profileError) return <Error />;
-
-  console.log(profile);
 
   const onProcessingDocuments = userDocuments.filter(
     (doc) => doc.status === "ON PROCESS"

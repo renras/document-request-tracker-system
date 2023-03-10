@@ -224,7 +224,7 @@ const CreateRequestModal = ({ profile }) => {
 
             {/* file upload*/}
             <label htmlFor="file" className="form-label mt-3">
-              Upload File
+              Upload Proof of Identity
             </label>
             <input
               type="file"

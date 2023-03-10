@@ -151,11 +151,10 @@ const SignUp = () => {
             />
           </button>
         </div>
-
         {/* recaptcha */}
         <div>
           <ReCAPTCHA
-            sitekey="6Ld2MEMkAAAAAIAATTSzSkuKwLJJtPLw_eyqLGjV"
+            sitekey="6LejVO0kAAAAAITbB2_ar2afzFtRmdASW_0prvLC"
             onChange={handleRecaptchaChange}
             style={{ marginTop: "2em" }}
           />
