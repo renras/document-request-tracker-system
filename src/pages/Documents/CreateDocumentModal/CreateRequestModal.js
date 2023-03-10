@@ -25,7 +25,7 @@ const CreateRequestModal = ({ profile }) => {
   const [requestedDocumentTypes, setRequestedDocumentTypes] = useState([]);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const [purpose, setPurpose] = useState(PURPOSES[0]);
-  const { handleSubmit } = useForm();
+  const { handleSubmit, register } = useForm();
   const closeButton = useRef(null);
   const [attachment, setAttachment] = useState(null);
   const navigate = useNavigate();
@@ -100,7 +100,7 @@ const CreateRequestModal = ({ profile }) => {
     }
   };
 
-  const createRequest = async (requestedDocumentType) => {
+  const createRequest = async (requestedDocumentType, otherPurpose) => {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
@@ -117,6 +117,7 @@ const CreateRequestModal = ({ profile }) => {
             documentType: requestedDocumentType.value,
             quantity: quantity.value,
             purpose: purpose.value,
+            otherPurpose: otherPurpose || null,
             status: "ON PROCESS",
             authorId: profile.id,
             createdAt: Timestamp.now(),
@@ -134,7 +135,7 @@ const CreateRequestModal = ({ profile }) => {
     });
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     if (!requestedDocumentTypes.length > 0) {
       alert("Please select a document type");
       return;
@@ -153,7 +154,7 @@ const CreateRequestModal = ({ profile }) => {
     try {
       await Promise.all(
         requestedDocumentTypes.map(async (requestedDocumentType) => {
-          await createRequest(requestedDocumentType);
+          await createRequest(requestedDocumentType, data.otherPurpose);
         })
       );
 
@@ -221,6 +222,19 @@ const CreateRequestModal = ({ profile }) => {
               options={PURPOSES}
               onChange={(option) => setPurpose(option)}
             />
+
+            {purpose.value === "Others" && (
+              <div className="d-flex align-items-center mt-3">
+                <label htmlFor="other purpose" className="form-label mt-3">
+                  If others, please specify
+                </label>
+                <input
+                  id="other purpose"
+                  className="form-control"
+                  {...register("otherPurpose", { required: true })}
+                />
+              </div>
+            )}
 
             {/* file upload*/}
             <label htmlFor="file" className="form-label mt-3">

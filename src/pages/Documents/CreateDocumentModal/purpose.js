@@ -12,4 +12,8 @@ export const PURPOSES = [
     label: "For Enrollment",
     value: "For Enrollment",
   },
+  {
+    label: "Others",
+    value: "Others",
+  },
 ];
