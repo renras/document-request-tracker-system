@@ -22,7 +22,15 @@ const SignUp = () => {
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
   const onSubmit = async (data) => {
-    const { fullName, email, password, phone, confirmPassword } = data;
+    const {
+      lastName,
+      firstName,
+      middleName,
+      email,
+      password,
+      phone,
+      confirmPassword,
+    } = data;
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
@@ -43,7 +51,9 @@ const SignUp = () => {
       );
 
       await setDoc(doc(db, "users", result.user.uid), {
-        fullName,
+        lastName,
+        firstName,
+        middleName,
         email,
         phone,
         createdAt: Timestamp.now(),
@@ -75,14 +85,34 @@ const SignUp = () => {
         <h1 className="h3">Sign Up</h1>
         {/* full name */}
         <label className="form-label mt-4" htmlFor="full-name">
-          Full Name
+          Student Name
         </label>
-        <input
-          className="form-control form-control-lg"
-          id="full-name"
-          placeholder="Juan Dela Cruz"
-          {...register("fullName", { required: true })}
-        />
+        <div className="row g-2">
+          <div className="col-md-4">
+            <input
+              className="form-control form-control-lg"
+              id="last-name"
+              placeholder="Last Name"
+              {...register("lastName", { required: true })}
+            />
+          </div>
+          <div className="col-md-4">
+            <input
+              className="form-control form-control-lg"
+              id="first-name"
+              placeholder="First Name"
+              {...register("firstName", { required: true })}
+            />
+          </div>
+          <div className="col-md-4">
+            <input
+              className="form-control form-control-lg"
+              id="middle-name"
+              placeholder="Middle Name"
+              {...register("middleName", { required: true })}
+            />
+          </div>
+        </div>
         {/* phone  */}
         <label className="form-label mt-4">Phone</label>
         <PhoneInput

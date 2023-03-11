@@ -29,6 +29,7 @@ const CreateRequestModal = ({ profile }) => {
   const closeButton = useRef(null);
   const [attachment, setAttachment] = useState(null);
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChangeRequestedDocumentTypes = (documentTypes) => {
     setRequestedDocumentTypes(documentTypes);
@@ -136,6 +137,7 @@ const CreateRequestModal = ({ profile }) => {
   };
 
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
     if (!requestedDocumentTypes.length > 0) {
       alert("Please select a document type");
       return;
@@ -163,6 +165,7 @@ const CreateRequestModal = ({ profile }) => {
       console.error(e);
       alert("Failed to create document. Please try again later.");
     }
+    setIsSubmitting(false);
   };
 
   return (
@@ -256,7 +259,11 @@ const CreateRequestModal = ({ profile }) => {
             >
               Close
             </button>
-            <button type="submit" className="btn btn-success">
+            <button
+              type="submit"
+              className="btn btn-success"
+              disabled={isSubmitting}
+            >
               Save Changes
             </button>
           </div>
