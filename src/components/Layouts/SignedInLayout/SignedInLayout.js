@@ -277,7 +277,9 @@ const SignedInLayout = ({ children }) => {
                   }}
                 />
 
-                <p style={{ margin: 0 }}>{profile.fullName}</p>
+                <p style={{ margin: 0 }}>
+                  {profile.firstName + profile.lastName}
+                </p>
                 <div className="ms-2">
                   <BsChevronDown size={15} />
                 </div>

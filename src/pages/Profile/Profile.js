@@ -23,7 +23,7 @@ const Profile = () => {
   if (profileError || userError) return <Error />;
 
   const onSubmit = async (data) => {
-    const { fullName, phone, aboutMe } = data;
+    const { lastName, firstName, middleName, phone, aboutMe } = data;
 
     try {
       let url = profile?.avatar;
@@ -35,7 +35,9 @@ const Profile = () => {
 
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         avatar: url,
-        fullName: fullName,
+        lastName: lastName,
+        firstName: firstName,
+        middleName: middleName,
         phone: phone,
         aboutMe: aboutMe,
         updatedAt: Timestamp.now(),
@@ -90,8 +92,14 @@ const Profile = () => {
             className="form-control"
             type="text"
             id="full-name"
-            defaultValue={profile?.fullName}
-            {...register("fullName", { required: true })}
+            defaultValue={
+              profile?.lastName +
+              ", " +
+              profile?.firstName +
+              " " +
+              profile?.middleName
+            }
+            readOnly
           />
 
           {/* phone*/}

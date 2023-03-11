@@ -34,7 +34,7 @@ const Table = ({
               <td>{id}</td>
               <td>{documentType}</td>
               <td>{purpose}</td>
-              <td>{author?.fullName}</td>
+              <td>{author?.firstName + " " + author?.lastName}</td>
               {showClaimingDate && (
                 <td>{moment(claimingDate.toDate()).format("MMMM DD, YYYY")}</td>
               )}
