@@ -19,7 +19,9 @@ const Dashboard = () => {
   const [userDocumentsError, setUserDocumentsError] = useState(null);
 
   useEffect(() => {
-    if (!userLoading && profileLoading && !user?.uid && !profile?.role) return;
+    if (userLoading || profileLoading) return;
+
+    if (!user?.uid || !profile?.role) return;
 
     (async () => {
       try {
