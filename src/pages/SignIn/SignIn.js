@@ -21,7 +21,7 @@ const SignIn = () => {
     <SignedOutLayout>
       <form
         className="mw-sm border w-100 shadow-sm rounded py-5 px-4 mx-auto bg-light"
-        style={{ marginTop: "5rem" }}
+        style={{ marginTop: "5rem", fontFamily: "Roboto, sans-serif" }}
         onSubmit={handleSubmit(onSubmit)}
       >
         <h1 className="h3">Sign In</h1>

@@ -126,7 +126,7 @@ const Dashboard = () => {
 
   return (
     <SignedInLayout>
-      <div className="px-5">
+      <div className="px-5"  style={{ fontFamily: "Roboto, sans-serif" }}>
         <h1 className="h2">Dashboard</h1>
         <div className="mt-5">
           {/* doughnuts */}
