@@ -22,7 +22,7 @@ const QUANTITIES = [
 ];
 
 const CreateRequestModal = ({ profile }) => {
-  const [requestedDocumentTypes, setRequestedDocumentTypes] = useState([]);
+  const [requestedDocumentType, setRequestedDocumentType] = useState(null);
   const [quantity, setQuantity] = useState(QUANTITIES[0]);
   const [purpose, setPurpose] = useState(PURPOSES[0]);
   const { handleSubmit, register } = useForm();
@@ -31,8 +31,8 @@ const CreateRequestModal = ({ profile }) => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChangeRequestedDocumentTypes = (documentTypes) => {
-    setRequestedDocumentTypes(documentTypes);
+  const handleChangeRequestedDocumentType = (documentType) => {
+    setRequestedDocumentType(documentType);
   };
 
   const filteredDocumentTypes = DOCUMENT_TYPES.filter((documentType) => {
@@ -137,8 +137,7 @@ const CreateRequestModal = ({ profile }) => {
   };
 
   const onSubmit = async (data) => {
-    setIsSubmitting(true);
-    if (!requestedDocumentTypes.length > 0) {
+    if (!requestedDocumentType) {
       alert("Please select a document type");
       return;
     }
@@ -160,18 +159,16 @@ const CreateRequestModal = ({ profile }) => {
     }
 
     try {
-      await Promise.all(
-        requestedDocumentTypes.map(async (requestedDocumentType) => {
-          await createRequest(requestedDocumentType, data.otherPurpose);
-        })
-      );
+      setIsSubmitting(true);
+      await createRequest(requestedDocumentType, data.otherPurpose);
 
       navigate(0);
     } catch (e) {
       console.error(e);
       alert("Failed to create document. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
   return (
@@ -203,12 +200,11 @@ const CreateRequestModal = ({ profile }) => {
             <Select
               id="document-type"
               options={filteredDocumentTypes}
-              value={requestedDocumentTypes}
-              onChange={handleChangeRequestedDocumentTypes}
+              value={requestedDocumentType}
+              onChange={handleChangeRequestedDocumentType}
               maxMenuHeight={160}
               isSearchable={true}
               isLoading={false}
-              isMulti
               placeholder="Search for document type"
             />
 

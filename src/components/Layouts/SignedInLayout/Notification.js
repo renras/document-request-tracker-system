@@ -15,7 +15,7 @@ const Notification = ({ data, onClick }) => {
           </div>
 
           <div>
-            <b>{data.sender.fullName}</b> {data.body}
+            <b>{data.sender.firstName + data.sender.lastName}</b> {data.body}
           </div>
         </div>
       </div>
