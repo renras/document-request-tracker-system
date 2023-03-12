@@ -30,5 +30,5 @@ export const storage = getStorage(app);
 // connect to emulator
 connectFirestoreEmulator(db, "localhost", 8080);
 // connectauthemulator needs to have this format http://localhost:9099 or else it will throw an error
-connectAuthEmulator(auth, "http://localhost:9099");
+connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
 connectStorageEmulator(storage, "localhost", 9199);
