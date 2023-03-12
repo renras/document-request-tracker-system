@@ -19,6 +19,7 @@ const SideBar = () => {
       style={{
         width: isOpen ? "256px" : "64px",
         height: "100vh",
+        fontFamily: "Roboto, sans-serif"
       }}
       className={`navbar-dark bg-success border shadow-sm px-4 py-5 ${
         !isOpen ? "align-items-center" : ""

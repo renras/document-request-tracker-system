@@ -8,11 +8,11 @@ const Home = () => {
         style={{ maxWidth: "80ch", marginTop: "10rem" }}
         className="w-100 text-center mx-auto"
       >
-        <h1 className="text-light" style={{ fontSize: "60px" }}>
+        <h1 className="text-light" style={{ fontSize: "60px", fontFamily: "Roboto, sans-serif" }}>
           The UPANG Document Tracking System
         </h1>
 
-        <div className="d-flex justify-content-center gap-4 mt-5">
+        <div className="d-flex justify-content-center gap-4 mt-5"  style={{ fontFamily: "Roboto, sans-serif" }}>
           <Link to="/dashboard" className="btn btn-light btn-lg fw-semibold">
             Request for a Document
           </Link>

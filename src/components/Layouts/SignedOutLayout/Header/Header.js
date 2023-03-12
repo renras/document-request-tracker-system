@@ -4,7 +4,7 @@ import logo from "../../../../assets/images/unilogo.png";
 const Header = () => {
   return (
     <header className="navbar bg-light">
-      <div className="container-sm">
+      <div className="container-sm"  style={{ fontFamily: "Roboto, sans-serif" }}>
         <NavLink to="/" className="navbar-brand fs-3">
           <img
             src={logo}

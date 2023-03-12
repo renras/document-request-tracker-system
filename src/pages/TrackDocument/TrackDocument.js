@@ -46,7 +46,7 @@ const TrackDocument = () => {
             Track
           </button>
         </div>
-        <table className="table mt-3 ">
+        <table className="table mt-3 " style={{ fontFamily: "Roboto, sans-serif" }}>
           <thead>
             <tr className="table-success">
               <th scope="col">Tracking ID</th>

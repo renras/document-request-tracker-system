@@ -16,7 +16,7 @@ const Released = () => {
 
   return (
     <SignedInLayout>
-      <div className="px-4">
+      <div className="px-4"> style={{ fontFamily: "Roboto, sans-serif" }}
         <h1 className="h2">Rejected</h1>
         <AdminDocumentsTable documents={rejectedDocuments} />
       </div>

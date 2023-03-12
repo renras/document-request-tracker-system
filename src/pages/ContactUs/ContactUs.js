@@ -20,7 +20,7 @@ const ContactUs = () => {
 
   return (
     <SignedOutLayout>
-      <div className="container-sm">
+      <div className="container-sm"  style={{ fontFamily: "Roboto, sans-serif" }}>
         <form
           className="mw-sm  px-4 py-5 mt-5 mx-auto border rounded shadow-sm bg-light"
           onSubmit={handleSubmit(onSubmit)}

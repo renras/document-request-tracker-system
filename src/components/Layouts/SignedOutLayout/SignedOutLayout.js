@@ -12,7 +12,7 @@ const SignedOutLayout = ({ children }) => {
   const [config, showBot, setShowBot] = useConfig();
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} >
       <Header />
       <main className="container-sm">{children}</main>
       <div className={styles.chatbot}>

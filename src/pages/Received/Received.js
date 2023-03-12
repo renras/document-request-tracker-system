@@ -16,7 +16,7 @@ const Incoming = () => {
 
   return (
     <SignedInLayout>
-      <div className="px-4">
+      <div className="px-4" style={{ fontFamily: "Roboto, sans-serif" }}>
         <h1 className="h2">Received</h1>
         <AdminDocumentsTable documents={receivedDocuments} />
       </div>

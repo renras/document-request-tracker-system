@@ -153,6 +153,12 @@ const CreateRequestModal = ({ profile }) => {
       return;
     }
 
+    if (attachment == null) {
+      alert("Please upload Proof of Identity");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       await Promise.all(
         requestedDocumentTypes.map(async (requestedDocumentType) => {
@@ -170,7 +176,11 @@ const CreateRequestModal = ({ profile }) => {
 
   return (
     <Modal id="create-document-modal" title="Create A Document">
-      <form className="modal-dialog" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="modal-dialog"
+        style={{ fontFamily: "Roboto, sans-serif" }}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div className="modal-content">
           <div className="modal-header">
             <h1 className="modal-title fs-5" id="modal-title">

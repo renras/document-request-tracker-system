@@ -175,7 +175,7 @@ const Reports = () => {
 
   return (
     <SignedInLayout>
-      <div className="px-4">
+      <div className="px-4" style={{ fontFamily: "Roboto, sans-serif" }}>
         <h1 className="h2 mt-5">Reports</h1>
         <div className="d-flex mt-5" style={{ alignItems: "flex-end" }}>
           <div className="d-flex gap-4" style={{ flexGrow: 1 }}>
