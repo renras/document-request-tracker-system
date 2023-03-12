@@ -5,26 +5,46 @@ import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import PhoneInput from "react-phone-number-input";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import ReCAPTCHA from "react-google-recaptcha";
+import Dropdown from "../../components/ui/Dropdown/Dropdown";
+
+const STATUSES = [
+  {
+    value: "",
+    label: "",
+  },
+  {
+    value: "STUDENT",
+    label: "Student",
+  },
+  {
+    value: "ALUMNI",
+    label: "Alumni",
+  },
+];
+
 const SignUp = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const recaptchaRef = useRef();
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(STATUSES[0]);
   const navigate = useNavigate();
   const [value, setValue] = useState();
   const [isRecaptchaValid, setIsRecaptchaValid] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
+
   const onSubmit = async (data) => {
     const {
       studentId,
@@ -46,13 +66,18 @@ const SignUp = () => {
       confirmPassword,
     } = data;
 
+    if (!status.value) {
+      alert("Please select your status");
+      return;
+    }
+
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
 
     if (!isRecaptchaValid) {
-      alert("Please complete the reCAPTCHA");
+      alert("Please verify that you are not a robot");
       return;
     }
 
@@ -138,26 +163,43 @@ const SignUp = () => {
           </div>
         </div>
 
-        {/* student info */}
-        <div className="row">
-          <div className="col mb-4">
-            <label className="form-label mt-4">Student ID no.</label>
-            <input
-              className="form-control form-control-lg"
-              id="student-id"
-              placeholder="03-2020-00211"
-              {...register("studentId", {
-                required: true,
-                pattern: /^([0-9]{2})-([0-9]{4})-([0-9]{5})$/,
-              })}
+        <div className="row mt-4">
+          <div className="col-md-4">
+            <label className="form-label">Status:</label>
+            <Dropdown
+              size="lg"
+              id="status"
+              value={status}
+              options={STATUSES}
+              onChange={(option) => setStatus(option)}
             />
-            {errors.studentId && errors.studentId.type === "pattern" && (
-              <p className="text-danger">
-                Please enter a valid student ID number.
-              </p>
+          </div>
+          <div className="col-md-8">
+            {status.value === "STUDENT" && (
+              <>
+                <label className="form-label ">Student ID no.</label>
+                <input
+                  className="form-control form-control-lg"
+                  id="student-id"
+                  placeholder="03-2020-00211"
+                  {...register("studentId", {
+                    required: true,
+                    pattern: /^([0-9]{2})-([0-9]{4})-([0-9]{5})$/,
+                  })}
+                />
+                {errors.studentId && errors.studentId.type === "pattern" && (
+                  <p className="text-danger">
+                    Please enter a valid student ID number.
+                  </p>
+                )}
+              </>
             )}
           </div>
-          <div className="col mb-4">
+        </div>
+
+        {/* student info */}
+        <div className="row">
+          <div className="col-md-12">
             <label className="form-label mt-4">Course:</label>
             <input
               className="form-control form-control-lg"
@@ -347,6 +389,7 @@ const SignUp = () => {
         {/* recaptcha */}
         <div>
           <ReCAPTCHA
+            ref={recaptchaRef}
             sitekey="6LejVO0kAAAAAITbB2_ar2afzFtRmdASW_0prvLC"
             onChange={handleRecaptchaChange}
             style={{ marginTop: "2em" }}
