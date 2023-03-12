@@ -26,14 +26,21 @@ const Table = ({
       </thead>
       <tbody>
         {documents.map((document) => {
-          const { id, documentType, purpose, author, authorId, claimingDate } =
-            document;
+          const {
+            id,
+            documentType,
+            purpose,
+            author,
+            authorId,
+            claimingDate,
+            otherPurpose,
+          } = document;
 
           return (
             <tr key={id}>
               <td>{id}</td>
               <td>{documentType}</td>
-              <td>{purpose}</td>
+              <td>{otherPurpose || purpose}</td>
               <td>{author?.firstName + " " + author?.lastName}</td>
               {showClaimingDate && (
                 <td>{moment(claimingDate.toDate()).format("MMMM DD, YYYY")}</td>
