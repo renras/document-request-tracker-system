@@ -12,6 +12,7 @@ import { ref, uploadBytes } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { doc, setDoc, runTransaction } from "firebase/firestore";
+import getDocumentPrice from "./getDocumentPrice";
 
 const QUANTITIES = [
   { label: "1", value: "1" },
@@ -38,6 +39,11 @@ const CreateRequestModal = ({ profile }) => {
   const filteredDocumentTypes = DOCUMENT_TYPES.filter((documentType) => {
     return documentType.value;
   });
+  const fee = requestedDocumentType
+    ? `PHP ${
+        getDocumentPrice(requestedDocumentType.value) * Number(quantity.value)
+      }`
+    : "PHP 0";
 
   const uploadAttachment = async (id) => {
     if (attachment == null) return;
@@ -121,6 +127,7 @@ const CreateRequestModal = ({ profile }) => {
             otherPurpose: otherPurpose || null,
             status: "ON PROCESS",
             authorId: profile.id,
+            fee,
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
           });
@@ -208,7 +215,7 @@ const CreateRequestModal = ({ profile }) => {
               placeholder="Search for document type"
             />
 
-            {/* quantity with arrow funct */}
+            {/*  with arrow funct */}
             <label htmlFor="quantity" className="form-label mt-3">
               Quantity
             </label>
@@ -221,8 +228,13 @@ const CreateRequestModal = ({ profile }) => {
               />
             </div>
 
+            <>
+              <p className="form-label mt-3">Computed Fee</p>
+              <p>{fee}</p>
+            </>
+
             {/* purpose */}
-            <label htmlFor="purpose" className="form-label mt-3">
+            <label htmlFor="purpose" className="form-label">
               Purpose
             </label>
             <Dropdown
