@@ -3,12 +3,15 @@ import { useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import moment from "moment/moment";
+import { AiFillEye } from "react-icons/ai";
+import DocumentModal from "../../components/DocumentModal/DocumentModal";
 
 const SignedOutTrackRequest = () => {
   const [search, setSearch] = useState("");
   const [document, setDocument] = useState(null);
   const [documentId, setDocumentId] = useState(null);
   const [author, setAuthor] = useState(null);
+  const [isViewingDocument, setIsViewingDocument] = useState(null);
 
   const handleTrackDocument = async () => {
     try {
@@ -49,6 +52,7 @@ const SignedOutTrackRequest = () => {
             <th scope="col">Document Type</th>
             <th scope="col">Status</th>
             <th scope="col">Claiming Date</th>
+            <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -64,10 +68,25 @@ const SignedOutTrackRequest = () => {
                     )
                   : "---"}
               </td>
+              <td>
+                <button
+                  className="btn btn-light"
+                  onClick={() => setIsViewingDocument(document)}
+                >
+                  <AiFillEye />
+                </button>
+              </td>
             </tr>
           )}
         </tbody>
       </table>
+      {isViewingDocument && (
+        <DocumentModal
+          request={isViewingDocument}
+          isOpen={isViewingDocument ? true : false}
+          onClose={() => setIsViewingDocument(null)}
+        />
+      )}
     </SignedOutLayout>
   );
 };

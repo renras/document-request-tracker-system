@@ -28,7 +28,8 @@ const Table = ({
               </th>
             ))}
             {showClaimingDate && <th scope="col">Claiming Date</th>}
-            <th scope="col">{statusName || "Action"}</th>
+            <th>Action</th>
+            {statusName && <th scope="col">{statusName}</th>}
           </tr>
         </thead>
         <tbody>
@@ -58,13 +59,16 @@ const Table = ({
                 )}
 
                 <td>
+                  <button
+                    className="btn btn-light"
+                    onClick={() => setIsViewingDocument(document)}
+                  >
+                    <AiFillEye />
+                  </button>
+                </td>
+
+                <td>
                   <div className="d-flex gap-3">
-                    <button
-                      className="btn btn-light"
-                      onClick={() => setIsViewingDocument(document)}
-                    >
-                      <AiFillEye />
-                    </button>
                     {(onAccept || onReject) && (
                       <>
                         {onAccept && (

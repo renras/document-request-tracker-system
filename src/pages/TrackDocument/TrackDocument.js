@@ -3,12 +3,15 @@ import { useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import moment from "moment/moment";
+import { AiFillEye } from "react-icons/ai";
+import DocumentModal from "../../components/DocumentModal/DocumentModal";
 
 const TrackDocument = () => {
   const [search, setSearch] = useState("");
   const [document, setDocument] = useState(null);
   const [documentId, setDocumentId] = useState(null);
   const [author, setAuthor] = useState(null);
+  const [isViewingDocument, setIsViewingDocument] = useState(null);
 
   const handleTrackDocument = async () => {
     try {
@@ -46,13 +49,17 @@ const TrackDocument = () => {
             Track
           </button>
         </div>
-        <table className="table mt-3 " style={{ fontFamily: "Roboto, sans-serif" }}>
+        <table
+          className="table mt-3 "
+          style={{ fontFamily: "Roboto, sans-serif" }}
+        >
           <thead>
             <tr className="table-success">
               <th scope="col">Tracking ID</th>
               <th scope="col">Document Type</th>
               <th scope="col">Status</th>
               <th scope="col">Claiming Date</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -68,11 +75,26 @@ const TrackDocument = () => {
                       )
                     : "---"}
                 </td>
+                <td>
+                  <button
+                    className="btn btn-light"
+                    onClick={() => setIsViewingDocument(document)}
+                  >
+                    <AiFillEye />
+                  </button>
+                </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+      {isViewingDocument && (
+        <DocumentModal
+          request={isViewingDocument}
+          isOpen={isViewingDocument ? true : false}
+          onClose={() => setIsViewingDocument(null)}
+        />
+      )}
     </SignedInLayout>
   );
 };
