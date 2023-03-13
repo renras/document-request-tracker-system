@@ -29,7 +29,12 @@ const CreateDocument = ({ request, isOpen, onClose }) => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <Modal title="Request" isOpen={isOpen} onClose={onClose}  style={{ fontFamily: "Roboto, sans-serif" }}>
+    <Modal
+      title="Request"
+      isOpen={isOpen}
+      onClose={onClose}
+      style={{ fontFamily: "Roboto, sans-serif" }}
+    >
       <div className="modal-header">
         <h1 className="modal-title fs-5" id="modal-title">
           Request
@@ -59,7 +64,7 @@ const CreateDocument = ({ request, isOpen, onClose }) => {
 
         <div className="row mt-3">
           <h2 className="h6 m-0 col">Purpose:</h2>
-          <p className="m-0 col-8">{request.purpose}</p>
+          <p className="m-0 col-8">{request.otherPurpose || request.purpose}</p>
         </div>
 
         <div className="row mt-3">

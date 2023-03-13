@@ -31,7 +31,7 @@ const Documents = () => {
 
   return (
     <SignedInLayout>
-      <div className="px-5"  style={{ fontFamily: "Roboto, sans-serif" }}>
+      <div className="px-5" style={{ fontFamily: "Roboto, sans-serif" }}>
         <h1 className="h2">Request Documents</h1>
         <div className="d-flex">
           <button
@@ -54,13 +54,13 @@ const Documents = () => {
           </thead>
           <tbody>
             {documentsData?.map((document) => {
-              const { id, documentType, purpose } = document;
+              const { id, documentType, purpose, otherPurpose } = document;
 
               return (
                 <tr key={id}>
                   <td className="align-middle">{id}</td>
                   <td className="align-middle">{documentType}</td>
-                  <td className="align-middle">{purpose}</td>
+                  <td className="align-middle">{otherPurpose || purpose}</td>
                   <td className="align-middle">
                     <button
                       className="btn btn-light"
