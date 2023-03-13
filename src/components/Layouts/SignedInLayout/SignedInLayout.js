@@ -29,6 +29,7 @@ import NotificationBox from "./NotificationBox";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
 import defaultAvatar from "../../../assets/images/avatar.jpg";
+import { AiOutlineMail } from "react-icons/ai";
 
 const SignedInLayout = ({ children }) => {
   const [user, userLoading, userError] = useAuthState(auth);
@@ -204,7 +205,23 @@ const SignedInLayout = ({ children }) => {
     userNotificationsError
   )
     return <Error />;
-  if (user && !isVerified) return <div>Please verify your email...</div>;
+  if (user && !isVerified)
+    return (
+      <div className="container">
+        <div
+          style={{ width: "500px", marginTop: "193px" }}
+          className="border py-5 px-4 text-center mx-auto rounded shadow-sm"
+        >
+          <AiOutlineMail size={200} />
+          <h1 className="mt-4">Verify Email</h1>
+          <p className="mt-5">
+            We have sent a verification email to the address you provided.
+            Please check your inbox (and spam folder, just in case) for an email
+            from us.
+          </p>
+        </div>
+      </div>
+    );
 
   const handleNotificationClick = async (notification) => {
     const notificationRef = doc(db, "notifications", notification.id);
