@@ -7,10 +7,10 @@ import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import { AiFillEye } from "react-icons/ai";
 import DocumentModal from "../../components/DocumentModal/DocumentModal";
-const columns = ["Tracking ID", "Document Type", "Purpose", "Action"];
 import useFetchProfile from "../../hooks/useFetchProfile";
 import { useState } from "react";
 
+const columns = ["Tracking ID", "Document Type", "Purpose", "Fee", "Action"];
 const Documents = () => {
   const [user, userLoading, userError] = useAuthState(auth);
   const [isViewingDocument, setIsViewingDocument] = useState(null);
@@ -54,13 +54,14 @@ const Documents = () => {
           </thead>
           <tbody>
             {documentsData?.map((document) => {
-              const { id, documentType, purpose, otherPurpose } = document;
+              const { id, documentType, purpose, otherPurpose, fee } = document;
 
               return (
                 <tr key={id}>
                   <td className="align-middle">{id}</td>
                   <td className="align-middle">{documentType}</td>
                   <td className="align-middle">{otherPurpose || purpose}</td>
+                  <td className="align-middle">{fee}</td>
                   <td className="align-middle">
                     <button
                       className="btn btn-light"

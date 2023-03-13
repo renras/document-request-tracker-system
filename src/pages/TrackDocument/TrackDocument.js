@@ -59,6 +59,7 @@ const TrackDocument = () => {
               <th scope="col">Document Type</th>
               <th scope="col">Status</th>
               <th scope="col">Claiming Date</th>
+              <th scope="col">Fee</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
@@ -75,6 +76,7 @@ const TrackDocument = () => {
                       )
                     : "---"}
                 </td>
+                <td>{document.fee}</td>
                 <td>
                   <button
                     className="btn btn-light"
