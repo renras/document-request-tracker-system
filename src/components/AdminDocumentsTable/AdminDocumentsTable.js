@@ -6,7 +6,13 @@ import { useState } from "react";
 import { AiFillEye } from "react-icons/ai";
 import moment from "moment";
 
-const columns = ["Tracking ID", "Document Type", "Purpose", "Requested By"];
+const columns = [
+  "Tracking ID",
+  "Document Type",
+  "Purpose",
+  "Fee",
+  "Requested By",
+];
 
 const Table = ({
   documents,
@@ -40,7 +46,7 @@ const Table = ({
               purpose,
               author,
               authorId,
-
+              fee,
               otherPurpose,
             } = document;
 
@@ -49,6 +55,7 @@ const Table = ({
                 <td>{id}</td>
                 <td>{documentType}</td>
                 <td>{otherPurpose || purpose}</td>
+                <td>{fee}</td>
                 <td>{author?.firstName + " " + author?.lastName}</td>
                 {showClaimingDate && (
                   <td>
