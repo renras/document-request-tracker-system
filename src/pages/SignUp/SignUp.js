@@ -91,7 +91,7 @@ const SignUp = () => {
       );
 
       await setDoc(doc(db, "users", result.user.uid), {
-        studentId,
+        studentId: status === "STUDENT" ? studentId : null,
         course,
         sex,
         lastName,
