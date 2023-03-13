@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { storage } from "../../firebase-config";
 import { ref, getDownloadURL } from "firebase/storage";
 import Modal from "../../components/v2/Modal/Modal.js";
+import moment from "moment/moment";
 
 const CreateDocument = ({ request, isOpen, onClose }) => {
   const [attachmentUrl, setAttachmentUrl] = useState(null);
@@ -29,7 +30,12 @@ const CreateDocument = ({ request, isOpen, onClose }) => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <Modal title="Request" isOpen={isOpen} onClose={onClose}  style={{ fontFamily: "Roboto, sans-serif" }}>
+    <Modal
+      title="Request"
+      isOpen={isOpen}
+      onClose={onClose}
+      style={{ fontFamily: "Roboto, sans-serif" }}
+    >
       <div className="modal-header">
         <h1 className="modal-title fs-5" id="modal-title">
           Request
@@ -48,8 +54,12 @@ const CreateDocument = ({ request, isOpen, onClose }) => {
         </div>
 
         <div className="row mt-3">
-          <h2 className="h6 m-0 col">Created At:</h2>
-          <p className="m-0 col-8">{request.createdAt}</p>
+          <h2 className="h6 m-0 col">Requested At:</h2>
+          <p className="m-0 col-8">
+            {moment(request.createdAt.toDate()).format(
+              "MMMM Do YYYY, h:mm:ss a"
+            )}
+          </p>
         </div>
 
         <div className="row mt-3">
@@ -59,7 +69,7 @@ const CreateDocument = ({ request, isOpen, onClose }) => {
 
         <div className="row mt-3">
           <h2 className="h6 m-0 col">Purpose:</h2>
-          <p className="m-0 col-8">{request.purpose}</p>
+          <p className="m-0 col-8">{request.otherPurpose || request.purpose}</p>
         </div>
 
         <div className="row mt-3">

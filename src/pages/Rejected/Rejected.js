@@ -13,10 +13,11 @@ const Released = () => {
 
   if (loading) return <Loader />;
   if (error) return <Error />;
+  console.log(rejectedDocuments);
 
   return (
     <SignedInLayout>
-      <div className="px-4"> style={{ fontFamily: "Roboto, sans-serif" }}
+      <div className="px-4" style={{ fontFamily: "Roboto, sans-serif" }}>
         <h1 className="h2">Rejected</h1>
         <AdminDocumentsTable documents={rejectedDocuments} />
       </div>
