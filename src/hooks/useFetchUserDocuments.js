@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase-config";
-import { format } from "date-fns";
 
 const useFetchUserDocuments = (user) => {
   const [loading, setLoading] = useState(true);
@@ -20,7 +19,6 @@ const useFetchUserDocuments = (user) => {
         const documents = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-          createdAt: format(doc.data().createdAt.toDate(), "MMMM dd, yyyy"),
         }));
         setData(documents);
       } catch (e) {
