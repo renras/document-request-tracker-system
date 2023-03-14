@@ -111,7 +111,7 @@ const Dashboard = () => {
     datasets: [
       {
         data: [
-          userDocuments.length,
+          userDocuments.length - 1,
           onProcessingDocuments.length,
           releasedDocuments.length,
         ],
@@ -126,7 +126,7 @@ const Dashboard = () => {
 
   return (
     <SignedInLayout>
-      <div className="px-5"  style={{ fontFamily: "Roboto, sans-serif" }}>
+      <div className="px-5" style={{ fontFamily: "Roboto, sans-serif" }}>
         <h1 className="h2">Dashboard</h1>
         <div className="mt-5">
           {/* doughnuts */}
