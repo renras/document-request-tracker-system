@@ -43,7 +43,8 @@ const Profile = () => {
         updatedAt: Timestamp.now(),
       });
       alert("Profile updated successfully");
-    } catch {
+    } catch (e) {
+      console.error(e);
       alert("Failed to update profile. Please try again later.");
     }
   };
@@ -84,22 +85,40 @@ const Profile = () => {
             />
           </label>
 
-          {/* fullname */}
-          <label className="form-label mt-3" htmlFor="full-name">
+          {/* lastname*/}
+          <label className="form-label mt-3" htmlFor="last-name">
+            Last Name
+          </label>
+          <input
+            className="form-control"
+            type="text"
+            id="last-name"
+            defaultValue={profile?.lastName}
+            {...register("lastName", { required: true })}
+          />
+
+          {/* firstname*/}
+          <label className="form-label mt-3" htmlFor="first-name">
             Full Name
           </label>
           <input
             className="form-control"
             type="text"
-            id="full-name"
-            defaultValue={
-              profile?.lastName +
-              ", " +
-              profile?.firstName +
-              " " +
-              profile?.middleName
-            }
-            readOnly
+            id="first-name"
+            defaultValue={profile?.firstName}
+            {...register("firstName", { required: true })}
+          />
+
+          {/* middlename*/}
+          <label className="form-label mt-3" htmlFor="middle-name">
+            Middle Name
+          </label>
+          <input
+            className="form-control"
+            type="text"
+            id="middle-name"
+            defaultValue={profile?.middleName}
+            {...register("middleName", { required: true })}
           />
 
           {/* phone*/}
