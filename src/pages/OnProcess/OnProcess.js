@@ -33,21 +33,6 @@ const OnProcess = () => {
     }
   };
 
-  const handleRejectDocument = async (id, recipientId) => {
-    try {
-      await updateRequestType(
-        id,
-        "REJECTED",
-        user.uid,
-        recipientId,
-        "has rejected your request"
-      );
-    } catch (e) {
-      console.error(e);
-      alert("Failed to update document status. Please try again later.");
-    }
-  };
-
   return (
     <SignedInLayout>
       <div className="px-4">
@@ -55,8 +40,8 @@ const OnProcess = () => {
         <AdminDocumentsTable
           documents={incomingDocuments}
           onAccept={(id, recipientId) => handleAcceptDocument(id, recipientId)}
-          onReject={(id, recipientId) => handleRejectDocument(id, recipientId)}
           statusName="For Release"
+          user={user}
         />
       </div>
     </SignedInLayout>
