@@ -56,9 +56,7 @@ const CreateDocument = ({ request, isOpen, onClose }) => {
         <div className="row mt-3">
           <h2 className="h6 m-0 col">Requested At:</h2>
           <p className="m-0 col-8">
-            {moment(document?.claimingDate?.toDate()).format(
-              "MMMM Do YYYY, h:mm:ss a"
-            )}
+            {moment(request.createdAt.toDate()).format("MMMM DD, YYYY")}
           </p>
         </div>
 

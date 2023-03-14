@@ -130,6 +130,7 @@ const CreateRequestModal = ({ profile }) => {
             fee,
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
+            authorEmail: profile.email,
           });
 
           await uploadAttachment(formattedId);

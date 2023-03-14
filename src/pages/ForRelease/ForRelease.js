@@ -20,8 +20,6 @@ const ForRelease = () => {
   const [user, userLoading, userError] = useAuthState(auth);
   const [documentForRelease, setDocumentForRelease] = useState(null);
   const { register, handleSubmit } = useForm();
-  const [documentToReject, setDocumentToReject] = useState(null);
-  const [showRejectModal, setShowRejectModal] = useState(false);
 
   if (loading || userLoading) return <Loader />;
   if (error || userError) return <Error />;
@@ -43,32 +41,11 @@ const ForRelease = () => {
         "has released your request",
         newDate
       );
+
       setDocumentForRelease(null); // close the modal
     } catch (e) {
       console.error(e);
       alert("Failed to release document. Please try again later.");
-    }
-  };
-
-  const handleRejectDocument = (id, recipientId) => {
-    setDocumentToReject({ id, recipientId });
-    setShowRejectModal(true);
-  };
-
-  const handleRejectConfirmation = async () => {
-    try {
-      await updateRequestType(
-        documentToReject.id,
-        "REJECTED",
-        user.uid,
-        documentToReject.recipientId,
-        "has rejected your request"
-      );
-      setShowRejectModal(false);
-      alert("Document has been rejected.");
-    } catch (e) {
-      console.error(e);
-      alert("Failed to reject document. Please try again later.");
     }
   };
 
@@ -77,48 +54,14 @@ const ForRelease = () => {
       <div className="px-4">
         <h1 className="h2">For Release</h1>
         <AdminDocumentsTable
+          user={user}
           documents={forReleaseDocuments}
           onAccept={(id, recipientId) =>
             setDocumentForRelease({ id, recipientId })
           }
-          onReject={handleRejectDocument}
           statusName="Release"
         />
       </div>
-
-      {/* reject document  modal */}
-      <Modal isOpen={showRejectModal}>
-        <div className="modal-header">
-          <h5 className="modal-title">Confirm Reject</h5>
-          <button
-            type="button"
-            className="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-            onClick={() => setShowRejectModal(false)}
-          ></button>
-        </div>
-        <div className="modal-body">
-          <p>Are you sure you want to reject this request?</p>
-        </div>
-        <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            data-bs-dismiss="modal"
-            onClick={() => setShowRejectModal(false)}
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            className="btn btn-danger"
-            onClick={handleRejectConfirmation}
-          >
-            Reject
-          </button>
-        </div>
-      </Modal>
 
       {/* relase document  modal */}
       <Modal isOpen={!!documentForRelease}>
