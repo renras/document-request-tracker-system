@@ -99,7 +99,7 @@ const Profile = () => {
 
           {/* firstname*/}
           <label className="form-label mt-3" htmlFor="first-name">
-            Full Name
+            First Name
           </label>
           <input
             className="form-control"
