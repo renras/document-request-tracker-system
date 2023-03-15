@@ -4,10 +4,13 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const SignIn = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const onSubmit = async (data) => {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
@@ -38,16 +41,26 @@ const SignIn = () => {
         />
 
         {/* password */}
+
         <label className="form-label mt-3" htmlFor="password">
           Password
         </label>
-        <input
-          className="form-control form-control-lg"
-          id="password"
-          type="password"
-          {...register("password", { required: true })}
-        />
-
+        <div className="input-group">
+          <input
+            className="form-control form-control-lg"
+            id="password"
+            type={!isPasswordVisible ? "password" : "text"}
+            {...register("password", { required: true })}
+          />
+          <button
+            type="button"
+            className="input-group-text"
+            onClick={() => setIsPasswordVisible((prev) => !prev)}
+            style={{ width: "2.75rem" }}
+          >
+            <FontAwesomeIcon icon={isPasswordVisible ? faEye : faEyeSlash} />
+          </button>
+        </div>
         {/*add sign in button */}
         <div className="text-center mt-4">
           <button className="btn btn-success btn-lg w-100 mt-5">Sign In</button>

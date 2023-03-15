@@ -294,28 +294,17 @@ const SignUp = () => {
           </div>
         </div>
         {/* sex */}
-        <label className="form-label mt-4">Sex:</label>
-        <div className="form-check">
-          <input
-            className="form-check-input"
-            type="radio"
-            name="sex"
-            id="male"
-            value="M"
+        <div className="col-md-4">
+          <label className="form-label">Sex:</label>
+          <select
+            className="form-select form-select-lg"
+            aria-label="Sex"
             {...register("sex", { required: true })}
-          />
-          <label className="form-check-label">Male</label>
-        </div>
-        <div className="form-check">
-          <input
-            className="form-check-input"
-            type="radio"
-            name="sex"
-            id="female"
-            value="F"
-            {...register("sex", { required: true })}
-          />
-          <label className="form-check-label">Female</label>
+          >
+            <option value="MALE">Male</option>
+            <option value="FEMALE">Female</option>
+          </select>
+          {errors.sex && <p className="text-danger">This field is required</p>}
         </div>
 
         {/* phone  */}
