@@ -6,6 +6,8 @@ import useFetchDocuments from "../../hooks/useFetchDocuments";
 import { auth } from "../../firebase-config";
 import updateRequestType from "../../services/updateRequestType";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useState } from "react";
+import Filters from "../../components/Filters/Filters";
 
 const OnProcess = () => {
   const {
@@ -14,6 +16,9 @@ const OnProcess = () => {
     error,
   } = useFetchDocuments("ON PROCESS");
   const [user, userLoading, userError] = useAuthState(auth);
+  const [search, setSearch] = useState("");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   if (loading || userLoading) return <Loader />;
   if (error || userError) return <Error />;
@@ -33,10 +38,20 @@ const OnProcess = () => {
     }
   };
 
+  console.log(startDate);
+
   return (
     <SignedInLayout>
       <div className="px-4">
         <h1 className="h2">On Process</h1>
+        <Filters
+          search={search}
+          onSearchChange={setSearch}
+          startDate={startDate}
+          onStartDateChange={setStartDate}
+          endDate={endDate}
+          onEndDateChange={setEndDate}
+        />
         <AdminDocumentsTable
           documents={incomingDocuments}
           onAccept={(id, recipientId) => handleAcceptDocument(id, recipientId)}
