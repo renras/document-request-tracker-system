@@ -8,6 +8,7 @@ import updateRequestType from "../../services/updateRequestType";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useState } from "react";
 import Filters from "../../components/Filters/Filters";
+import moment from "moment";
 
 const OnProcess = () => {
   const {
@@ -38,7 +39,38 @@ const OnProcess = () => {
     }
   };
 
-  console.log(startDate);
+  const filteredIncomingDocuments = incomingDocuments.filter((document) => {
+    const { firstName, lastName } = document.author;
+    const documentName = `${firstName} ${lastName}`.toLowerCase();
+    const documentDate = document.createdAt.toDate();
+    const startDateValue = startDate
+      ? new Date(`${moment(startDate).format("YYYY-MM-DD")} 00:00:00`)
+      : null;
+    const endDateValue = endDate
+      ? new Date(`${moment(endDate).format("YYYY-MM-DD")} 23:59:59`)
+      : null;
+    const searchValue = search.toLowerCase();
+
+    if (startDateValue && endDateValue) {
+      return (
+        documentName.includes(searchValue) &&
+        documentDate >= startDateValue &&
+        documentDate <= endDateValue
+      );
+    }
+
+    if (startDateValue) {
+      return (
+        documentName.includes(searchValue) && documentDate >= startDateValue
+      );
+    }
+
+    if (endDateValue) {
+      return documentName.includes(searchValue) && documentDate <= endDateValue;
+    }
+
+    return documentName.includes(searchValue);
+  });
 
   return (
     <SignedInLayout>
@@ -53,7 +85,7 @@ const OnProcess = () => {
           onEndDateChange={setEndDate}
         />
         <AdminDocumentsTable
-          documents={incomingDocuments}
+          documents={filteredIncomingDocuments}
           onAccept={(id, recipientId) => handleAcceptDocument(id, recipientId)}
           statusName="For Release"
           user={user}
