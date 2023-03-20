@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { auth, db } from "../../firebase-config";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
 import { useNavigate } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import PhoneInput from "react-phone-number-input";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -13,6 +13,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import ReCAPTCHA from "react-google-recaptcha";
 import Dropdown from "../../components/ui/Dropdown/Dropdown";
+import { regions as getRegions } from "select-philippines-address";
+import Loader from "../../components/Loader/Loader";
+import Error from "../../components/Error/Error";
 
 const STATUSES = [
   {
@@ -33,6 +36,7 @@ const SignUp = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm();
   const recaptchaRef = useRef();
@@ -44,6 +48,14 @@ const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
+  const [regions, setRegions] = useState([]);
+  const [loadingAddress, setLoadingAddress] = useState(true);
+  const [loadingAddressError, setLoadingAddressError] = useState(false);
+
+  const regionOptions = regions.map((region) => ({
+    value: region.region_code,
+    label: region.region_name,
+  }));
 
   const onSubmit = async (data) => {
     const {
@@ -124,6 +136,27 @@ const SignUp = () => {
   const handleRecaptchaChange = () => {
     setIsRecaptchaValid(true);
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const regions = await getRegions();
+        setRegions(regions);
+      } catch {
+        setLoadingAddressError(true);
+      } finally {
+        setLoadingAddress(false);
+      }
+    })();
+  }, []);
+
+  if (loadingAddress) {
+    return <Loader />;
+  }
+
+  if (loadingAddressError) {
+    return <Error />;
+  }
 
   return (
     <SignedOutLayout>
@@ -209,6 +242,31 @@ const SignUp = () => {
             />
           </div>
         </div>
+
+        {/* region */}
+        <label htmlFor="region" className="form-label mt-4">
+          Region:
+        </label>
+        <Controller
+          name="region"
+          control={control}
+          defaultValue={{
+            value: "",
+            label: "Select Region",
+          }}
+          render={({ field: { onChange, value } }) => (
+            <Dropdown
+              size="lg"
+              id="region"
+              value={value}
+              options={regionOptions}
+              onChange={(option) => onChange(option)}
+            />
+          )}
+          rules={{
+            validate: (value) => value.value !== "" || "Please select a region",
+          }}
+        />
 
         {/* complete address */}
         <label className="form-label mt-4">Complete Address:</label>
