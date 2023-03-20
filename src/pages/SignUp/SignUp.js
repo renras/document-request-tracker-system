@@ -17,6 +17,7 @@ import {
   regions as getRegions,
   provinces as getProvinces,
   cities as getCities,
+  barangays as getBarangays,
 } from "select-philippines-address";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
@@ -58,6 +59,7 @@ const SignUp = () => {
   const [regionsLoading, setRegionsLoading] = useState(true);
   const [regionsError, setRegionsError] = useState(false);
   const [cities, setCities] = useState([]);
+  const [barangays, setBarangays] = useState([]);
 
   const regionOptions = regions?.map((region) => ({
     value: region.region_code,
@@ -74,6 +76,11 @@ const SignUp = () => {
     label: city.city_name,
   }));
 
+  const barangayOptions = barangays?.map((barangay) => ({
+    value: barangay.brgy_code,
+    label: barangay.brgy_name,
+  }));
+
   const onSubmit = async (data) => {
     const {
       studentId,
@@ -82,7 +89,11 @@ const SignUp = () => {
       lastName,
       firstName,
       middleName,
-      completeAddress,
+      region,
+      province,
+      city,
+      barangay,
+      street,
       birthday,
       placeOfBirth,
       elementarySchool,
@@ -126,7 +137,11 @@ const SignUp = () => {
         lastName,
         firstName,
         middleName,
-        completeAddress,
+        region: region.label,
+        province: province.label,
+        city: city.label,
+        barangay: barangay.label,
+        street,
         birthday,
         placeOfBirth,
         elementarySchool,
@@ -314,9 +329,13 @@ const SignUp = () => {
               value={value}
               options={provinceOptions}
               onChange={async (option) => {
-                const cities = await getCities(option.value);
-                setCities(cities);
-                onChange(option);
+                try {
+                  const cities = await getCities(option.value);
+                  setCities(cities);
+                  onChange(option);
+                } catch (e) {
+                  alert("Failed to load cities.");
+                }
               }}
             />
           )}
@@ -343,13 +362,13 @@ const SignUp = () => {
               id="city"
               value={value}
               options={cityOptions}
-              onChange={(option) => {
+              onChange={async (option) => {
                 try {
-                  const regions = getRegions(activeRegion?.value);
-                  setRegions(regions);
+                  const barangays = await getBarangays(option.value);
+                  setBarangays(barangays);
                   onChange(option);
                 } catch (e) {
-                  alert("Failed to load city");
+                  alert("Failed to load barangays");
                 }
               }}
             />
@@ -359,13 +378,41 @@ const SignUp = () => {
           }}
         />
 
+        {/* barangay */}
+        <label htmlFor="barangay" className="form-label mt-4">
+          Barangay
+        </label>
+        <Controller
+          name="barangay"
+          control={control}
+          defaultValue={{
+            value: "",
+            label: "Select a Barangay",
+          }}
+          render={({ field: { onChange, value } }) => (
+            <Dropdown
+              size="lg"
+              id="barangay"
+              value={value}
+              options={barangayOptions}
+              onChange={(option) => onChange(option)}
+            />
+          )}
+          rules={{
+            validate: (value) =>
+              value.value !== "" || "Please select a barangay",
+          }}
+        />
+
         {/* complete address */}
-        <label className="form-label mt-4">Complete Address:</label>
+        <label htmlFor="street" className="form-label mt-4">
+          Complete Address:
+        </label>
         <input
           className="form-control form-control-lg"
-          id="complete-address"
-          placeholder="Street, Barangay, City, Province"
-          {...register("completeAddress", { required: true })}
+          id="street"
+          placeholder="Ex. 1234 Main St"
+          {...register("street", { required: true })}
         />
 
         {/* birthday and place of birth */}
