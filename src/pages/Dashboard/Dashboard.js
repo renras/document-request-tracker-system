@@ -61,11 +61,22 @@ const Dashboard = () => {
     (doc) => doc.status === "RELEASED"
   );
 
+  // if admin has no document set the count to 0
+  // if admin has documents set the count to userDocuments.length - 1
+  // if member return userDocuments.length
+  const getRequestsCount = () => {
+    if (profile.role === "ADMIN" && userDocuments.length === 1) return 0;
+    if (profile.role === "ADMIN" && userDocuments.length > 1)
+      return userDocuments.length - 1;
+
+    return userDocuments.length;
+  };
+
   const onProcessedDocumentsDoughnutData = {
     datasets: [
       {
         label: ["Requested Documents", "On Processing Documents"],
-        data: [userDocuments.length, onProcessingDocuments.length],
+        data: [getRequestsCount(), onProcessingDocuments.length],
         backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
         borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
         borderWidth: 1,
@@ -77,7 +88,7 @@ const Dashboard = () => {
     datasets: [
       {
         label: ["Requested Documents", "Completed Documents"],
-        data: [userDocuments.length, releasedDocuments.length],
+        data: [getRequestsCount(), releasedDocuments.length],
         backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
         borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
         borderWidth: 1,
@@ -111,7 +122,7 @@ const Dashboard = () => {
     datasets: [
       {
         data: [
-          userDocuments.length - 1,
+          getRequestsCount(),
           onProcessingDocuments.length,
           releasedDocuments.length,
         ],
