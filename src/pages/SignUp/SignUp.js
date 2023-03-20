@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { auth, db } from "../../firebase-config";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutLayout";
 import { useNavigate } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import PhoneInput from "react-phone-number-input";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -13,6 +13,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import ReCAPTCHA from "react-google-recaptcha";
 import Dropdown from "../../components/ui/Dropdown/Dropdown";
+import {
+  regions as getRegions,
+  provinces as getProvinces,
+  cities as getCities,
+  barangays as getBarangays,
+} from "select-philippines-address";
+import Loader from "../../components/Loader/Loader";
+import Error from "../../components/Error/Error";
 
 const STATUSES = [
   {
@@ -33,6 +41,8 @@ const SignUp = () => {
   const {
     register,
     handleSubmit,
+    control,
+    watch,
     formState: { errors },
   } = useForm();
   const recaptchaRef = useRef();
@@ -44,6 +54,32 @@ const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
+  const [regions, setRegions] = useState([]);
+  const [provinces, setProvinces] = useState([]);
+  const [regionsLoading, setRegionsLoading] = useState(true);
+  const [regionsError, setRegionsError] = useState(false);
+  const [cities, setCities] = useState([]);
+  const [barangays, setBarangays] = useState([]);
+
+  const regionOptions = regions?.map((region) => ({
+    value: region.region_code,
+    label: region.region_name,
+  }));
+
+  const provinceOptions = provinces?.map((province) => ({
+    value: province.province_code,
+    label: province.province_name,
+  }));
+
+  const cityOptions = cities?.map((city) => ({
+    value: city.city_code,
+    label: city.city_name,
+  }));
+
+  const barangayOptions = barangays?.map((barangay) => ({
+    value: barangay.brgy_code,
+    label: barangay.brgy_name,
+  }));
 
   const onSubmit = async (data) => {
     const {
@@ -53,7 +89,11 @@ const SignUp = () => {
       lastName,
       firstName,
       middleName,
-      completeAddress,
+      region,
+      province,
+      city,
+      barangay,
+      street,
       birthday,
       placeOfBirth,
       elementarySchool,
@@ -97,7 +137,11 @@ const SignUp = () => {
         lastName,
         firstName,
         middleName,
-        completeAddress,
+        region: region.label,
+        province: province.label,
+        city: city.label,
+        barangay: barangay.label,
+        street,
         birthday,
         placeOfBirth,
         elementarySchool,
@@ -124,6 +168,30 @@ const SignUp = () => {
   const handleRecaptchaChange = () => {
     setIsRecaptchaValid(true);
   };
+
+  const activeRegion = watch("region");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const regions = await getRegions();
+        setRegions(regions);
+      } catch (e) {
+        console.error(e);
+        setRegionsError(true);
+      } finally {
+        setRegionsLoading(false);
+      }
+    })();
+  }, [activeRegion]);
+
+  if (regionsLoading) {
+    return <Loader />;
+  }
+
+  if (regionsError) {
+    return <Error />;
+  }
 
   return (
     <SignedOutLayout>
@@ -210,13 +278,141 @@ const SignUp = () => {
           </div>
         </div>
 
-        {/* complete address */}
-        <label className="form-label mt-4">Complete Address:</label>
+        {/* region */}
+        <label htmlFor="region" className="form-label mt-4">
+          Region
+        </label>
+        <Controller
+          name="region"
+          control={control}
+          defaultValue={{
+            value: "",
+            label: "Select Region",
+          }}
+          render={({ field: { onChange, value } }) => (
+            <Dropdown
+              size="lg"
+              id="region"
+              value={value}
+              options={regionOptions}
+              onChange={async (option) => {
+                try {
+                  const provinces = await getProvinces(option.value);
+                  setProvinces(provinces);
+                  onChange(option);
+                } catch (e) {
+                  alert("Failed to load provinces.");
+                }
+              }}
+            />
+          )}
+          rules={{
+            validate: (value) => value.value !== "" || "Please select a region",
+          }}
+        />
+
+        {/* province */}
+        <label htmlFor="province" className="form-label mt-4">
+          Province
+        </label>
+        <Controller
+          name="province"
+          control={control}
+          defaultValue={{
+            value: "",
+            label: "Select Province",
+          }}
+          render={({ field: { onChange, value } }) => (
+            <Dropdown
+              size="lg"
+              id="province"
+              value={value}
+              options={provinceOptions}
+              onChange={async (option) => {
+                try {
+                  const cities = await getCities(option.value);
+                  setCities(cities);
+                  onChange(option);
+                } catch (e) {
+                  alert("Failed to load cities.");
+                }
+              }}
+            />
+          )}
+          rules={{
+            validate: (value) =>
+              value.value !== "" || "Please select a province",
+          }}
+        />
+
+        {/* city */}
+        <label htmlFor="city" className="form-label mt-4">
+          City
+        </label>
+        <Controller
+          name="city"
+          control={control}
+          defaultValue={{
+            value: "",
+            label: "Select City",
+          }}
+          render={({ field: { onChange, value } }) => (
+            <Dropdown
+              size="lg"
+              id="city"
+              value={value}
+              options={cityOptions}
+              onChange={async (option) => {
+                try {
+                  const barangays = await getBarangays(option.value);
+                  setBarangays(barangays);
+                  onChange(option);
+                } catch (e) {
+                  alert("Failed to load barangays");
+                }
+              }}
+            />
+          )}
+          rules={{
+            validate: (value) => value.value !== "" || "Please select a city",
+          }}
+        />
+
+        {/* barangay */}
+        <label htmlFor="barangay" className="form-label mt-4">
+          Barangay
+        </label>
+        <Controller
+          name="barangay"
+          control={control}
+          defaultValue={{
+            value: "",
+            label: "Select a Barangay",
+          }}
+          render={({ field: { onChange, value } }) => (
+            <Dropdown
+              size="lg"
+              id="barangay"
+              value={value}
+              options={barangayOptions}
+              onChange={(option) => onChange(option)}
+            />
+          )}
+          rules={{
+            validate: (value) =>
+              value.value !== "" || "Please select a barangay",
+          }}
+        />
+
+        {/* Street */}
+        <label htmlFor="street" className="form-label mt-4">
+          Street
+        </label>
         <input
           className="form-control form-control-lg"
-          id="complete-address"
-          placeholder="Street, Barangay, City, Province"
-          {...register("completeAddress", { required: true })}
+          id="street"
+          placeholder="Ex. 1234 Main St"
+          {...register("street", { required: true })}
         />
 
         {/* birthday and place of birth */}
@@ -294,17 +490,28 @@ const SignUp = () => {
           </div>
         </div>
         {/* sex */}
-        <div className="col-md-4">
-          <label className="form-label">Sex:</label>
-          <select
-            className="form-select form-select-lg"
-            aria-label="Sex"
+        <label className="form-label mt-4">Sex:</label>
+        <div className="form-check">
+          <input
+            className="form-check-input"
+            type="radio"
+            name="sex"
+            id="male"
+            value="M"
             {...register("sex", { required: true })}
-          >
-            <option value="MALE">Male</option>
-            <option value="FEMALE">Female</option>
-          </select>
-          {errors.sex && <p className="text-danger">This field is required</p>}
+          />
+          <label className="form-check-label">Male</label>
+        </div>
+        <div className="form-check">
+          <input
+            className="form-check-input"
+            type="radio"
+            name="sex"
+            id="female"
+            value="F"
+            {...register("sex", { required: true })}
+          />
+          <label className="form-check-label">Female</label>
         </div>
 
         {/* phone  */}
