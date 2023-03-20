@@ -1,10 +1,14 @@
 import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayout";
 import { useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebase-config";
+import { doc, getDoc, collection } from "firebase/firestore";
+import { db, auth } from "../../firebase-config";
 import moment from "moment/moment";
 import { AiFillEye } from "react-icons/ai";
 import DocumentModal from "../../components/DocumentModal/DocumentModal";
+import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
+import Loader from "../../components/Loader/Loader";
+import Error from "../../components/Error/Error";
 
 const TrackDocument = () => {
   const [search, setSearch] = useState("");
@@ -12,8 +16,19 @@ const TrackDocument = () => {
   const [documentId, setDocumentId] = useState(null);
   const [author, setAuthor] = useState(null);
   const [isViewingDocument, setIsViewingDocument] = useState(null);
+  const [user, userLoading, userError] = useAuthState(auth);
+  const [profile, profileLoading, profileError] = useDocumentData(
+    user?.uid ? doc(db, "users", user.uid) : null
+  );
+  const [documents, documentsLoading, documentsError] = useCollection(
+    profile?.role === "ADMIN" ? collection(db, "documents") : null
+  );
 
   const handleTrackDocument = async () => {
+    if (profile.role === "ADMIN") {
+      return;
+    }
+
     try {
       const docRef = doc(db, "documents", search);
       const docSnap = await getDoc(docRef);
@@ -29,6 +44,25 @@ const TrackDocument = () => {
       setAuthor(null);
     }
   };
+
+  if (documentsLoading || userLoading || profileLoading) return <Loader />;
+  if (documentsError || userError || profileError) return <Error />;
+
+  const documentsData = documents?.docs
+    .map((doc) => {
+      return {
+        id: doc.id,
+        ...doc.data(),
+      };
+    })
+    .filter((doc) => doc.id !== "data")
+    .filter((doc) => {
+      if (search) {
+        return doc.id === search;
+      }
+
+      return doc;
+    });
 
   return (
     <SignedInLayout>
@@ -64,20 +98,20 @@ const TrackDocument = () => {
             </tr>
           </thead>
           <tbody>
-            {document && documentId && author && (
+            {profile?.role !== "ADMIN" && document && documentId && author && (
               <tr>
-                <td>{documentId}</td>
-                <td>{document.documentType}</td>
-                <td>{document.status}</td>
-                <td>
+                <td className="align-middle">{documentId}</td>
+                <td className="align-middle">{document.documentType}</td>
+                <td className="align-middle">{document.status}</td>
+                <td className="align-middle">
                   {document.claimingDate
                     ? moment(document.claimingDate?.toDate()).format(
                         "MMMM DD, YYYY"
                       )
                     : "---"}
                 </td>
-                <td>{document.fee}</td>
-                <td>
+                <td className="align-middle">{document.fee}</td>
+                <td className="align-middle">
                   <button
                     className="btn btn-light"
                     onClick={() => setIsViewingDocument(document)}
@@ -87,6 +121,31 @@ const TrackDocument = () => {
                 </td>
               </tr>
             )}
+
+            {profile?.role === "ADMIN" &&
+              documentsData?.map((document) => (
+                <tr key={document.id}>
+                  <td className="align-middle">{document.id}</td>
+                  <td className="align-middle">{document.documentType}</td>
+                  <td className="align-middle">{document.status}</td>
+                  <td className="align-middle">
+                    {document.claimingDate
+                      ? moment(document.claimingDate?.toDate()).format(
+                          "MMMM DD, YYYY"
+                        )
+                      : "---"}
+                  </td>
+                  <td className="align-middle">{document.fee}</td>
+                  <td className="align-middle">
+                    <button
+                      className="btn btn-light"
+                      onClick={() => setIsViewingDocument(document)}
+                    >
+                      <AiFillEye />
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
