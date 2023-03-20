@@ -5,6 +5,7 @@ import { BsBoxArrowUp } from "react-icons/bs";
 import { HiDocumentSearch, HiOutlineDocumentReport } from "react-icons/hi";
 import { RiDashboardFill } from "react-icons/ri";
 import { AiFillDelete } from "react-icons/ai";
+import { FiUsers } from "react-icons/fi";
 
 const navLinks = [
   {
@@ -46,6 +47,12 @@ const navLinks = [
     href: "/reports",
     name: "Reports",
     icon: <HiOutlineDocumentReport color="#fff" size={20} />,
+    role: "ADMIN",
+  },
+  {
+    href: "/user-management",
+    name: "User Management",
+    icon: <FiUsers color="#fff" size={20} />,
     role: "ADMIN",
   },
   {

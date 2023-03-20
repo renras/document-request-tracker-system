@@ -16,6 +16,7 @@ import Reports from "./pages/Reports/Reports";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Rejected from "./pages/Rejected/Rejected";
 import Profile from "./pages/Profile/Profile";
+import UserManagement from "./pages/UserManagement/UserManagement";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="rejected" element={<Rejected />} />
       <Route path="profile" element={<Profile />} />
+      <Route path="user-management" element={<UserManagement />} />
     </Routes>
   );
 }
