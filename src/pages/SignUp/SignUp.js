@@ -13,7 +13,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import ReCAPTCHA from "react-google-recaptcha";
 import Dropdown from "../../components/ui/Dropdown/Dropdown";
-import { regions as getRegions } from "select-philippines-address";
+import {
+  regions as getRegions,
+  provinces as getProvinces,
+} from "select-philippines-address";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 
@@ -37,6 +40,7 @@ const SignUp = () => {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm();
   const recaptchaRef = useRef();
@@ -49,12 +53,18 @@ const SignUp = () => {
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
   const [regions, setRegions] = useState([]);
-  const [loadingAddress, setLoadingAddress] = useState(true);
-  const [loadingAddressError, setLoadingAddressError] = useState(false);
+  const [provinces, setProvinces] = useState([]);
+  const [regionsLoading, setRegionsLoading] = useState(true);
+  const [regionsError, setRegionsError] = useState(false);
 
   const regionOptions = regions.map((region) => ({
     value: region.region_code,
     label: region.region_name,
+  }));
+
+  const provinceOptions = provinces.map((province) => ({
+    value: province.province_code,
+    label: province.province_name,
   }));
 
   const onSubmit = async (data) => {
@@ -137,24 +147,30 @@ const SignUp = () => {
     setIsRecaptchaValid(true);
   };
 
+  const activeRegion = watch("region");
+
   useEffect(() => {
     (async () => {
       try {
         const regions = await getRegions();
         setRegions(regions);
-      } catch {
-        setLoadingAddressError(true);
+
+        const provinces = await getProvinces(activeRegion?.value);
+        setProvinces(provinces);
+      } catch (e) {
+        console.error(e);
+        setRegionsError(true);
       } finally {
-        setLoadingAddress(false);
+        setRegionsLoading(false);
       }
     })();
-  }, []);
+  }, [activeRegion]);
 
-  if (loadingAddress) {
+  if (regionsLoading) {
     return <Loader />;
   }
 
-  if (loadingAddressError) {
+  if (regionsError) {
     return <Error />;
   }
 
@@ -245,7 +261,7 @@ const SignUp = () => {
 
         {/* region */}
         <label htmlFor="region" className="form-label mt-4">
-          Region:
+          Region
         </label>
         <Controller
           name="region"
@@ -265,6 +281,40 @@ const SignUp = () => {
           )}
           rules={{
             validate: (value) => value.value !== "" || "Please select a region",
+          }}
+        />
+
+        {/* province */}
+        <label htmlFor="province" className="form-label mt-4">
+          Province
+        </label>
+        <Controller
+          name="province"
+          control={control}
+          defaultValue={{
+            value: "",
+            label: "Select Province",
+          }}
+          render={({ field: { onChange, value } }) => (
+            <Dropdown
+              size="lg"
+              id="province"
+              value={value}
+              options={provinceOptions}
+              onChange={(option) => {
+                try {
+                  const regions = getRegions(activeRegion?.value);
+                  setRegions(regions);
+                  onChange(option);
+                } catch (e) {
+                  alert("Failed to load regions");
+                }
+              }}
+            />
+          )}
+          rules={{
+            validate: (value) =>
+              value.value !== "" || "Please select a province",
           }}
         />
 
