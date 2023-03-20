@@ -56,15 +56,24 @@ const SignUp = () => {
   const [provinces, setProvinces] = useState([]);
   const [regionsLoading, setRegionsLoading] = useState(true);
   const [regionsError, setRegionsError] = useState(false);
+  const [cities] = useState([]);
 
   const regionOptions = regions.map((region) => ({
     value: region.region_code,
     label: region.region_name,
   }));
 
-  const provinceOptions = provinces.map((province) => ({
-    value: province.province_code,
-    label: province.province_name,
+  const provinceOptions =
+    provinces.length > 0
+      ? provinces?.map((province) => ({
+          value: province.province_code,
+          label: province.province_name,
+        }))
+      : [];
+
+  const cityOptions = cities.map((city) => ({
+    value: city.city_code,
+    label: city.city_name,
   }));
 
   const onSubmit = async (data) => {
@@ -154,9 +163,6 @@ const SignUp = () => {
       try {
         const regions = await getRegions();
         setRegions(regions);
-
-        const provinces = await getProvinces(activeRegion?.value);
-        setProvinces(provinces);
       } catch (e) {
         console.error(e);
         setRegionsError(true);
@@ -276,7 +282,15 @@ const SignUp = () => {
               id="region"
               value={value}
               options={regionOptions}
-              onChange={(option) => onChange(option)}
+              onChange={async (option) => {
+                try {
+                  const provinces = await getProvinces(option.value);
+                  setProvinces(provinces);
+                  onChange(option);
+                } catch (e) {
+                  alert("Failed to load provinces.");
+                }
+              }}
             />
           )}
           rules={{
@@ -302,19 +316,46 @@ const SignUp = () => {
               value={value}
               options={provinceOptions}
               onChange={(option) => {
-                try {
-                  const regions = getRegions(activeRegion?.value);
-                  setRegions(regions);
-                  onChange(option);
-                } catch (e) {
-                  alert("Failed to load regions");
-                }
+                onChange(option);
               }}
             />
           )}
           rules={{
             validate: (value) =>
               value.value !== "" || "Please select a province",
+          }}
+        />
+
+        {/* city */}
+        <label htmlFor="city" className="form-label mt-4">
+          City
+        </label>
+        <Controller
+          name="city"
+          control={control}
+          defaultValue={{
+            value: "",
+            label: "Select City",
+          }}
+          render={({ field: { onChange, value } }) => (
+            <Dropdown
+              size="lg"
+              id="city"
+              value={value}
+              options={cityOptions}
+              onChange={(option) => {
+                try {
+                  const regions = getRegions(activeRegion?.value);
+                  setRegions(regions);
+                  onChange(option);
+                } catch (e) {
+                  alert("Failed to load city");
+                }
+              }}
+            />
+          )}
+          rules={{
+            validate: (value) => value.value !== "" || "Please select a city",
           }}
         />
 
