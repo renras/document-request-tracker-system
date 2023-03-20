@@ -16,6 +16,7 @@ import Dropdown from "../../components/ui/Dropdown/Dropdown";
 import {
   regions as getRegions,
   provinces as getProvinces,
+  cities as getCities,
 } from "select-philippines-address";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
@@ -56,22 +57,19 @@ const SignUp = () => {
   const [provinces, setProvinces] = useState([]);
   const [regionsLoading, setRegionsLoading] = useState(true);
   const [regionsError, setRegionsError] = useState(false);
-  const [cities] = useState([]);
+  const [cities, setCities] = useState([]);
 
-  const regionOptions = regions.map((region) => ({
+  const regionOptions = regions?.map((region) => ({
     value: region.region_code,
     label: region.region_name,
   }));
 
-  const provinceOptions =
-    provinces.length > 0
-      ? provinces?.map((province) => ({
-          value: province.province_code,
-          label: province.province_name,
-        }))
-      : [];
+  const provinceOptions = provinces?.map((province) => ({
+    value: province.province_code,
+    label: province.province_name,
+  }));
 
-  const cityOptions = cities.map((city) => ({
+  const cityOptions = cities?.map((city) => ({
     value: city.city_code,
     label: city.city_name,
   }));
@@ -315,7 +313,9 @@ const SignUp = () => {
               id="province"
               value={value}
               options={provinceOptions}
-              onChange={(option) => {
+              onChange={async (option) => {
+                const cities = await getCities(option.value);
+                setCities(cities);
                 onChange(option);
               }}
             />
