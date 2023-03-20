@@ -404,9 +404,9 @@ const SignUp = () => {
           }}
         />
 
-        {/* complete address */}
+        {/* Street */}
         <label htmlFor="street" className="form-label mt-4">
-          Complete Address:
+          Street
         </label>
         <input
           className="form-control form-control-lg"
