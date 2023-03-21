@@ -10,12 +10,17 @@ const Notification = ({ data, onClick }) => {
     >
       <div className="w-100 border p-3">
         <div className="d-flex align-items-start gap-3">
-          <div>
-            <CgProfile size={25} />
-          </div>
+          {data.sender && (
+            <div>
+              <CgProfile size={25} />
+            </div>
+          )}
 
           <div>
-            <b>{data.sender.firstName + data.sender.lastName}</b> {data.body}
+            <b>
+              {data.sender ? data.sender.firstName + data.sender.lastName : ""}
+            </b>{" "}
+            {data.body}
           </div>
         </div>
       </div>

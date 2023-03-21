@@ -2,8 +2,6 @@ import SignedOutLayout from "../../components/Layouts/SignedOutLayout/SignedOutL
 import { useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
-import moment from "moment/moment";
-import { AiFillEye } from "react-icons/ai";
 import DocumentModal from "../../components/DocumentModal/DocumentModal";
 
 const SignedOutTrackRequest = () => {
@@ -51,33 +49,14 @@ const SignedOutTrackRequest = () => {
             <th scope="col">Tracking ID</th>
             <th scope="col">Document Type</th>
             <th scope="col">Status</th>
-            <th scope="col">Claiming Date</th>
-            <th scope="col">Fee</th>
-            <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
           {document && documentId && author && (
             <tr>
-              <td>{documentId}</td>
-              <td>{document.documentType}</td>
-              <td>{document.status}</td>
-              <td>
-                {document.claimingDate
-                  ? moment(document.claimingDate?.toDate()).format(
-                      "MMMM DD, YYYY"
-                    )
-                  : "---"}
-              </td>
-              <td>{document.fee}</td>
-              <td>
-                <button
-                  className="btn btn-light"
-                  onClick={() => setIsViewingDocument(document)}
-                >
-                  <AiFillEye />
-                </button>
-              </td>
+              <td className="align-middle">{documentId}</td>
+              <td className="align-middle">{document.documentType}</td>
+              <td className="align-middle">{document.status}</td>
             </tr>
           )}
         </tbody>
