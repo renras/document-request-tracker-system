@@ -27,7 +27,11 @@ import useClickAway from "../../../hooks/useClickAway";
 import { GrNotification } from "react-icons/gr";
 import NotificationBox from "./NotificationBox";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
+import {
+  useCollection,
+  useCollectionData,
+  useDocumentData,
+} from "react-firebase-hooks/firestore";
 import defaultAvatar from "../../../assets/images/avatar.jpg";
 import { AiOutlineMail } from "react-icons/ai";
 
@@ -49,6 +53,20 @@ const SignedInLayout = ({ children }) => {
       ? query(collection(db, "notifications"), where("type", "==", "REQUEST"))
       : null
   );
+  const dateInAWeek = useRef(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+
+  //  get documents collection where due date is less than a week
+  const [dueDocuments, dueDocumentsLoading, dueDocumentsError] =
+    useCollectionData(
+      profile?.role === "ADMIN"
+        ? query(
+            collection(db, "documents"),
+            where("dueDate", "<", dateInAWeek.current),
+            where("isDueDateNotified", "==", false)
+          )
+        : null
+    );
+
   const [userNotifications, userNotificationsLoading, userNotificationsError] =
     useCollection(
       user
@@ -193,7 +211,8 @@ const SignedInLayout = ({ children }) => {
     emailVerifiedLoading ||
     notificationsWithSenderDataLoading ||
     requestNotificationsLoading ||
-    userNotificationsLoading
+    userNotificationsLoading ||
+    dueDocumentsLoading
   )
     return <Loader />;
 
@@ -202,7 +221,8 @@ const SignedInLayout = ({ children }) => {
     profileError ||
     notificationsWithSenderDataError ||
     requestNotificationsError ||
-    userNotificationsError
+    userNotificationsError ||
+    dueDocumentsError
   )
     return <Error />;
   if (user && !isVerified)
@@ -240,6 +260,8 @@ const SignedInLayout = ({ children }) => {
   const unreadNotificationsCount = notificationsWithSenderData?.filter(
     (notification) => !notification.isRead
   ).length;
+
+  console.log(dueDocuments);
 
   return (
     <>
