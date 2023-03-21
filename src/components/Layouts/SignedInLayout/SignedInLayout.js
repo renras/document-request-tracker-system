@@ -17,6 +17,8 @@ import {
   updateDoc,
   query,
   where,
+  addDoc,
+  Timestamp,
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import Error from "../../Error/Error";
@@ -27,11 +29,7 @@ import useClickAway from "../../../hooks/useClickAway";
 import { GrNotification } from "react-icons/gr";
 import NotificationBox from "./NotificationBox";
 import { useAuthState } from "react-firebase-hooks/auth";
-import {
-  useCollection,
-  useCollectionData,
-  useDocumentData,
-} from "react-firebase-hooks/firestore";
+import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
 import defaultAvatar from "../../../assets/images/avatar.jpg";
 import { AiOutlineMail } from "react-icons/ai";
 
@@ -44,35 +42,30 @@ const SignedInLayout = ({ children }) => {
   const [isVerified, setIsVerified] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationBoxOpen, setIsNotificationBoxOpen] = useState(false);
-  const [
-    requestNotifications,
-    requestNotificationsLoading,
-    requestNotificationsError,
-  ] = useCollection(
-    profile?.role === "ADMIN"
-      ? query(collection(db, "notifications"), where("type", "==", "REQUEST"))
-      : null
-  );
   const dateInAWeek = useRef(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
 
   //  get documents collection where due date is less than a week
-  const [dueDocuments, dueDocumentsLoading, dueDocumentsError] =
-    useCollectionData(
-      profile?.role === "ADMIN"
-        ? query(
-            collection(db, "documents"),
-            where("dueDate", "<", dateInAWeek.current),
-            where("isDueDateNotified", "==", false)
-          )
-        : null
-    );
+  const [dueDocuments, dueDocumentsLoading, dueDocumentsError] = useCollection(
+    profile?.role === "ADMIN"
+      ? query(
+          collection(db, "documents"),
+          where("dueDate", "<", dateInAWeek.current),
+          where("isDueDateNotified", "==", false)
+        )
+      : null
+  );
 
   const [userNotifications, userNotificationsLoading, userNotificationsError] =
     useCollection(
-      user
+      user && profile?.role === "MEMBER"
         ? query(
             collection(db, "notifications"),
             where("recipientId", "==", user.uid)
+          )
+        : profile?.role === "ADMIN"
+        ? query(
+            collection(db, "notifications"),
+            where("recipientId", "==", null)
           )
         : null
     );
@@ -106,6 +99,43 @@ const SignedInLayout = ({ children }) => {
   });
 
   useEffect(() => {
+    if (dueDocumentsLoading || dueDocumentsError) return;
+    if (!dueDocuments) return;
+
+    const dueDocumentsData = dueDocuments?.docs.map((doc) => {
+      return { ...doc.data(), id: doc.id };
+    });
+
+    // create notification for each document that is due
+    (async () => {
+      await Promise.all(
+        dueDocumentsData.map(async (document) => {
+          return new Promise((resolve) => {
+            (async () => {
+              await addDoc(collection(db, "notifications"), {
+                type: "DUE DOCUMENT",
+                body: `Document with tracking id of ${document.id} is due in a week`,
+                senderId: null,
+                recipientId: null,
+                clickAction: "/on-process",
+                isRead: false,
+                createdAt: Timestamp.now(),
+              });
+
+              // update document to notify admin that notification has been sent
+              await updateDoc(doc(db, "documents", document.id), {
+                isDueDateNotified: true,
+              });
+
+              resolve("success");
+            })();
+          });
+        })
+      );
+    })();
+  }, [dueDocumentsLoading, dueDocumentsError, dueDocuments]);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         navigate("/sign-in");
@@ -129,35 +159,29 @@ const SignedInLayout = ({ children }) => {
   }, [navigate]);
 
   useEffect(() => {
-    if (requestNotificationsLoading || userNotificationsLoading) {
-      return;
-    }
-    if (!requestNotifications && !userNotifications) {
+    if (userNotificationsLoading || userNotificationsError) return;
+    if (!userNotifications?.docs.length) {
       setNotificationsWithSenderDataLoading(false);
       return;
     }
-
     let ignore = true;
     try {
-      const mergedNotifications = [
-        ...(requestNotifications?.docs || []),
-        ...(userNotifications?.docs || []),
-      ].sort((a, b) => b.data().createdAt - a.data().createdAt);
-
       (async () => {
         const newNotifications = await Promise.all(
-          mergedNotifications.map(async (document) => {
-            const senderRef = doc(db, "users", document.data().senderId);
+          userNotifications?.docs.map(async (document) => {
+            const senderRef = document.data().senderId
+              ? doc(db, "users", document.data().senderId)
+              : null;
 
             const recipientRef = document.data().recipientId
               ? doc(db, "users", document.data().recipientId)
               : null;
-            const senderSnap = await getDoc(senderRef);
+            const senderSnap = senderRef ? await getDoc(senderRef) : null;
             const recipientSnap = recipientRef
               ? await getDoc(recipientRef)
               : null;
 
-            if (senderSnap.exists() && recipientSnap?.exists()) {
+            if (senderSnap?.exists() && recipientSnap?.exists()) {
               return {
                 ...document.data(),
                 sender: senderSnap.data(),
@@ -166,7 +190,7 @@ const SignedInLayout = ({ children }) => {
               };
             }
 
-            if (senderSnap.exists() && !recipientSnap?.exists()) {
+            if (senderSnap?.exists() && !recipientSnap?.exists()) {
               return {
                 ...document.data(),
                 sender: senderSnap.data(),
@@ -178,6 +202,7 @@ const SignedInLayout = ({ children }) => {
             return {
               ...document.data(),
               sender: null,
+              recipient: null,
               id: document.id,
             };
           })
@@ -198,19 +223,13 @@ const SignedInLayout = ({ children }) => {
     return () => {
       ignore = false;
     };
-  }, [
-    requestNotifications,
-    userNotifications,
-    requestNotificationsLoading,
-    userNotificationsLoading,
-  ]);
+  }, [userNotifications, userNotificationsLoading, userNotificationsError]);
 
   if (
     userLoading ||
     profileLoading ||
     emailVerifiedLoading ||
     notificationsWithSenderDataLoading ||
-    requestNotificationsLoading ||
     userNotificationsLoading ||
     dueDocumentsLoading
   )
@@ -220,7 +239,6 @@ const SignedInLayout = ({ children }) => {
     userError ||
     profileError ||
     notificationsWithSenderDataError ||
-    requestNotificationsError ||
     userNotificationsError ||
     dueDocumentsError
   )
@@ -261,8 +279,6 @@ const SignedInLayout = ({ children }) => {
     (notification) => !notification.isRead
   ).length;
 
-  console.log(dueDocuments);
-
   return (
     <>
       <div className={styles.container}>
@@ -295,7 +311,7 @@ const SignedInLayout = ({ children }) => {
                   }}
                 >
                   <NotificationBox
-                    data={notificationsWithSenderData}
+                    data={notificationsWithSenderData || []}
                     onClick={(data) => handleNotificationClick(data)}
                   />
                 </div>
