@@ -131,6 +131,11 @@ const CreateRequestModal = ({ profile }) => {
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
             authorEmail: profile.email,
+            // add due date of 2 weeks
+            dueDate: Timestamp.fromDate(
+              new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000)
+            ),
+            isDueDateNotified: false,
           });
 
           await uploadAttachment(formattedId);
