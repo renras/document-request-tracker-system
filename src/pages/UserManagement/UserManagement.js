@@ -33,6 +33,7 @@ const UserManagement = () => {
                 <th scope="col">Full Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Role</th>
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -42,6 +43,7 @@ const UserManagement = () => {
                   <td>{`${profile.lastName}, ${profile.firstName} ${profile.middleName[0]}.`}</td>
                   <td>{profile.email}</td>
                   <td>{profile.role}</td>
+                  <td>{profile.isActive ? "Active" : "Inactive"}</td>
                   <td>
                     <button
                       className="btn btn-light"
