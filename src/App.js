@@ -17,6 +17,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Rejected from "./pages/Rejected/Rejected";
 import Profile from "./pages/Profile/Profile";
 import UserManagement from "./pages/UserManagement/UserManagement";
+import Account from "./pages/Account/Account";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
       <Route path="rejected" element={<Rejected />} />
       <Route path="profile" element={<Profile />} />
       <Route path="user-management" element={<UserManagement />} />
+      <Route path="account" element={<Account />} />
     </Routes>
   );
 }

@@ -279,7 +279,7 @@ const SignedInLayout = ({ children }) => {
     (notification) => !notification.isRead
   ).length;
 
-  if (!profile.isActive) {
+  if (!profile?.isActive) {
     return (
       <div className="container">
         <h1 style={{ marginTop: "100px" }}>
