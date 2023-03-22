@@ -2,14 +2,14 @@ import SignedInLayout from "../../components/Layouts/SignedInLayout/SignedInLayo
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
 import { db } from "../../firebase-config";
-import { useCollectionData } from "react-firebase-hooks/firestore";
-import { collection } from "firebase/firestore";
+import { collection, doc, updateDoc } from "firebase/firestore";
 import { AiFillEye } from "react-icons/ai";
 import Modal from "../../components/v2/Modal/Modal";
 import { useState } from "react";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 const UserManagement = () => {
-  const [profiles, profilesLoading, profilesError] = useCollectionData(
+  const [profiles, profilesLoading, profilesError] = useCollection(
     collection(db, "users")
   );
   const [showProfile, setShowProfile] = useState(false);
@@ -17,11 +17,31 @@ const UserManagement = () => {
   if (profilesLoading) return <Loader />;
   if (profilesError) return <Error />;
 
-  const profilesSortedByRoles = profiles.sort((a, b) => {
+  const handleToggleStatus = async (profileId, isActive) => {
+    console.log(profileId);
+    const profileRef = doc(db, "users", profileId);
+
+    try {
+      await updateDoc(profileRef, {
+        isActive,
+      });
+    } catch (e) {
+      console.error(e);
+      alert("Failed to update user status");
+    }
+  };
+
+  const profilesWithId = profiles.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  const profilesSortedByRoles = profilesWithId.sort((a, b) => {
     if (a.role === "ADMIN") return -1;
     if (b.role === "MEMBER") return 1;
     return 0;
   });
+
   return (
     <>
       <SignedInLayout>
@@ -45,12 +65,24 @@ const UserManagement = () => {
                   <td>{profile.role}</td>
                   <td>{profile.isActive ? "Active" : "Inactive"}</td>
                   <td>
-                    <button
-                      className="btn btn-light"
-                      onClick={() => setShowProfile(profile)}
-                    >
-                      <AiFillEye />
-                    </button>
+                    <div className="d-flex gap-3">
+                      <button
+                        className="btn btn-light"
+                        onClick={() => setShowProfile(profile)}
+                      >
+                        <AiFillEye />
+                      </button>
+                      {profile.role === "MEMBER" && (
+                        <button
+                          className="btn btn-outline-danger"
+                          onClick={() =>
+                            handleToggleStatus(profile.id, !profile.isActive)
+                          }
+                        >
+                          {profile.isActive ? "Disable" : "Enable"}
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
