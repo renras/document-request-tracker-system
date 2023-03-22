@@ -279,6 +279,22 @@ const SignedInLayout = ({ children }) => {
     (notification) => !notification.isRead
   ).length;
 
+  if (!profile.isActive) {
+    return (
+      <div className="container">
+        <h1 style={{ marginTop: "100px" }}>
+          This account is disabled by the admin
+        </h1>
+        <button
+          className="btn btn-outline-danger btn-lg mt-4"
+          onClick={handleSignOut}
+        >
+          Logout
+        </button>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className={styles.container}>
