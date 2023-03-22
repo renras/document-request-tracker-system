@@ -154,6 +154,7 @@ const SignUp = () => {
         updatedAt: Timestamp.now(),
         role: "MEMBER",
         avatar: result.user.photoURL,
+        isActive: true,
       });
 
       navigate("/dashboard");
