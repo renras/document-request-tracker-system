@@ -31,7 +31,7 @@ import NotificationBox from "./NotificationBox";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
 import defaultAvatar from "../../../assets/images/avatar.jpg";
-import { AiOutlineMail } from "react-icons/ai";
+import { AiOutlineMail, AiOutlineSetting } from "react-icons/ai";
 
 const SignedInLayout = ({ children }) => {
   const [user, userLoading, userError] = useAuthState(auth);
@@ -375,9 +375,22 @@ const SignedInLayout = ({ children }) => {
                     Profile
                   </Link>
                 </li>
-                <li>
-                  <hr className="dropdown-divider" />
+
+                <hr className="dropdown-divider" />
+
+                <li className="dropdown-item">
+                  <Link
+                    to="/account"
+                    className="d-flex gap-2 align-items-center"
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    <AiOutlineSetting size={20} />
+                    Account
+                  </Link>
                 </li>
+
+                <hr className="dropdown-divider" />
+
                 <li
                   className="dropdown-item d-flex gap-2 align-items-center"
                   style={{ cursor: "pointer" }}
