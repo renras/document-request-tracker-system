@@ -10,7 +10,11 @@ const Home = () => {
       >
         <h1
           className="text-light"
-          style={{ fontSize: "60px", fontFamily: "Roboto, sans-serif" }}
+          style={{
+            fontSize: "60px",
+            fontFamily: "Roboto, sans-serif",
+            textShadow: "0 2px 8px rgba(0, 0, 0, 0.65)",
+          }}
         >
           The UPANG Document Tracking System
         </h1>
@@ -19,12 +23,12 @@ const Home = () => {
           className="d-flex justify-content-center gap-4 mt-5"
           style={{ fontFamily: "Roboto, sans-serif" }}
         >
-          <Link to="/sign-in" className="btn btn-light btn-lg fw-semibold">
+          <Link to="/sign-in" className="btn btn-success btn-lg fw-semibold">
             Request for a Document
           </Link>
           <Link
             to="/track-request"
-            className="btn btn-outline-light btn-lg fw-semibold"
+            className="btn btn-success btn-lg fw-semibold"
           >
             Track A Document
           </Link>
