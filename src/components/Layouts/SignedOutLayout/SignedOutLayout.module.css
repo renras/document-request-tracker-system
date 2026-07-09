@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr;
-  background-image: url(https://up.phinma.edu.ph/wp-content/uploads/2020/10/upang_banner_767.jpg);
+  background-image: url(../../../assets/images/PHINMA-Education-expands-its-mission-in-South-Luzon-hero.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
