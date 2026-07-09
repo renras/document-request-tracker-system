@@ -35,6 +35,7 @@ const Dropdown = ({
               </li>
             );
           }
+          return null;
         })}
       </ul>
     </div>
